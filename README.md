@@ -22,3 +22,9 @@ The empty `.nojekyll` file tells GitHub Pages to serve the files exactly as they
 - `assets/js/` — menu, link copying and site search; `assets/search-index.json` — search data.
 
 All links are relative, so the site works both at the project address above and on a custom domain.
+
+## Editing the site
+
+Rules for editors and AI agents (Claude, Gemini and others) are in [AGENTS.md](AGENTS.md).
+After editing pages, run `python3 tools/rebuild.py` to regenerate the catalog, scripture index,
+topic pages and search index, then `python3 tools/check_links.py`.

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Поиск — Сергей Брык</title>
+<meta name="description" content="Поиск по статьям, темам, вопросам и местам Писания.">
+<meta name="author" content="Сергей Брык">
+<meta property="og:site_name" content="Сергей Брык">
+<meta property="og:title" content="Поиск">
+<meta property="og:description" content="Поиск по статьям, темам, вопросам и местам Писания.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<meta name="link-suffix" content="index.html">
+<meta name="color-scheme" content="light dark">
+<link rel="preload" href="../assets/fonts/literata-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/css/site.css">
+<script>document.documentElement.classList.add('js')</script>
+<script type="module" src="../assets/js/site.js"></script>
+<script type="module" src="../assets/js/search.js"></script>
+</head>
+<body>
+<div class="page" lang="ru">
+<a class="skip-link" href="#main">Перейти к тексту</a>
+<header class="site-header">
+  <div class="header-bar">
+    <a class="brand" href="../">Сергей Брык</a>
+    <div class="header-actions">
+      <a class="icon-button" href="index.html" aria-label="Поиск по материалам" aria-current="page">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span class="icon-button-label">Поиск</span>
+      </a>
+      <button class="icon-button menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span class="icon-button-label">Меню</span>
+      </button>
+    </div>
+  </div>
+  <nav id="site-nav" class="site-nav" aria-label="Разделы сайта">
+    <ul>
+      <li><a href="../">Главная</a></li>
+      <li><a href="../faith/index.html">Во что мы верим</a></li>
+      <li><a href="../topics/index.html">Темы</a></li>
+      <li><a href="../questions/index.html">А как же…?</a></li>
+      <li><a href="../articles/index.html">Все статьи</a></li>
+      <li><a href="../scripture/index.html">По местам Писания</a></li>
+      <li><a href="../videos/index.html">Видео</a></li>
+      <li><a href="../about/index.html">Об авторе</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main" class="main" tabindex="-1">
+<div class="search-page">
+  <h1 class="page-title">Поиск</h1>
+  <form class="search-form search-form-page" action="index.html" method="get" role="search" data-search-form>
+    <label class="search-label" for="search-q">Слово, вопрос или место Писания</label>
+    <div class="search-row">
+      <input class="search-input" id="search-q" name="q" type="search" autocomplete="off" placeholder="Например: Псалом 48" enterkeyhint="search">
+      <button class="button" type="submit">Найти</button>
+    </div>
+    <div class="topic-filter">
+      <label class="search-label" for="search-topic">Тема</label>
+      <select class="topic-select" id="search-topic" name="topic">
+        <option value="">Все темы</option>
+        <option value="bog-otets">Бог Отец</option>
+        <option value="iisus-hristos">Иисус Христос</option>
+        <option value="svyatoy-duh">Святой Дух</option>
+        <option value="troitsa">Троица</option>
+        <option value="spasenie">Спасение и искупление</option>
+        <option value="smert-voskresenie">Смерть и воскресение</option>
+        <option value="zhizn-very">Жизнь веры</option>
+        <option value="pisanie">Священное Писание</option>
+        <option value="tserkov">Церковь и общение</option>
+        <option value="predsushchestvovanie">Предсуществование Иисуса</option>
+      </select>
+    </div>
+  </form>
+  <p class="search-hint" data-search-hint>Ссылки можно писать по-разному: «Ин. 1:1», «Ин 1 1», «Иоанна 1:1», «1 Кор 8:6», «1 Коринфянам 8:6». Буквы «е» и «ё» не различаются.</p>
+  <p class="search-status" role="status" aria-live="polite" data-search-status></p>
+  <ol class="results" data-search-results></ol>
+  <noscript><p class="search-status">Для поиска нужен JavaScript. Материалы также доступны через <a href="../topics/index.html">темы</a>, <a href="../articles/index.html">список статей</a> и <a href="../scripture/index.html">указатель Писания</a>.</p></noscript>
+</div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-brand">Сергей Брык</p>
+    <p class="footer-text">Статьи, темы и ответы по Писанию. Тексты: Сергей Брык.</p>
+    <ul class="footer-nav">
+      <li><a href="../">Главная</a></li>
+      <li><a href="../faith/index.html">Во что мы верим</a></li>
+      <li><a href="../topics/index.html">Темы</a></li>
+      <li><a href="../questions/index.html">А как же…?</a></li>
+      <li><a href="../articles/index.html">Все статьи</a></li>
+      <li><a href="../scripture/index.html">По местам Писания</a></li>
+      <li><a href="../videos/index.html">Видео</a></li>
+      <li><a href="../about/index.html">Об авторе</a></li>
+      <li><a href="index.html">Поиск</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="toast" role="status" aria-live="polite" hidden></div>
+</div>
+</body>
+</html>

@@ -113,6 +113,7 @@ a:hover { color: var(--rubric); }
 .brand:hover { color: var(--rubric); }
 .brand { display: inline-flex; align-items: center; gap: 0.55rem; }
 .brand-logo { width: 32px; height: 32px; flex: none; }
+.brand-logo[width="40"] { width: 40px; height: 40px; }
 .preview-badge {
   font: 600 0.6875rem/1.4 var(--font-ui); text-transform: uppercase; letter-spacing: 0.08em;
   color: var(--rubric); border: 1px solid currentColor; border-radius: 999px; padding: 0.1rem 0.5rem;

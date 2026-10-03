@@ -69,7 +69,7 @@ def parse_article_meta(s):
     a = {}
     a['title'] = re.search(r'<h1 class="article-title">(.*?)</h1>', s).group(1)
     a['summary'] = html.unescape(re.search(r'<meta name="description" content="([^"]*)">', s).group(1))
-    kind = re.search(r'<p class="article-meta">\n      <span>([^<]+)</span>\n      <span class="sep" aria-hidden="true">·</span>\n      <span class="author">', s)
+    kind = re.search(r'<p class="article-meta">\n      <span>([^<\d][^<]*)</span>', s)
     a['kind'] = kind.group(1) if kind else None
     a['passages'] = re.findall(r'<a class="ref" href="\.\./\.\./scripture/index.html#[^"]*">(.*?)</a>',
                                block(s, r'<p class="article-passages">(.*?)</p>'))

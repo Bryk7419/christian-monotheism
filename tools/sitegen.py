@@ -390,9 +390,7 @@ def render_article_main(m, a, p, anchors):
            f'    <h1 class="article-title">{a["title"]}</h1>\n'
            '    <p class="article-meta">\n'
            + (f'      <span>{a["kind"]}</span>\n      <span class="sep" aria-hidden="true">·</span>\n' if a.get('kind') else '')
-           + '      <span class="author">Сергей Брык</span>\n'
-           '      <span class="sep" aria-hidden="true">·</span>\n'
-           f'      <span>{p["minutes"]} {plural(p["minutes"], "минута", "минуты", "минут")} чтения</span>\n'
+           + f'      <span>{p["minutes"]} {plural(p["minutes"], "минута", "минуты", "минут")} чтения</span>\n'
            '      <span class="sep" aria-hidden="true">·</span>\n'
            f'      <span>обновлено <time datetime="{p["date"]}">{human_date(p["date"])}</time></span>\n    </p>\n')
     if a['passages']:

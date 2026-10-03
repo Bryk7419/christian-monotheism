@@ -111,6 +111,9 @@ a:hover { color: var(--rubric); }
   color: var(--ink); text-decoration: none; letter-spacing: 0.01em; white-space: nowrap;
 }
 .brand:hover { color: var(--rubric); }
+.brand { display: inline-flex; align-items: center; gap: 0.55rem; }
+.brand-logo { width: 32px; height: 32px; flex: none; }
+.brand-logo[width="40"] { width: 40px; height: 40px; }
 .preview-badge {
   font: 600 0.6875rem/1.4 var(--font-ui); text-transform: uppercase; letter-spacing: 0.08em;
   color: var(--rubric); border: 1px solid currentColor; border-radius: 999px; padding: 0.1rem 0.5rem;
@@ -336,10 +339,28 @@ a.ref:hover { text-decoration: underline; }
 
 /* --- Главная ------------------------------------------------------------------- */
 .hero { max-width: var(--measure); margin: 0.75rem auto 2rem; }
-.hero-title {
-  margin: 0 0 1.25rem;
-  font-family: var(--font-display); font-weight: 700; line-height: 1.05;
-  font-size: clamp(2.3rem, 1.5rem + 3.6vw, 3.7rem); text-wrap: balance;
+.hero-author { display: flex; align-items: center; gap: 1.1rem; margin: 0 0 1.5rem; }
+.hero-photo {
+  width: 112px; height: 112px; flex: none; border-radius: 50%; object-fit: cover;
+  border: 1px solid var(--rule);
+}
+.hero-name {
+  margin: 0; font-family: var(--font-display); font-weight: 700; line-height: 1.05;
+  font-size: clamp(2.1rem, 1.5rem + 2.6vw, 3.1rem);
+}
+.hero-role { margin: 0.35rem 0 0; font: 1rem/1.4 var(--font-ui); color: var(--muted); }
+.hero-verse { margin: 0 0 1.5rem; padding: 0.1rem 0 0.1rem 1.1rem; border-left: 3px solid var(--rubric); }
+.hero-verse p { margin: 0; font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem); line-height: 1.4; text-wrap: pretty; }
+.hero-verse footer { margin-top: 0.45rem; font: 600 0.9375rem var(--font-ui); }
+.hero-verse footer a { color: var(--rubric); text-decoration: none; }
+.hero-verse footer a:hover { text-decoration: underline; }
+@media (max-width: 30rem) {
+  .hero-photo { width: 84px; height: 84px; }
+  .hero-author { gap: 0.9rem; }
+}
+.author-photo {
+  display: block; width: 160px; height: 160px; margin: 0 0 1.5rem; border-radius: 50%;
+  object-fit: cover; border: 1px solid var(--rule);
 }
 .hero-lead p { margin: 0 0 0.9em; }
 .hero-lead p:first-child { font-size: 1.15em; }

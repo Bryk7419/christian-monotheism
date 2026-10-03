@@ -242,7 +242,7 @@
 - **Темы** — «Подробнее»: предсуществование, спасение, смерть начинаются с опорных статей; в теме «Предсуществование» видео v11 и v07.
 - **Вопросы** — «Что происходит с человеком после смерти?» ведёт к обзору; новые вопросы: богач и Лазарь, Флп. 2:6 (две темы), Ин. 6:62, «нужны ли дела».
 - **Видео** — новое v11 «Иисус жил на небе до рождения? НЕТ!» (658, отметки времени из анонса); у v05 — отметки из анонса 889 (первая половина беседы).
-- **Источники** — подпись «Telegram, дата, авторский архив» оставлена: установленных публичных адресов постов нет, а `messageN` — якорь экспорта, из него нельзя строить адрес t.me.
+- **Источники** — подпись «Telegram, дата, авторский архив» была оставлена: установленных публичных адресов постов нет, а `messageN` — якорь экспорта, из него нельзя строить адрес t.me. С 3 октября 2026 года по просьбе автора эти подписи на страницах не показываются; список перенесён в раздел 8.
 
 ## 7. Пакет 03 (3 октября 2026)
 Задание автора: разделы 1, 2, 3, 4, 5 и 7 из предложенного плана. Пост о женщинах-пресвитерах (689) не переносить. Проверять даты, цитаты и качество текста. Прямой доступ к внешним сайтам в этой сессии закрыт, но работает веб-поиск: через него сверены цитаты Писания (по Синодальному переводу) и адреса первоисточников в списках источников (New Advent, Wikisource, Fordham, CPH, Project MUSE). Сомнительные утверждения из постов не перенесены (см. ниже). Все 29 статей прошли независимую вычитку (три рецензента: язык, логика, точность, соответствие постам, правила 1–6); правки перечислены ниже.
@@ -295,3 +295,89 @@
 - «Подробнее» в темах «Троица», «Церковь», «Писание».
 - Видео v12 (825): название с YouTube, отметки времени из анонса.
 - Цитаты Писания во всех 29 статьях (162 места) сверены с Синодальным переводом: по трём независимым электронным текстам (thiagobodruk/bible, christos-c/bible-corpus, CrossWire через open-bibles) и через веб-поиск. Исправлено: Быт. 41:46 («от лица фараонова»), Ис. 1:3 (тире), Ис. 10:21 (порядок слов), Пс. 101:1 («страждущего», а не славянское «нищего»), Мф. 6:5 («перед»), 1 Кор. 11:19 («искусные»), 4 Цар. 19:4 («живаго»); цитаты с изменённым падежом переписаны или сняты кавычки (Ин. 1:17, 1:51, 3:10, 17:3; 1 Тим. 2:5); значения имён у Исаии больше не оформлены как цитаты стихов. Дан. 7:13–14 и Сир. в электронных текстах нет — Даниил сверен поиском.
+
+## 8. По каким записям подготовлены статьи
+До 3 октября 2026 года этот список показывался внизу каждой статьи («Подготовлено по авторским публикациям»). По просьбе автора он убран со страниц и хранится только здесь. Со страницы «Об авторе» убраны и фразы о том, по каким публикациям подготовлены статьи. Вместо них там по просьбе автора — ссылки на его каналы: Telegram https://t.me/SergBryk и YouTube https://www.youtube.com/@Mono1Tim25. Даты — даты записей в канале «Бог-один LIVE» (авторский архив Telegram), если не указано иное. Для новых статей указывайте записи в этом разделе.
+
+| Статья | Записи |
+|---|---|
+| bog-deystvuet-cherez-syna | Telegram 11 мая 2026; Telegram 12 октября 2025 |
+| bog-krepkiy | Telegram 24 августа 2026 |
+| bog-spasaet-cherez-cheloveka | Telegram 3 октября 2025; Telegram 28 октября 2025; Telegram 9 ноября 2025; Telegram 7 мая 2026; Telegram 15 марта 2026; Telegram 11 апреля 2026 |
+| bog-veka-sego | Telegram 29 августа 2025 |
+| brat-ne-iskupit-brata | Telegram 9 ноября 2025; Telegram 31 августа 2026 |
+| byl-prezhde-menya | Telegram 13 сентября 2025; Telegram 12 сентября 2025 |
+| chelovecheskiy-syn-boga | Telegram 12 августа 2026; Telegram 3 мая 2026 |
+| chemu-pouchitsya-u-trinitariev | Telegram 1 мая 2026; Telegram 2 мая 2026 |
+| chitat-po-kontekstu | Telegram 2 сентября 2025; Telegram 2 сентября 2025; Telegram 23 марта 2026 |
+| chto-utverzhdaet-uchenie-o-troitse | Telegram 30 ноября 2025; Telegram 13 марта 2026; Telegram 5 мая 2026 |
+| dobrymi-no-ne-naivnymi | Telegram 26 июня 2026; Telegram 7 сентября 2026 |
+| duh-hristov-v-prorokah | Telegram 17 сентября 2026 |
+| edinyy-istinnyy-bog | Telegram 13 января 2026; Telegram 18 марта 2026 |
+| elohim | Telegram 20 апреля 2026 |
+| evangelie-tsarstva | Telegram 2 ноября 2025; Telegram 12 октября 2025; Telegram 11 апреля 2026 |
+| filippiytsam-2-5-11 | Telegram 17 августа 2025; Telegram 21 августа 2025; Telegram 24 августа 2025; Telegram 27 августа 2025; Telegram 25 мая 2026 |
+| filippiytsam-primer-hrista | Telegram 23 августа 2025; Telegram 19 августа 2025 |
+| gordost-i-smirenie | Telegram 18 октября 2025 |
+| gospod-moy-i-bog-moy | Telegram 16 января 2026; Telegram 9 июня 2026; Telegram 13 января 2026 |
+| gospod-ot-gospoda | Telegram 7 мая 2026 |
+| imya-synu-ego | <a class="ext" href="https://www.youtube.com/post/Ugkxf2H4kO-C6wvIvT4i1la2dNSC3yX5EJQs" target="_blank" rel="noopener">YouTube Community: исходная публикация<span class="ext-mark" aria-hidden="true">↗</span><span class="visually-hidden"> (внешний сайт, откроется в новой вкладке)</span></a>; <a class="ext" href="https://www.youtube.com/post/Ugkxm9Gl4NZnw8qFzYcLQaS5I3bUSwz9JCi2" target="_blank" rel="noopener">YouTube Community: исходная публикация<span class="ext-mark" aria-hidden="true">↗</span><span class="visually-hidden"> (внешний сайт, откроется в новой вкладке)</span></a> |
+| ishel-ot-ottsa | Telegram 29 июня 2026 |
+| istina-ili-spor | Telegram 10 мая 2026 |
+| istina-o-boge-ne-melochi | Telegram 12 июля 2026 |
+| kak-nazyvayut-iisusa-v-in-1 | Telegram 16 сентября 2025; Telegram 25 июля 2026 |
+| kak-svidetelstvovat-o-boge | Telegram 19 мая 2026 |
+| kak-troitsa-stala-zakonom | Telegram 25 сентября 2025; Telegram 26 сентября 2025; Telegram 29 декабря 2025; Telegram 24 марта 2026; Telegram 23 апреля 2026 |
+| kak-ya-ponimayu-predsushchestvovanie | Telegram 3 мая 2026; Telegram 4 мая 2026; Telegram 5 мая 2026; Telegram 6 мая 2026; Telegram 17 сентября 2026 |
+| kamen-byl-hristos | Telegram 7 февраля 2026; Telegram 15 июня 2026 |
+| kogda-strashno | Telegram 27 мая 2026 |
+| kogda-vse-shatko | Telegram 23 июня 2026; Telegram 24 июня 2026 |
+| kolossyanam-pervenets | Telegram 9 сентября 2025; Telegram 11 сентября 2025; Telegram 17 февраля 2026 |
+| konflikty-v-obshchine | Telegram 25 октября 2025 |
+| kto-voskresil-iisusa | Telegram 11 апреля 2026; Telegram 18 сентября 2026; Telegram 26 сентября 2026; Telegram 8 апреля 2026 |
+| mogu-no-ne-hochu | Telegram 27 февраля 2026 |
+| nachalo-sozdaniya-bozhiya | Telegram 2 февраля 2026 |
+| ne-cherez-cheloveka | Telegram 31 июля 2026 |
+| ne-ostavatsya-v-odinochku | Telegram 2 мая 2026; Telegram 1 августа 2026 |
+| nikto-ne-voshodil-na-nebo | Telegram 6 ноября 2025; Telegram 1 декабря 2025; Telegram 27 июня 2026 |
+| obraz-bozhiy | Telegram 28 ноября 2025 |
+| odin-bog-odin-gospod | Telegram 2 сентября 2025; Telegram 17 февраля 2026; Telegram 18 февраля 2026; Telegram 18 февраля 2026 |
+| odin-glagol-dva-podlezhashchih | <a class="ext" href="https://www.youtube.com/post/UgkxMb47OeObyL0A_pn6JD_4f9M6HJIDFwlt" target="_blank" rel="noopener">YouTube Community: исходная публикация<span class="ext-mark" aria-hidden="true">↗</span><span class="visually-hidden"> (внешний сайт, откроется в новой вкладке)</span></a> |
+| otnoshenie-k-trinitariyam | Telegram 9 июня 2026 |
+| pavel-samosatskiy-i-fotin | Telegram 27 декабря 2025; Telegram 13 апреля 2026; Telegram 23 апреля 2026; Telegram 8 мая 2026 |
+| pochemu-ya-ne-razocharovyvayus-v-boge | Telegram 19 мая 2026 |
+| pomazanie-na-iordane | Telegram 3 ноября 2025 |
+| premudrost-v-pritchah | Telegram 17 января 2026; Telegram 10 февраля 2026 |
+| prestol-tvoy-bozhe | Telegram 14 августа 2025 |
+| prezhde-avraama | Telegram 20 января 2026; Telegram 29 апреля 2026; Telegram 10 августа 2026; Telegram 13 января 2026; Telegram 5 мая 2026 |
+| proshchenie-i-obida | Telegram 30 октября 2025; Telegram 30 декабря 2025 |
+| prostaya-molitva | Telegram 28 апреля 2026; Telegram 7 сентября 2025 |
+| radost-i-slezy | Telegram 19 августа 2025; Telegram 29 января 2026 |
+| rozhdestvo | Telegram 9 декабря 2025 |
+| skolko-raz-hotel-ya-sobrat | Telegram 11 августа 2025; Telegram 10 февраля 2026 |
+| slava-prezhde-mira | Telegram 9 августа 2025; Telegram 10 августа 2025; Telegram 11 августа 2025; Telegram 4 мая 2026; Telegram 15 сентября 2026; Telegram 8 апреля 2026 |
+| slovo-bylo-bog | Telegram 14 сентября 2025; Telegram 21 мая 2026; Telegram 22 мая 2026; Telegram 20 июля 2026; Telegram 29 июля 2026; Telegram 10 июля 2026 |
+| slovo-bylo-u-boga | Telegram 29 июля 2026 |
+| slovo-ne-vozvrashchaetsya | Telegram 2 июля 2026 |
+| smert-dusha-voskresenie | Telegram 11 апреля 2026; Telegram 30 июля 2026; Telegram 4 августа 2026; Telegram 7 сентября 2026; Telegram 15 сентября 2026 |
+| soshel-s-nebes | Telegram 29 апреля 2026; Telegram 31 мая 2026; Telegram 24 февраля 2026; Telegram 27 июня 2026 |
+| sotvorim-cheloveka | Telegram 20 апреля 2026; Telegram 4 мая 2026; Telegram 6 мая 2026 |
+| spasenie-vo-hriste | Telegram 20 августа 2025; Telegram 12 октября 2025; Telegram 28 октября 2025; Telegram 7 ноября 2025; Telegram 9 ноября 2025; Telegram 23 ноября 2025; Telegram 6 апреля 2026; Telegram 11 апреля 2026 |
+| sushchiy-nad-vsem-bog | Telegram 13 мая 2026 |
+| svyatoy-duh-deystvie-boga | Telegram 1 октября 2025; Telegram 18 декабря 2025; Telegram 21 апреля 2026; Telegram 13 мая 2026; Telegram 17 сентября 2026 |
+| tserkov-gde-kazhdyy-sluzhit | Telegram 16 августа 2025; Telegram 6 сентября 2025; Telegram 9 октября 2025; Telegram 7 марта 2026 |
+| tserkov-vsegda-verila-v-troitsu | Telegram 29 ноября 2025; Telegram 24 марта 2026 |
+| ty-prebyvaesh | Telegram 20 марта 2026; Telegram 21 марта 2026 |
+| unitarii-i-islam | Telegram 26 сентября 2026 |
+| uteshenie-voskreseniem | Telegram 30 июля 2026; Telegram 30 июля 2026; Telegram 15 сентября 2026 |
+| uzryat-litse-ego | Telegram 7 июня 2026; Telegram 9 июня 2026 |
+| videvshiy-menya-videl-ottsa | Telegram 9 июня 2026 |
+| vo-imya-ottsa-syna-duha | Telegram 13 мая 2026; Telegram 14 мая 2026; Telegram 14 мая 2026 |
+| voploshchenie | Telegram 1 декабря 2025; Telegram 24 апреля 2026; Telegram 26 апреля 2026; Telegram 27 апреля 2026 |
+| voskresshiy-iisus-chelovek | Telegram 2 сентября 2025; Telegram 12 октября 2025; Telegram 28 октября 2025; Telegram 15 марта 2026; Telegram 6 августа 2026 |
+| ya-i-otets-odno | Telegram 15 декабря 2025; Telegram 10 августа 2026 |
+| ya-prosto-vspylil | Telegram 8 января 2026 |
+| zachem-vethiy-zavet | Telegram 1 сентября 2025; Telegram 2 сентября 2025 |
+| zavist | Telegram 17 ноября 2025; Telegram 6 апреля 2026 |
+| zhit-bez-masok | Telegram 21 октября 2025; Telegram 15 января 2026; Telegram 22 марта 2026 |
+| znat-ottsa | Telegram 14 февраля 2026; Telegram 18 марта 2026; Telegram 12 октября 2025 |

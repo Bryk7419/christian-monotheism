@@ -373,14 +373,16 @@ def parse_article_page(s):
     p['prose'] = re.search(r'<div class="prose">\n(.*?)\n\n  </div>', s, re.S).group(1)
     p['sources'] = re.findall(r'<li><a class="ext" href="([^"]+)" target="_blank" rel="noopener">(.*?)' + re.escape(EXT) + r'</a></li>',
                               re.search(r'<ul class="source-list">(.*?)</ul>', s, re.S).group(1))
-    p['origin'] = re.findall(r'<li>(.*?)</li>', re.search(r'<ul class="source-list source-list-origin">(.*?)</ul>', s, re.S).group(1))
     nxt = re.search(r'id="next-h">Читать дальше</h2>(.*?)</section>', s, re.S).group(1)
     p['next'] = re.findall(r'class="card-link" href="\.\./([^/]+)/index.html"', nxt)
     return p
 
 
 def render_article_main(m, a, p, anchors):
-    """a: данные статьи (title, topics, passages, videos); p: crumb, minutes, date, prose, sources, origin, next."""
+    """a: данные статьи (title, topics, passages, videos); p: crumb, minutes, date, prose, sources, next.
+
+    По каким записям автора подготовлена статья, на странице не показывается: это записывается в editorial/source-ledger.md.
+    """
     arts = {x['slug']: x for x in m['articles']}
     vids = videos_by_id(m)
     out = ('<main id="main" class="main" tabindex="-1">\n\n<article class="article">\n  <header class="article-header">\n'
@@ -403,11 +405,6 @@ def render_article_main(m, a, p, anchors):
     for href, label in p['sources']:
         out += f'        <li><a class="ext" href="{href}" target="_blank" rel="noopener">{label}{EXT}</a></li>\n'
     out += '      </ul>\n'
-    if p['origin']:
-        out += '      <p class="sources-intro">Подготовлено по авторским публикациям:</p>\n      <ul class="source-list source-list-origin">\n'
-        for o in p['origin']:
-            out += f'        <li>{o}</li>\n'
-        out += '      </ul>\n'
     out += '    </section>\n'
     if a['videos']:
         out += ('    <section class="article-videos" aria-labelledby="video-h">\n'

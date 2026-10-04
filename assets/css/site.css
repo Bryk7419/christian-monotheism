@@ -354,21 +354,12 @@ a.ref:hover { text-decoration: underline; }
 }
 .hero-name {
   margin: 0; font-family: var(--font-display); font-weight: 700; line-height: 1.2;
-  font-size: 1.5rem;
+  font-size: 1.875rem;
 }
 .hero-role { margin: 0.25rem 0 0; font: 0.9375rem/1.4 var(--font-ui); color: var(--muted); }
-.hero-title {
-  margin: 0 0 0.8rem; font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(2.25rem, 1.8rem + 1.8vw, 3rem); line-height: 1.12; text-wrap: balance;
-}
-.hero-verse { margin: 1.5rem 0 0; padding: 0.1rem 0 0.1rem 1rem; border-left: 2px solid var(--rubric); }
-.hero-verse p { margin: 0; font-size: 1rem; line-height: 1.55; text-wrap: pretty; }
-.hero-verse footer { margin-top: 0.45rem; font: 600 0.9375rem var(--font-ui); }
-.hero-verse footer a { color: var(--rubric); text-decoration: none; }
-.hero-verse footer a:hover { text-decoration: underline; }
 @media (max-width: 30rem) {
   .hero-photo { width: 64px; height: 64px; }
-  .hero-name { font-size: 1.375rem; }
+  .hero-name { font-size: 1.625rem; }
   .hero-author { gap: 0.75rem; }
 }
 .author-photo {
@@ -377,9 +368,6 @@ a.ref:hover { text-decoration: underline; }
 }
 .hero-lead p { margin: 0 0 0.9em; }
 .hero-lead p:first-child { font-size: 1.0625em; }
-.hero-actions { margin-top: 1rem; }
-.hero-intro { margin: 1.25rem 0 0.65rem; }
-.hero-faith { margin: 0; font: 0.9375rem/1.5 var(--font-ui); }
 .intro-next { padding-top: 1rem; border-top: 1px solid var(--rule); font: 1rem/1.5 var(--font-ui); }
 .home-search {
   max-width: var(--measure); margin: 0 auto 2.75rem; padding: 1.1rem 1.25rem 1.25rem;

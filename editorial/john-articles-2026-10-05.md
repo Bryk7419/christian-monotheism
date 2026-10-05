@@ -9,3 +9,5 @@
 Проверенные публичные источники: [чтения Ин. 14:14](https://bible.by/verse-gr/43/14/14/), [Ин. 16:23, NET Bible](https://classic.net.bible.org/verse.php?book=Joh&chapter=16&verse=23), [чтения Ин. 10:29](https://bible.by/verse-gr/43/10/29/), [Кальвин, Ин. 10:30](https://ccel.org/ccel/calvin/calcom34/calcom34.xvi.v.html), [Гуделл, §563](https://dcc.dickinson.edu/grammar/goodell/infinitive), [Иез. 34:23–24](https://azbyka.ru/biblia/?Ezek.34), [Исх. 3:14, Септуагинта Ральфса — Ханхарта](https://www.die-bibel.de/en/bible/LXX/EXO.3).
 
 Проверка: 4781 внутренняя ссылка без ошибок; производные файлы актуальны. Страницы открыты в Chromium при ширине 1440, 390 и 320 px, скриншоты просмотрены; ошибок загрузки, JavaScript и горизонтального переполнения нет. Поиск находит статьи по заголовкам и стихам. Все прежние ID, якоря указателя, поисковые синонимы и видео сохранены. Остальные тексты статей, CSS и JavaScript не менялись; связанные описания обновлены.
+
+Редакция внесена в основную ветку через [PR №19](https://github.com/Bryk7419/christian-monotheism/pull/19).

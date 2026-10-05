@@ -14,6 +14,7 @@ const prose = document.querySelector('.prose');
 const BOOK = Object.fromEntries(books.map((b) => [b.id, b]));
 const RATES = [1, 1.2, 1.4, 0.85];
 const STORE = `listen:${location.pathname}`;
+const VOICE_STORE = 'listen:voice';
 
 // --- Греческий: традиционное чтение ---------------------------------------------------------------------
 const VOWELS = 'αεηιουω';
@@ -141,11 +142,34 @@ function collect() {
   });
 }
 
-function pickVoice() {
-  const ru = synth.getVoices().filter((v) => /^ru/i.test(v.lang));
-  const score = (v) => (/natural|neural|online|enhanced|premium/i.test(v.name) ? 4 : 0)
+// Русские голоса устройства, лучшие первыми
+function ruVoices() {
+  const score = (v) => (/natural|neural|online|enhanced|premium|улучш/i.test(v.name) ? 4 : 0)
     + (/milena|yuri|katya|svetlana|dmitry|google/i.test(v.name) ? 2 : 0) + (v.localService ? 0 : 1);
-  return ru.sort((a, b) => score(b) - score(a))[0] || null;
+  return synth.getVoices().filter((v) => /^ru/i.test(v.lang)).sort((a, b) => score(b) - score(a));
+}
+
+// Голос, выбранный читателем кнопкой «Сменить голос», иначе лучший из найденных
+function pickVoice() {
+  const list = ruVoices();
+  let saved = '';
+  try { saved = localStorage.getItem(VOICE_STORE) || ''; } catch { /* */ }
+  return list.find((v) => v.name === saved) || list[0] || null;
+}
+
+function nextVoice() {
+  const list = ruVoices();
+  if (list.length < 2) return;
+  const i = list.findIndex((v) => v.name === voice?.name);
+  voice = list[(i + 1) % list.length];
+  try { localStorage.setItem(VOICE_STORE, voice.name); } catch { /* */ }
+  notify(`Голос: ${voice.name}`);
+  if (playing) speak();
+}
+
+function voiceButton() {
+  const b = bar?.querySelector('[data-act="voice"]');
+  if (b) b.hidden = ruVoices().length < 2;
 }
 
 function highlight(el) {
@@ -244,6 +268,7 @@ const ICON = {
   pause: '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/></svg>',
   prev: '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M6 5h2v14H6zM20 5.5v13L9.5 12z" fill="currentColor"/></svg>',
   next: '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M16 5h2v14h-2zM4 5.5v13L14.5 12z" fill="currentColor"/></svg>',
+  voice: '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM6 11a6 6 0 0 0 12 0M12 17v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
   close: '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
 };
 
@@ -256,6 +281,7 @@ function makeBar() {
     + `<button type="button" data-act="toggle" class="listen-main" aria-label="Пауза">${ICON.pause}</button>`
     + `<button type="button" data-act="next" aria-label="Следующий абзац">${ICON.next}</button>`
     + '<button type="button" data-act="rate" class="listen-rate" aria-label="Скорость чтения">1×</button>'
+    + `<button type="button" data-act="voice" aria-label="Сменить голос" title="Сменить голос" hidden>${ICON.voice}</button>`
     + '<span class="listen-status" aria-live="polite"></span>'
     + '<button type="button" data-act="restart" class="listen-restart">С начала</button>'
     + `<button type="button" data-act="stop" aria-label="Остановить чтение">${ICON.close}</button>`;
@@ -269,9 +295,11 @@ function makeBar() {
       rate = RATES[(RATES.indexOf(rate) + 1) % RATES.length];
       if (playing) speak(); else status();
     }
+    if (act === 'voice') nextVoice();
     if (act === 'stop') stop();
   });
   document.body.append(bar);
+  voiceButton();
 }
 
 function start() {
@@ -295,7 +323,7 @@ if (synth && button && article && prose && 'SpeechSynthesisUtterance' in window)
   button.hidden = false;
   try { if (Number(localStorage.getItem(STORE)) > 1) button.querySelector('span').textContent = 'Продолжить слушать'; } catch { /* */ }
   button.addEventListener('click', start);
-  synth.addEventListener?.('voiceschanged', () => { voice = pickVoice() || voice; });
+  synth.addEventListener?.('voiceschanged', () => { voice = pickVoice() || voice; voiceButton(); });
   for (const ev of ['wheel', 'touchmove', 'keydown']) window.addEventListener(ev, () => { userScrolledAt = Date.now(); }, { passive: true });
   window.addEventListener('pagehide', () => synth.cancel());
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && playing && wakeLock === null) keepAwake(true); });

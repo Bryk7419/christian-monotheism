@@ -76,7 +76,7 @@ if (!isPreview) {
   }
 }
 
-// --- Поделиться: на телефонах — системное меню, иначе ссылки Telegram и WhatsApp -------------
+// --- Поделиться: системное меню устройства, если браузер его поддерживает -------------------
 if (navigator.share) {
   for (const b of document.querySelectorAll('[data-share]')) {
     b.hidden = false;
@@ -85,9 +85,6 @@ if (navigator.share) {
       const title = document.querySelector('h1')?.textContent.trim() || document.title;
       try { await navigator.share({ title, url: canonical ? canonical.href : location.href }); } catch { /* отменено */ }
     });
-  }
-  if (window.matchMedia('(pointer: coarse)').matches) {
-    for (const a of document.querySelectorAll('[data-share-link]')) a.hidden = true;
   }
 }
 

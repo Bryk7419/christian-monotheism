@@ -82,7 +82,10 @@ def parse_article_meta(s):
                                block(s, r'<p class="article-passages">(.*?)</p>'))
     a['topics'] = re.findall(r'class="chip" href="\.\./\.\./topics/([^/]+)/index.html"',
                              block(s, r'<section class="article-topics"(.*?)</section>'))
-    a['videos'] = re.findall(r'<article class="video" id="(v\d+)">', block(s, r'<section class="article-videos"(.*?)</section>'))
+    vids = re.findall(r'<article class="video" id="(v\d+)"(?: data-t="([\d,]+)")?>', block(s, r'<section class="article-videos"(.*?)</section>'))
+    a['videos'] = [v for v, _ in vids]
+    a['video_t'] = {v: [int(x) for x in ts.split(',')] for v, ts in vids if ts}
+    a['video_cues'] = [(v, int(sec)) for v, sec in re.findall(r'<p class="video-cue" data-video="(v\d+)" data-t="(\d+)">', s)]
     return a
 
 
@@ -170,6 +173,11 @@ def validate(m):
         for v in a['videos']:
             if v not in m['vfields']:
                 errors.append(f'{where}: неизвестное видео {v}')
+        stamps = {v: {sec for sec, _, _ in f['timestamps']} for v, f in m['vfields'].items()}
+        for v, secs in list(a['video_t'].items()) + [(v, [sec]) for v, sec in a['video_cues']]:
+            for sec in secs:
+                if v not in stamps or sec not in stamps[v]:
+                    errors.append(f'{where}: у видео {v} нет отметки {sec} с (см. videos/index.html)')
         if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', p['date']):
             errors.append(f'{where}: дата должна быть в виде ГГГГ-ММ-ДД')
     for t in m['topics']:

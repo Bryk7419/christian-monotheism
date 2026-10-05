@@ -5,6 +5,7 @@
 import { speakable, sentences } from '../assets/js/speech-text.js';
 
 let input = '';
+process.stdin.setEncoding('utf8'); // иначе русская буква на границе кусков портится
 for await (const chunk of process.stdin) input += chunk;
 const out = {};
 for (const { slug, home, blocks } of JSON.parse(input)) {

@@ -1,5 +1,6 @@
 // Вызывается из tools/sitegen.py. stdin: [{passages:[], aliases:[], body:""}] -> stdout: [{refs, mentions, passageRefs}]
 import { findRefs, parsePassage, sortKey } from '../assets/js/bible.js';
+process.stdin.setEncoding('utf8'); // иначе русская буква на границе кусков портится
 const input = JSON.parse(await new Promise((res) => { let s = ''; process.stdin.on('data', (d) => { s += d; }); process.stdin.on('end', () => res(s)); }));
 const out = input.map((d) => {
   const passageRefs = (d.passages || []).map((p) => { const r = parsePassage(p); return r ? [r.book, r.segs] : null; });

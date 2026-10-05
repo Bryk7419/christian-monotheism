@@ -8,6 +8,7 @@ import { scanRefs, versesOf } from '../assets/js/refscan.js';
 const bible = JSON.parse(readFileSync(new URL('./data/synodal.json', import.meta.url), 'utf8')).books;
 const input = JSON.parse(await new Promise((res) => {
   let s = '';
+  process.stdin.setEncoding('utf8'); // иначе русская буква на границе кусков портится
   process.stdin.on('data', (d) => { s += d; });
   process.stdin.on('end', () => res(s));
 }));

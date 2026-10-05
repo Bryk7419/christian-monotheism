@@ -351,7 +351,7 @@
 | pomazanie-na-iordane | Telegram 3 ноября 2025 |
 | premudrost-v-pritchah | Telegram 17 января 2026; Telegram 10 февраля 2026 |
 | prestol-tvoy-bozhe | Telegram 14 августа 2025 |
-| prezhde-avraama | Telegram 20 января 2026; Telegram 29 апреля 2026; Telegram 10 августа 2026; Telegram 13 января 2026; Telegram 5 мая 2026 |
+| prezhde-avraama | Видео «Иисуса хотели побить камнями. Значит, Он Бог?» (YouTube, https://youtu.be/OQaD-wf45XM; описание и отметки времени из записи 8 августа 2026, сам ролик не расшифрован); Telegram 2 октября 2025; Telegram 13 января 2026; Telegram 20 января 2026; Telegram 23 января 2026; Telegram 29 апреля 2026; Telegram 5 мая 2026; Telegram 10 августа 2026 |
 | proshchenie-i-obida | Telegram 30 октября 2025; Telegram 30 декабря 2025 |
 | prostaya-molitva | Telegram 28 апреля 2026; Telegram 7 сентября 2025 |
 | radost-i-slezy | Telegram 19 августа 2025; Telegram 29 января 2026 |
@@ -373,11 +373,11 @@
 | unitarii-i-islam | Telegram 26 сентября 2026 |
 | uteshenie-voskreseniem | Telegram 30 июля 2026; Telegram 30 июля 2026; Telegram 15 сентября 2026 |
 | uzryat-litse-ego | Telegram 7 июня 2026; Telegram 9 июня 2026 |
-| videvshiy-menya-videl-ottsa | Telegram 9 июня 2026 |
+| videvshiy-menya-videl-ottsa | Telegram 9 июня 2026; видео «Бог Сын или Сын Божий? Что понял Фома?» (разбор Ин. 14:5-10, расшифровка прислана автором 5 октября 2026) |
 | vo-imya-ottsa-syna-duha | Telegram 13 мая 2026; Telegram 14 мая 2026; Telegram 14 мая 2026 |
 | voploshchenie | Telegram 1 декабря 2025; Telegram 24 апреля 2026; Telegram 26 апреля 2026; Telegram 27 апреля 2026 |
 | voskresshiy-iisus-chelovek | Telegram 2 сентября 2025; Telegram 12 октября 2025; Telegram 28 октября 2025; Telegram 15 марта 2026; Telegram 6 августа 2026 |
-| ya-i-otets-odno | Telegram 15 декабря 2025; Telegram 10 августа 2026 |
+| ya-i-otets-odno | Telegram 15 декабря 2025; Telegram 10 августа 2026; видео «Я и Отец - одно. Антитринитарный взгляд. Что Иисус имел в виду?» (запись 15 июля 2026; ссылки в архиве нет, ролик не расшифрован) |
 | ya-prosto-vspylil | Telegram 8 января 2026 |
 | zachem-vethiy-zavet | Telegram 1 сентября 2025; Telegram 2 сентября 2025 |
 | zavist | Telegram 17 ноября 2025; Telegram 6 апреля 2026 |

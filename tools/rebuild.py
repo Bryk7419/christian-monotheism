@@ -51,7 +51,9 @@ def video_inner(f):
            f'  <h2 class="video-title">{f["title"]}</h2><p class="video-desc">{f["desc"]}</p>\n'
            f'  <p class="video-link"><a class="ext" href="{f["url"]}" target="_blank" rel="noopener">Открыть на YouTube{S.EXT}</a></p>')
     if f['timestamps']:
-        out += '\n  <ol class="timestamps" aria-label="Отметки времени">\n'
+        # ролики длиннее часа: колонка времени шире («1:01:38»)
+        cls = 'timestamps timestamps-long' if any(sec >= 3600 for sec, _, _ in f['timestamps']) else 'timestamps'
+        out += f'\n  <ol class="{cls}" aria-label="Отметки времени">\n'
         for sec, t, d in f['timestamps']:
             out += (f'    <li><a class="ext timestamp" href="{f["url"]}?t={sec}" target="_blank" rel="noopener">'
                     f'<time datetime="PT{sec}S">{t}</time><span class="visually-hidden"> (YouTube, откроется в новой вкладке)</span></a>'

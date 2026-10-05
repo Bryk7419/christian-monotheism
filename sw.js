@@ -1,13 +1,14 @@
 // Работа сайта без интернета. Страницы берутся из сети, а если сети нет, из сохранённой копии.
+// Записи статей (assets/audio/*.mp3) не сохраняются: они большие и идут напрямую из сети.
 // Оформление и скрипты берутся из сети, а без сети из сохранённой копии; шрифты и картинки обновляются в фоне.
 // При изменении этого файла увеличьте номер версии: старые копии будут удалены.
-const VERSION = 'v1';
+const VERSION = 'v2';
 const PAGES = `pages-${VERSION}`;
 const ASSETS = `assets-${VERSION}`;
 const CORE = [
   './', 'index.html', 'articles/index.html', 'search/index.html', 'new/index.html',
   'assets/css/site.css', 'assets/js/site.js', 'assets/js/bible.js', 'assets/js/refscan.js',
-  'assets/js/listen.js', 'assets/js/verses.js',
+  'assets/js/listen.js', 'assets/js/speech-text.js', 'assets/js/verses.js',
   'assets/fonts/literata-cyrillic-400-normal.woff2', 'assets/fonts/literata-cyrillic-600-normal.woff2',
   'assets/fonts/literata-cyrillic-400-italic.woff2', 'assets/fonts/old-standard-tt-cyrillic-700-normal.woff2',
   'assets/img/logo-64.png',

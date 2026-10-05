@@ -1,0 +1,64 @@
+# Озвучка статей нейроголосом: assets/audio/<адрес>.mp3 и assets/audio/index.json (tools/make_audio.py).
+# Нужен ключ службы озвучки в секретах репозитория (Settings → Secrets and variables → Actions):
+#   AZURE_SPEECH_KEY и AZURE_SPEECH_REGION — Microsoft Azure, или YANDEX_API_KEY — Яндекс SpeechKit.
+# Без ключа ничего не делает. Озвучиваются только новые и изменённые статьи; первая озвучка всех статей
+# на бесплатном тарифе Azure идёт несколько часов, недоделанное продолжится при следующем запуске (раз в сутки).
+name: Озвучка статей
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'answers/**'
+      - 'assets/js/speech-text.js'
+      - 'assets/js/refscan.js'
+      - 'assets/js/bible.js'
+      - 'tools/make_audio.py'
+      - 'tools/audio-text.mjs'
+      - 'tools/site-config.json'
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  group: audio
+  cancel-in-progress: false
+jobs:
+  audio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 345
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main   # свежая main: в ней уже есть записи, сделанные предыдущим запуском
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: ffmpeg
+        run: command -v ffmpeg || (sudo apt-get update && sudo apt-get install -y ffmpeg)
+      - name: Озвучить новые и изменённые статьи
+        env:
+          AZURE_SPEECH_KEY: ${{ secrets.AZURE_SPEECH_KEY }}
+          AZURE_SPEECH_REGION: ${{ secrets.AZURE_SPEECH_REGION }}
+          YANDEX_API_KEY: ${{ secrets.YANDEX_API_KEY }}
+          YANDEX_FOLDER_ID: ${{ secrets.YANDEX_FOLDER_ID }}
+        run: python3 tools/make_audio.py --max-minutes 320
+      - name: Сохранить записи на сайте
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [ -d assets/audio ] || { echo "Записей пока нет."; exit 0; }
+          git add -A assets/audio
+          if git diff --cached --quiet; then echo "Новых записей нет."; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -q -m "Озвучка статей обновлена"
+          ok=""
+          for i in 1 2 3 4; do
+            if git pull -q --rebase origin main && git push -q origin HEAD:main; then ok=1; break; fi
+            sleep $((i * 5))
+          done
+          [ -n "$ok" ] || { echo "Не удалось сохранить записи в main."; exit 1; }
+          # публикация сайта: запись, сделанная роботом, сама её может не запустить
+          gh api -X POST "repos/${{ github.repository }}/pages/builds" >/dev/null || true

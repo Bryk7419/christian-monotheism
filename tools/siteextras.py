@@ -11,7 +11,6 @@ import html
 import json
 import re
 from pathlib import Path
-from urllib.parse import quote
 
 import sitegen as S
 
@@ -77,29 +76,26 @@ ICON_SHARE = ('<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true
               'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>')
 
 
-def share_buttons(url, title, indent='      '):
-    t = plain(title)
-    tg = f'https://t.me/share/url?url={quote(url, safe="")}&text={quote(t, safe="")}'
-    wa = f'https://wa.me/?text={quote(t + " " + url, safe="")}'
+def share_buttons(indent='      '):
+    # «Поделиться» открывает системное меню устройства (там Telegram, почта и т. д.) и показывается,
+    # только если браузер его поддерживает; «Скопировать ссылку» есть всегда.
     return (f'{indent}<button class="button button-quiet" type="button" data-share hidden>{ICON_SHARE} Поделиться</button>\n'
-            f'{indent}<a class="button button-quiet" href="{esc(tg)}" target="_blank" rel="noopener" data-share-link>Telegram</a>\n'
-            f'{indent}<a class="button button-quiet" href="{esc(wa)}" target="_blank" rel="noopener" data-share-link>WhatsApp</a>\n'
             f'{indent}<button class="button button-quiet copy-link" type="button" data-copy-link>{ICON_LINK} Скопировать ссылку</button>\n')
 
 
-def article_tools(url, title):
+def article_tools():
     return ('    <div class="article-tools">\n'
             f'      <button class="button listen-button" type="button" data-listen hidden>{ICON_PLAY} <span>Слушать</span></button>\n'
-            + share_buttons(url, title) + '    </div>\n')
+            + share_buttons() + '    </div>\n')
 
 
-def article_end(url, title):
+def article_end():
     return ('    <section class="article-end" aria-labelledby="ask-h">\n'
             '      <h2 class="section-label" id="ask-h">Остался вопрос?</h2>\n'
             '      <p>Если после статьи остался вопрос или возражение, напишите мне. Отвечаю по Писанию.</p>\n'
             f'      <p><a class="button" href="{esc(CONFIG["ask_url"])}" target="_blank" rel="noopener">Задать вопрос автору{S.EXT}</a></p>\n'
             '      <div class="article-tools" aria-label="Поделиться статьёй">\n'
-            + share_buttons(url, title, '        ') + '      </div>\n    </section>\n')
+            + share_buttons('        ') + '      </div>\n    </section>\n')
 
 
 # --- Служебный блок <head> -----------------------------------------------------------------------------

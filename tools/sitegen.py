@@ -381,7 +381,6 @@ def render_article_main(m, a, p, anchors):
     arts = {x['slug']: x for x in m['articles']}
     vids = videos_by_id(m)
     prose = X.add_heading_ids(p['prose'])
-    url = X.page_url(f'answers/{a["slug"]}/index.html')
     home = m.get('verses', {}).get(a['slug'], {}).get('home') or ''
     out = ('<main id="main" class="main" tabindex="-1">\n\n<article class="article">\n  <header class="article-header">\n'
            '    <nav class="crumbs" aria-label="Вы здесь">\n'
@@ -397,9 +396,9 @@ def render_article_main(m, a, p, anchors):
         out += '    <p class="article-passages">\n      <span class="passages-label">Разбираемые места:</span>\n'
         links = [f'      <a class="ref" href="../../scripture/index.html#{anchors[lab]}">{lab}</a>' for lab in a['passages']]
         out += '<span class="sep" aria-hidden="true"> · </span>\n'.join(links) + '\n    </p>\n'
-    out += (X.article_tools(url, a['title']) + '  </header>\n\n' + X.toc(prose)
+    out += (X.article_tools() + '  </header>\n\n' + X.toc(prose)
             + f'  <div class="prose" data-home="{home}" data-verses="../../assets/verses/{a["slug"]}.json">\n' + prose + '\n\n  </div>\n\n')
-    out += ('  <footer class="article-footer">\n' + X.article_end(url, a['title'])
+    out += ('  <footer class="article-footer">\n' + X.article_end()
             + '    <section class="apparatus" aria-labelledby="sources-h">\n'
             '      <h2 class="section-label" id="sources-h">Места Писания и источники</h2>\n      <ul class="source-list">\n')
     for href, label in p['sources']:

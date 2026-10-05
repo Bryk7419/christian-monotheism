@@ -313,6 +313,22 @@ a.ref:hover { text-decoration: underline; }
 .video-player.is-playing { aspect-ratio: 16 / 9; width: 100%; max-width: 100%; }
 .video-player iframe { display: block; width: 100%; height: 100%; border: 0; border-radius: 4px; background: #000; }
 .video-link { margin: 0; font: 0.9375rem/1.5 var(--font-ui); }
+.video-more { margin: 0.7rem 0 0; font: 0.875rem/1.5 var(--font-ui); }
+/* Ссылка на нужное место видео в тексте статьи: <p class="video-cue" data-video="vNN" data-t="секунды"></p> */
+.prose .video-cue { margin: -0.2rem 0 1.5rem; }
+.prose .video-cue a {
+  display: flex; align-items: flex-start; gap: 0.7rem; padding: 0.6rem 0.9rem 0.65rem 0.65rem;
+  border: 1px solid var(--rule); border-left: 3px solid var(--rubric); border-radius: 8px;
+  background: var(--surface); color: var(--ink); text-decoration: none; font: 0.875rem/1.45 var(--font-ui);
+}
+.prose .video-cue a:hover { border-color: var(--rubric); }
+.video-cue-play {
+  flex: none; display: inline-flex; align-items: center; justify-content: center; width: 1.8rem; height: 1.8rem;
+  margin-top: 0.05rem; border-radius: 50%; background: var(--rubric); color: var(--bg);
+}
+.video-cue-body { display: grid; gap: 0.05rem; min-width: 0; }
+.video-cue-head { font-weight: 700; color: var(--rubric); font-variant-numeric: tabular-nums; }
+.video-cue-title { color: var(--muted); font-size: 0.8125rem; }
 .timestamps { list-style: none; margin: 0.85rem 0 0; padding: 0.75rem 0 0; border-top: 1px solid var(--rule); display: grid; gap: 0.45rem; font: 0.9375rem/1.45 var(--font-ui); }
 .timestamps li { display: grid; grid-template-columns: 3.5rem 1fr; gap: 0.75rem; }
 .timestamps-long li { grid-template-columns: 4.6rem 1fr; }
@@ -675,7 +691,7 @@ mark { background: var(--mark); color: var(--ink); padding: 0 0.1em; border-radi
 .subscribe { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0 0 2rem; }
 @media (prefers-reduced-motion: no-preference) { .read-progress { transition: transform 0.08s linear; } }
 @media print {
-  .toc, .article-end, .listen-bar, .audio-player, .read-progress, .to-top, .vpop { display: none !important; }
+  .toc, .article-end, .listen-bar, .audio-player, .read-progress, .to-top, .vpop, .video-cue { display: none !important; }
   .vref { color: inherit; text-decoration: none; }
   .is-speaking { background: none; box-shadow: none; }
 }

@@ -25,10 +25,10 @@ let bar;
 let wakeLock = null;
 let userScrolledAt = 0;
 
-// Что читается вслух: абзацы, заголовки и пункты списков; схемы (<figure>) пропускаются.
+// Что читается вслух: абзацы, заголовки и пункты списков; схемы (<figure>) и ссылки на видео (.video-cue) пропускаются.
 // То же правило в tools/make_audio.py (класс Blocks), иначе подсветка разойдётся с записью.
 function speakableBlock(el) {
-  return el && !(el.matches('li') && el.querySelector('p')) && !el.closest('figure');
+  return el && !(el.matches('li') && el.querySelector('p')) && !el.closest('figure, .video-cue');
 }
 
 function collect() {

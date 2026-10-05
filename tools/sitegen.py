@@ -107,17 +107,45 @@ def chips(items):
     return '\n'.join(out) + '\n'
 
 
-def video_block(v, heading, related=None):
+def video_block(v, heading, related=None, only=None):
+    """only: секунды отметок, которые показать (в статье — только места по её теме), остальные — по ссылке."""
     inner = v['inner']
     if heading == 'h3':
         inner = inner.replace('<h2 class="video-title">', '<h3 class="video-title">', 1).replace('</h2><p class="video-desc">', '</h3><p class="video-desc">', 1)
-    out = f'<article class="video" id="{v["id"]}">\n{inner}\n'
+    attr = ''
+    if only:
+        total = len(re.findall(r'<li><a class="ext timestamp"', inner))
+        inner = re.sub(r'    <li><a class="ext timestamp" href="[^"]*\?t=(\d+)".*?</li>\n',
+                       lambda mm: mm.group(0) if int(mm.group(1)) in only else '', inner)
+        inner += (f'\n  <p class="video-more"><a href="../../videos/index.html#{v["id"]}">Все отметки ({total})'
+                  ' на странице «Видео»</a></p>')
+        attr = f' data-t="{",".join(str(t) for t in only)}"'
+    out = f'<article class="video" id="{v["id"]}"{attr}>\n{inner}\n'
     if related:
         out += '  <div class="video-related">\n    <p class="video-related-label">Статьи по теме записи</p>\n    <ul>\n'
         for slug, title in related:
             out += f'      <li><a href="../answers/{slug}/index.html">{title}</a></li>\n'
         out += '    </ul>\n  </div>\n'
     return out + '</article>\n'
+
+
+PLAY = ('<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false">'
+        '<path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>')
+
+
+def video_cues(prose, vfields):
+    """<p class="video-cue" data-video="v21" data-t="124"></p> в тексте статьи → ссылка на нужное место видео.
+    Время и название главы берутся из videos/index.html."""
+    def fill(mm):
+        vid, sec = mm.group(1), int(mm.group(2))
+        f = vfields[vid]
+        label, desc = next((t, d) for s, t, d in f['timestamps'] if s == sec)
+        return (f'<p class="video-cue" data-video="{vid}" data-t="{sec}"><a class="ext" href="{f["url"]}?t={sec}" target="_blank" rel="noopener">'
+                f'<span class="video-cue-play">{PLAY}</span><span class="video-cue-body">'
+                f'<span class="video-cue-head">Смотреть в видео с <time datetime="PT{sec}S">{label}</time></span> '
+                f'<span class="video-cue-chapter">{desc}</span> <span class="video-cue-title">{f["title"]}</span></span>'
+                '<span class="visually-hidden"> (YouTube, откроется в новой вкладке)</span></a></p>')
+    return re.sub(r'<p class="video-cue" data-video="(v\d+)" data-t="(\d+)">.*?</p>', fill, prose, flags=re.S)
 
 
 def topic_title(m, tid):
@@ -340,7 +368,8 @@ def render_scripture_main(m, entries):
 
 # --- Поисковый индекс -------------------------------------------------------------
 def html_to_text(h):
-    """Текст для индекса: блоки на отдельных строках, как в действующем индексе."""
+    """Текст для индекса: блоки на отдельных строках, как в действующем индексе. Ссылки на видео (.video-cue) не входят."""
+    h = re.sub(r'<p class="video-cue".*?</p>', '', h, flags=re.S)
     h = re.sub(r'</(p|h2|h3|li|dd|dt)>', '\n', h)
     h = re.sub(r'<[^>]+>', '', h)
     lines = [html.unescape(x).strip() for x in h.split('\n')]
@@ -380,7 +409,7 @@ def render_article_main(m, a, p, anchors):
     import siteextras as X
     arts = {x['slug']: x for x in m['articles']}
     vids = videos_by_id(m)
-    prose = X.add_heading_ids(p['prose'])
+    prose = video_cues(X.add_heading_ids(p['prose']), m['vfields'])
     home = m.get('verses', {}).get(a['slug'], {}).get('home') or ''
     out = ('<main id="main" class="main" tabindex="-1">\n\n<article class="article">\n  <header class="article-header">\n'
            '    <nav class="crumbs" aria-label="Вы здесь">\n'
@@ -409,7 +438,7 @@ def render_article_main(m, a, p, anchors):
         out += ('    <section class="article-videos" aria-labelledby="video-h">\n'
                 '      <h2 class="section-label" id="video-h">Видео</h2>\n      <div class="video-list">\n')
         for vid in a['videos']:
-            out += video_block(vids[vid], 'h3') + '\n'
+            out += video_block(vids[vid], 'h3', only=a.get('video_t', {}).get(vid)) + '\n'
         out += '      </div>\n    </section>\n'
     out += ('    <section aria-labelledby="next-h">\n      <h2 class="section-label" id="next-h">Читать дальше</h2>\n      \n'
             + cards([(s, arts[s]['title'], arts[s]['summary']) for s in p['next']], '../')

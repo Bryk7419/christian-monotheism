@@ -15,6 +15,9 @@
 страницы тем, каталог статей, страницу вопросов, список тем, страницу видео, указатель Писания,
 плитки тем и «С чего начать» на главной, а также assets/search-index.json.
 Страницы «Во что я верю» и «Об авторе» правятся вручную; в индекс попадает их текст.
+
+Кроме того (tools/siteextras.py): служебный блок <head> всех страниц, оглавление и кнопки статей,
+тексты стихов assets/verses/<адрес>.json (tools/verses.mjs), sitemap.xml, feed.xml, llms.txt и new/index.html.
 """
 import argparse
 import html
@@ -25,6 +28,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import sitegen as S  # noqa: E402
+import siteextras as X  # noqa: E402
+import subprocess  # noqa: E402
 
 KINDS_TEXT = 'библейский разбор, обзор темы, краткий ответ, размышление или практическая заметка'
 
@@ -187,17 +192,35 @@ def validate(m):
 
 
 # --- Вывод ----------------------------------------------------------------------------------------------
+def verses_data(m):
+    """Тексты стихов, на которые ссылается каждая статья (для всплывающих подсказок)."""
+    docs = [{'slug': a['slug'], 'passage': a['passages'][0] if a['passages'] else '',
+             'blocks': S.html_to_text(m['pages'][a['slug']]['prose']).split('\n')} for a in m['articles']]
+    res = subprocess.run(['node', str(S.TOOLS / 'verses.mjs')], input=json.dumps(docs, ensure_ascii=False),
+                         capture_output=True, text=True, check=True).stdout
+    return json.loads(res)
+
+
+STATIC_PAGES = [('faith/index.html', 'Во что я верю'), ('about/index.html', 'Об авторе'), ('search/index.html', 'Поиск')]
+
+
 def render_all(m):
     out = {}
     entries = S.scripture_entries(m)
     anchors = {e['label']: e['anchor'] for e in entries}
     arts = {a['slug']: a for a in m['articles']}
+    m['verses'] = verses_data(m)
     for a in m['articles']:
+        path = f'answers/{a["slug"]}/index.html'
+        p = m['pages'][a['slug']]
         s = S.set_head(a['html'], a['title'], a['summary'], a['title'])
-        out[f'answers/{a["slug"]}/index.html'] = S.replace_main(s, S.render_article_main(m, a, m['pages'][a['slug']], anchors))
+        s = X.apply_head(s, path, X.article_info(m, a, p))
+        out[path] = S.replace_main(s, S.render_article_main(m, a, p, anchors))
+        out[f'assets/verses/{a["slug"]}.json'] = json.dumps(m['verses'][a['slug']]['verses'], ensure_ascii=False, separators=(',', ':')) + '\n'
     for t in m['topics']:
         path = f'topics/{t["id"]}/index.html'
         s = S.set_head(S.read(path), t['title'], t['confession'], t['title'])
+        s = X.apply_head(s, path, X.topic_info(t))
         out[path] = S.replace_main(s, S.render_topic_main(m, t))
     for path, title, intro, main in [
             ('articles/index.html', 'Все статьи', m['articles_intro'], S.render_articles_index(m)),
@@ -208,7 +231,14 @@ def render_all(m):
         s = S.read(path)
         if title:
             s = S.set_head(s, title, intro, title)
+        s = X.apply_head(s, path, X.simple_info(path, title or X.plain(re.search(r'<title>(.*?) — ', s).group(1))))
         out[path] = S.replace_main(s, main)
+    # «Что нового»: страница по образцу каталога статей
+    new = S.set_head(S.read('articles/index.html'), 'Что нового', 'Новые и обновлённые статьи сайта, от последних к более ранним.', 'Что нового')
+    new = X.apply_head(new, 'new/index.html', X.simple_info('new/index.html', 'Что нового'))
+    out['new/index.html'] = S.replace_main(new, X.render_new_main(m))
+    for path, title in STATIC_PAGES:
+        out[path] = X.apply_head(S.read(path), path, X.simple_info(path, title))
     home = S.read('index.html')
     home = re.sub(r'<section class="home-block" aria-labelledby="home-topics-h">.*?</section>',
                   lambda _: S.render_home_topics(m), home, count=1, flags=re.S)
@@ -217,9 +247,18 @@ def render_all(m):
         slugs = re.findall(r'class="card-link" href="answers/([^/]+)/index.html"', start.group(2))
         cards = S.cards([(s, arts[s]['title'], arts[s]['summary']) for s in slugs if s in arts], 'answers/')
         home = home[:start.start(2)] + cards + home[start.end(2):]
-    out['index.html'] = home
+    out['index.html'] = X.apply_head(home, 'index.html', X.simple_info('index.html'))
     out['assets/search-index.json'] = search_index(m)
+    pages = [p for p in out if p.endswith('.html')]
+    out['sitemap.xml'] = X.sitemap(m, pages)
+    out['feed.xml'] = X.feed(m)
+    out['llms.txt'] = X.llms(m)
     return out
+
+
+def current(p):
+    f = S.ROOT / p
+    return f.read_text(encoding='utf-8') if f.exists() else None
 
 
 def search_index(m):
@@ -271,14 +310,16 @@ def main():
         for e in errors:
             print('  -', e)
         sys.exit(2)
-    stale = [p for p, s in render_all(m).items() if s != S.read(p)]
+    rendered = render_all(m)
+    stale = [p for p, s in rendered.items() if s != current(p)]
     if args.check:
         print('Устаревшие файлы:' if stale else 'Все производные файлы актуальны.')
         for p in stale:
             print('  -', p)
         sys.exit(1 if stale else 0)
-    for p, s in render_all(m).items():
+    for p, s in rendered.items():
         if p in stale:
+            (S.ROOT / p).parent.mkdir(parents=True, exist_ok=True)
             (S.ROOT / p).write_text(s, encoding='utf-8')
     print(f'Статей: {len(m["articles"])}. Обновлено файлов: {len(stale)}')
     for p in stale:

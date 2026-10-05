@@ -348,12 +348,6 @@ def html_to_text(h):
 
 
 # --- Страница статьи ----------------------------------------------------------------
-COPY_BUTTON = ('    <div class="article-tools">\n'
-               '      <button class="button button-quiet copy-link" type="button" data-copy-link>\n'
-               '        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>\n'
-               '        Скопировать ссылку\n      </button>\n    </div>\n')
-
-
 def reading_minutes(prose_html):
     words = len(html_to_text(prose_html).split())
     return max(1, round(words / 180))
@@ -370,7 +364,7 @@ def parse_article_page(s):
     p['crumb'] = re.search(r'<a href="\.\./\.\./topics/([^/]+)/index.html">[^<]+</a>\n    </nav>', s).group(1)
     p['minutes'] = int(re.search(r'<span>(\d+) минут', s).group(1))
     p['date'] = re.search(r'<time datetime="([^"]+)">', s).group(1)
-    p['prose'] = re.search(r'<div class="prose">\n(.*?)\n\n  </div>', s, re.S).group(1)
+    p['prose'] = re.search(r'<div class="prose"[^>]*>\n(.*?)\n\n  </div>', s, re.S).group(1)
     p['sources'] = re.findall(r'<li><a class="ext" href="([^"]+)" target="_blank" rel="noopener">(.*?)' + re.escape(EXT) + r'</a></li>',
                               re.search(r'<ul class="source-list">(.*?)</ul>', s, re.S).group(1))
     nxt = re.search(r'id="next-h">Читать дальше</h2>(.*?)</section>', s, re.S).group(1)
@@ -383,8 +377,12 @@ def render_article_main(m, a, p, anchors):
 
     По каким записям автора подготовлена статья, на странице не показывается: это записывается в editorial/source-ledger.md.
     """
+    import siteextras as X
     arts = {x['slug']: x for x in m['articles']}
     vids = videos_by_id(m)
+    prose = X.add_heading_ids(p['prose'])
+    url = X.page_url(f'answers/{a["slug"]}/index.html')
+    home = m.get('verses', {}).get(a['slug'], {}).get('home') or ''
     out = ('<main id="main" class="main" tabindex="-1">\n\n<article class="article">\n  <header class="article-header">\n'
            '    <nav class="crumbs" aria-label="Вы здесь">\n'
            f'      <a href="../../articles/index.html">Все статьи</a><span aria-hidden="true">/</span>'
@@ -399,8 +397,10 @@ def render_article_main(m, a, p, anchors):
         out += '    <p class="article-passages">\n      <span class="passages-label">Разбираемые места:</span>\n'
         links = [f'      <a class="ref" href="../../scripture/index.html#{anchors[lab]}">{lab}</a>' for lab in a['passages']]
         out += '<span class="sep" aria-hidden="true"> · </span>\n'.join(links) + '\n    </p>\n'
-    out += COPY_BUTTON + '  </header>\n\n  <div class="prose">\n' + p['prose'] + '\n\n  </div>\n\n'
-    out += ('  <footer class="article-footer">\n    <section class="apparatus" aria-labelledby="sources-h">\n'
+    out += (X.article_tools(url, a['title']) + '  </header>\n\n' + X.toc(prose)
+            + f'  <div class="prose" data-home="{home}" data-verses="../../assets/verses/{a["slug"]}.json">\n' + prose + '\n\n  </div>\n\n')
+    out += ('  <footer class="article-footer">\n' + X.article_end(url, a['title'])
+            + '    <section class="apparatus" aria-labelledby="sources-h">\n'
             '      <h2 class="section-label" id="sources-h">Места Писания и источники</h2>\n      <ul class="source-list">\n')
     for href, label in p['sources']:
         out += f'        <li><a class="ext" href="{href}" target="_blank" rel="noopener">{label}{EXT}</a></li>\n'

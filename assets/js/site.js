@@ -75,3 +75,53 @@ if (!isPreview) {
     });
   }
 }
+
+// --- Поделиться: на телефонах — системное меню, иначе ссылки Telegram и WhatsApp -------------
+if (navigator.share) {
+  for (const b of document.querySelectorAll('[data-share]')) {
+    b.hidden = false;
+    b.addEventListener('click', async () => {
+      const canonical = document.querySelector('link[rel="canonical"]');
+      const title = document.querySelector('h1')?.textContent.trim() || document.title;
+      try { await navigator.share({ title, url: canonical ? canonical.href : location.href }); } catch { /* отменено */ }
+    });
+  }
+  if (window.matchMedia('(pointer: coarse)').matches) {
+    for (const a of document.querySelectorAll('[data-share-link]')) a.hidden = true;
+  }
+}
+
+// --- Статья: полоска прочитанного, кнопка «Наверх», чтение вслух, всплывающие стихи ----------
+const articleEl = document.querySelector('.article');
+if (articleEl) {
+  const bar = document.createElement('div');
+  bar.className = 'read-progress';
+  bar.setAttribute('aria-hidden', 'true');
+  const up = document.createElement('a');
+  up.className = 'to-top';
+  up.href = '#main';
+  up.hidden = true;
+  up.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="visually-hidden">Наверх</span>';
+  document.body.append(bar, up);
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const r = articleEl.getBoundingClientRect();
+    const total = r.height - window.innerHeight;
+    const done = total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 0;
+    bar.style.transform = `scaleX(${done})`;
+    up.hidden = window.scrollY < window.innerHeight * 1.5;
+  };
+  window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+  update();
+  if (!isPreview) {
+    import('./listen.js').catch(() => {});
+    import('./verses.js').catch(() => {});
+  }
+}
+
+// --- Приложение: работа без интернета для уже открытых страниц -------------------------------
+const manifestLink = document.querySelector('link[rel="manifest"]');
+if (!isPreview && manifestLink && 'serviceWorker' in navigator && location.protocol === 'https:') {
+  navigator.serviceWorker.register(new URL('sw.js', manifestLink.href)).catch(() => {});
+}

@@ -397,7 +397,7 @@ def render_article_main(m, a, p, anchors):
         links = [f'      <a class="ref" href="../../scripture/index.html#{anchors[lab]}">{lab}</a>' for lab in a['passages']]
         out += '<span class="sep" aria-hidden="true"> · </span>\n'.join(links) + '\n    </p>\n'
     out += (X.article_tools() + '  </header>\n\n' + X.toc(prose)
-            + f'  <div class="prose" data-home="{home}" data-verses="../../assets/verses/{a["slug"]}.json">\n' + prose + '\n\n  </div>\n\n')
+            + f'  <div class="prose" data-home="{home}" data-verses="../../assets/verses/{a["slug"]}.json" data-slug="{a["slug"]}" data-audio="../../assets/audio/">\n' + prose + '\n\n  </div>\n\n')
     out += ('  <footer class="article-footer">\n' + X.article_end()
             + '    <section class="apparatus" aria-labelledby="sources-h">\n'
             '      <h2 class="section-label" id="sources-h">Места Писания и источники</h2>\n      <ul class="source-list">\n')

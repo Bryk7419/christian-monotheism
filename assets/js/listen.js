@@ -1,123 +1,17 @@
-// «Слушать»: чтение статьи вслух голосом устройства (Web Speech API).
-// Читается заголовок и текст статьи по абзацам; текущий абзац подсвечивается.
-// Ссылки на Писание в скобках пропускаются, ссылки внутри фразы читаются словами;
-// греческие слова читаются в традиционном (эразмовом) произношении: θεός → «тэос».
-// Место, где читатель остановился, запоминается в этом браузере.
+// Чтение статьи вслух.
+// Если для статьи есть готовая запись нейроголосом (assets/audio/, tools/make_audio.py), показывается плеер.
+// Иначе кнопка «Слушать» читает статью голосом устройства (Web Speech API): по абзацам, с подсветкой.
+// Текст для голоса готовит assets/js/speech-text.js. Место, где читатель остановился, запоминается в этом браузере.
 
-import { books } from './bible.js';
-import { scanRefs } from './refscan.js';
+import { speakable, sentences } from './speech-text.js';
 
 const synth = window.speechSynthesis;
 const button = document.querySelector('[data-listen]');
 const article = document.querySelector('.article');
 const prose = document.querySelector('.prose');
-const BOOK = Object.fromEntries(books.map((b) => [b.id, b]));
 const RATES = [1, 1.2, 1.4, 0.85];
 const STORE = `listen:${location.pathname}`;
 const VOICE_STORE = 'listen:voice';
-
-// --- Греческий: традиционное чтение ---------------------------------------------------------------------
-const VOWELS = 'αεηιουω';
-const DIGRAPHS = [['αι', 'ай'], ['ει', 'эй'], ['οι', 'ой'], ['υι', 'юй'], ['ου', 'у'], ['αυ', 'ау'], ['ευ', 'эу'], ['ηυ', 'эу'],
-  ['γγ', 'нг'], ['γκ', 'нк'], ['γξ', 'нкс'], ['γχ', 'нх']];
-const LETTERS = { α: 'а', β: 'б', γ: 'г', δ: 'д', ε: 'э', ζ: 'дз', η: 'э', θ: 'т', ι: 'и', κ: 'к', λ: 'л', μ: 'м', ν: 'н',
-  ξ: 'кс', ο: 'о', π: 'п', ρ: 'р', σ: 'с', ς: 'с', τ: 'т', υ: 'ю', φ: 'ф', χ: 'х', ψ: 'пс', ω: 'о' };
-
-export function greekToCyrillic(word) {
-  const decomposed = word.normalize('NFD');
-  const rough = decomposed.includes('̔');
-  let w = decomposed.replace(/[̀-ͯͅʼ’']/g, '').toLowerCase();
-  let out = '';
-  for (let i = 0; i < w.length;) {
-    const pair = w.slice(i, i + 2);
-    const d = DIGRAPHS.find(([g]) => g === pair);
-    if (d) { out += d[1]; i += 2; continue; }
-    const c = w[i];
-    if (c === 'υ' && i > 0 && VOWELS.includes(w[i - 1])) out += 'у';
-    else out += LETTERS[c] ?? c;
-    i += 1;
-  }
-  // густое придыхание в начале слова: ὁ → «хо», ἕν → «хэн»
-  if (rough && VOWELS.includes(w[0])) out = `х${out}`;
-  if (rough && w[0] === 'ρ') out = `р${out.slice(1)}`;
-  return out;
-}
-
-const GREEK_RUN = /[Ͱ-Ͽἀ-῿][Ͱ-Ͽἀ-῿̀-ͯʼ’]*/gu;
-
-// --- Ссылки на Писание словами ------------------------------------------------------------------------------
-function spokenRef(ref) {
-  const b = BOOK[ref.book];
-  // отрезки по главам: «8:24, 28» → глава 8, стихи 24 и 28
-  const groups = [];
-  for (const [c1, v1, c2, v2] of ref.segs) {
-    const text = c1 !== c2 ? `с ${v1} стиха главы ${c1} по ${v2} стих главы ${c2}` : (v1 === v2 ? `${v1}` : `с ${v1} по ${v2}`);
-    const last = groups[groups.length - 1];
-    if (last && last.c === c1 && c1 === c2) last.items.push(text);
-    else groups.push({ c: c1, items: [text], range: c1 !== c2 || v1 !== v2 });
-  }
-  const parts = groups.map((g) => {
-    const many = g.items.length > 1 || g.range;
-    const head = ref.book === 'psa' ? `псалом ${g.c}` : `глава ${g.c}`;
-    return `${head}, ${many ? 'стихи' : 'стих'} ${g.items.join(' и ')}`;
-  });
-  const name = ref.explicit && b && ref.book !== 'psa' ? `${b.name}, ` : '';
-  const text = `${name}${parts.join('; ')}`;
-  return text.charAt(0).toUpperCase() === text.charAt(0) ? text : text;
-}
-
-const ROMAN = { I: 1, V: 5, X: 10, L: 50, C: 100 };
-function roman(s) {
-  let n = 0;
-  for (let i = 0; i < s.length; i += 1) {
-    const v = ROMAN[s[i]];
-    n += v < (ROMAN[s[i + 1]] ?? 0) ? -v : v;
-  }
-  return n;
-}
-
-export function speakable(text, home) {
-  let t = text.replace(/[↗]/g, '').replace(/ /g, ' ');
-  // 1. ссылки → метки
-  const refs = scanRefs(t, home);
-  const spoken = [];
-  for (const r of [...refs].reverse()) {
-    spoken.unshift(spokenRef(r));
-    t = `${t.slice(0, r.start)}\u0001${refs.indexOf(r)}\u0002${t.slice(r.end)}`;
-  }
-  // 2. скобки, где только ссылки, убираются; в остальных ссылки выбрасываются
-  t = t.replace(/\s?\(([^()]*)\)/g, (all, inner) => {
-    if (!inner.includes('\u0001')) return all;
-    const rest = inner.replace(/\u0001\d+\u0002/g, '').replace(/(^|[;,]\s*)(ср\.|см\.)\s*/g, '$1').replace(/^[\s;,.]+|[\s;,.]+$/g, '');
-    return rest ? ` (${rest})` : '';
-  });
-  // 3. ссылки внутри фразы → словами
-  t = t.replace(/\u0001(\d+)\u0002/g, (_, i) => spoken[Number(i)] ?? '');
-  // 4. греческий
-  t = t.replace(GREEK_RUN, (w) => greekToCyrillic(w));
-  // 5. сокращения и римские цифры
-  t = t.replace(/Р\.\s?Х\./g, 'Рождества Христова').replace(/\bт\.\s?е\./g, 'то есть').replace(/и т\.\s?д\./g, 'и так далее')
-    .replace(/\b([IVXLC]+)(?=(?:-[IVXLC]+)?\s+век)/g, (r) => String(roman(r)))
-    .replace(/-([IVXLC]+)(?=\s+век)/g, (_, r) => `-${roman(r)}`);
-  return t.replace(/\s+([,.;:!?])/g, '$1').replace(/\s{2,}/g, ' ').trim();
-}
-
-function sentences(text) {
-  const out = [];
-  for (const s of text.split(/(?<=[.!?…»])\s+(?=[«(А-ЯЁA-Z0-9])/u)) {
-    if (s.length <= 260) { if (s.trim()) out.push(s.trim()); continue; }
-    // длинную фразу делим по точке с запятой или двоеточию, чтобы голос не обрывался
-    let rest = s;
-    while (rest.length > 260) {
-      const cut = Math.max(rest.lastIndexOf('; ', 240), rest.lastIndexOf(': ', 240), rest.lastIndexOf(', ', 240));
-      if (cut < 80) break;
-      out.push(rest.slice(0, cut + 1).trim());
-      rest = rest.slice(cut + 2);
-    }
-    if (rest.trim()) out.push(rest.trim());
-  }
-  return out;
-}
 
 // --- Чтение -------------------------------------------------------------------------------------------------
 let blocks = [];
@@ -319,12 +213,229 @@ function start() {
   play();
 }
 
-if (synth && button && article && prose && 'SpeechSynthesisUtterance' in window) {
+function setupSpeech() {
+  if (!(synth && button && 'SpeechSynthesisUtterance' in window)) return;
   button.hidden = false;
   try { if (Number(localStorage.getItem(STORE)) > 1) button.querySelector('span').textContent = 'Продолжить слушать'; } catch { /* */ }
   button.addEventListener('click', start);
   synth.addEventListener?.('voiceschanged', () => { voice = pickVoice() || voice; voiceButton(); });
-  for (const ev of ['wheel', 'touchmove', 'keydown']) window.addEventListener(ev, () => { userScrolledAt = Date.now(); }, { passive: true });
   window.addEventListener('pagehide', () => synth.cancel());
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && playing && wakeLock === null) keepAwake(true); });
+}
+
+// --- Готовая запись нейроголосом (tools/make_audio.py) ----------------------------------------------------
+// Если у статьи есть запись в assets/audio/, вместо кнопки «Слушать» показывается плеер:
+// время, перемотка на 10 секунд, скорость; звучащий абзац подсвечивается; место остановки запоминается;
+// на телефоне запись управляется с экрана блокировки.
+const AICON = {
+  back: '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></g><text x="12.4" y="15.3" font-size="7.5" font-weight="700" text-anchor="middle" fill="currentColor" font-family="system-ui, sans-serif">10</text></svg>',
+  fwd: '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></g><text x="11.6" y="15.3" font-size="7.5" font-weight="700" text-anchor="middle" fill="currentColor" font-family="system-ui, sans-serif">10</text></svg>',
+};
+
+function clock(sec) {
+  const t = Math.max(0, Math.floor(sec || 0));
+  return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`;
+}
+
+function minutesText(sec) {
+  const m = Math.max(1, Math.round(sec / 60));
+  const f = m % 10 === 1 && m % 100 !== 11 ? 'минута' : (m % 10 >= 2 && m % 10 <= 4 && (m % 100 < 12 || m % 100 > 14) ? 'минуты' : 'минут');
+  return `${m} ${f}`;
+}
+
+async function audioEntry() {
+  const { audio: base, slug } = prose.dataset;
+  if (!base || !slug) return null;
+  try {
+    const res = await fetch(`${base}index.json`);
+    if (!res.ok) return null;
+    const e = (await res.json())[slug];
+    return e && e.d ? { ...e, src: `${base}${slug}.mp3?v=${e.h}` } : null;
+  } catch { return null; }
+}
+
+function setupAudio(info) {
+  const KEY = `audio:${location.pathname}`;
+  const audio = new Audio();
+  audio.preload = 'none';
+  const els = [article.querySelector('.article-title'), ...prose.querySelectorAll('p, h2, h3, li')]
+    .filter((el) => el && !(el.matches('li') && el.querySelector('p')));
+  const starts = info.s || [];
+  const sync = els.length === starts.length;
+  let saved = 0;
+  try { saved = Number(localStorage.getItem(KEY)) || 0; } catch { /* */ }
+  if (saved < 15 || saved > info.d - 15) saved = 0;
+  let loaded = false;
+  let pending = saved;
+  let started = false;
+  let dragging = false;
+  let lastSave = 0;
+  let current = -1;
+  let rateIx = 0;
+  let mini = null;
+  let miniClosed = false;
+  let playerVisible = true;
+
+  const player = document.createElement('div');
+  player.className = 'audio-player';
+  player.setAttribute('role', 'region');
+  player.setAttribute('aria-label', 'Аудиоверсия статьи');
+  player.innerHTML = `<button class="ap-play" type="button" aria-label="Слушать статью">${ICON.play}</button>`
+    + '<p class="ap-title">Слушать статью <span class="ap-sub"></span></p>'
+    + '<div class="ap-tools">'
+    + `<button type="button" data-a="back" aria-label="Назад на 10 секунд" title="Назад на 10 секунд">${AICON.back}</button>`
+    + `<button type="button" data-a="fwd" aria-label="Вперёд на 10 секунд" title="Вперёд на 10 секунд">${AICON.fwd}</button>`
+    + '<button type="button" data-a="rate" class="ap-rate" aria-label="Скорость чтения" title="Скорость чтения">1×</button></div>'
+    + `<div class="ap-track"><span class="ap-time">${clock(saved)}</span>`
+    + `<input class="ap-seek" type="range" min="0" max="${Math.ceil(info.d)}" step="1" value="${Math.floor(saved)}" aria-label="Перемотка записи">`
+    + `<span class="ap-dur">${clock(info.d)}</span></div>`;
+  const sub = player.querySelector('.ap-sub');
+  sub.textContent = saved ? `продолжить с ${clock(saved)}` : `${minutesText(info.d)} · синтезированный голос`;
+  const seek = player.querySelector('.ap-seek');
+  (article.querySelector('.article-tools') || prose).before(player);
+
+  const now = () => (loaded && audio.readyState > 0 ? audio.currentTime : pending);
+
+  function load() {
+    if (loaded) return;
+    loaded = true;
+    audio.src = info.src;
+    audio.playbackRate = RATES[rateIx];
+  }
+
+  function setTime(t) {
+    const v = Math.max(0, Math.min(info.d, t));
+    load();
+    if (audio.readyState > 0) audio.currentTime = v; else pending = v;
+    render(v);
+  }
+
+  function toggle() {
+    load();
+    if (audio.paused) {
+      audio.play().catch(() => notify('Не удалось включить запись. Попробуйте ещё раз.'));
+    } else audio.pause();
+  }
+
+  function cycleRate() {
+    rateIx = (rateIx + 1) % RATES.length;
+    audio.playbackRate = RATES[rateIx];
+    const label = `${String(RATES[rateIx]).replace('.', ',')}×`;
+    for (const b of document.querySelectorAll('.ap-rate, .listen-bar [data-a="rate"]')) b.textContent = label;
+  }
+
+  function render(t) {
+    const label = clock(t);
+    player.querySelector('.ap-time').textContent = label;
+    if (!dragging) seek.value = String(Math.floor(t));
+    if (mini) mini.querySelector('.listen-time').textContent = `${label} / ${clock(info.d)}`;
+    if (sync && started) {
+      let i = starts.length - 1;
+      while (i > 0 && starts[i] > t + 0.05) i -= 1;
+      if (i !== current) { current = i; highlight(els[i]); }
+    }
+  }
+
+  function icons() {
+    const on = !audio.paused;
+    const b = player.querySelector('.ap-play');
+    b.innerHTML = on ? ICON.pause : ICON.play;
+    b.setAttribute('aria-label', on ? 'Пауза' : 'Слушать статью');
+    const m = mini?.querySelector('[data-a="toggle"]');
+    if (m) { m.innerHTML = on ? ICON.pause : ICON.play; m.setAttribute('aria-label', on ? 'Пауза' : 'Продолжить'); }
+    if ('mediaSession' in navigator) navigator.mediaSession.playbackState = on ? 'playing' : 'paused';
+  }
+
+  function save(force) {
+    const t = now();
+    if (!force && Math.abs(t - lastSave) < 5) return;
+    lastSave = t;
+    try {
+      if (t > 15 && t < info.d - 15) localStorage.setItem(KEY, String(Math.floor(t)));
+      else localStorage.removeItem(KEY);
+    } catch { /* */ }
+  }
+
+  function updateMini() {
+    const want = started && !playerVisible && !miniClosed;
+    if (want && !mini) {
+      mini = document.createElement('div');
+      mini.className = 'listen-bar';
+      mini.setAttribute('role', 'region');
+      mini.setAttribute('aria-label', 'Аудиоверсия статьи');
+      mini.innerHTML = `<button type="button" data-a="back" aria-label="Назад на 10 секунд">${AICON.back}</button>`
+        + `<button type="button" data-a="toggle" class="listen-main" aria-label="Пауза">${ICON.pause}</button>`
+        + `<button type="button" data-a="fwd" aria-label="Вперёд на 10 секунд">${AICON.fwd}</button>`
+        + '<span class="listen-time" aria-hidden="true"></span>'
+        + `<button type="button" data-a="rate" class="listen-rate" aria-label="Скорость чтения">${player.querySelector('.ap-rate').textContent}</button>`
+        + `<button type="button" data-a="close" aria-label="Скрыть панель">${ICON.close}</button>`;
+      mini.addEventListener('click', act);
+      document.body.append(mini);
+      icons();
+      render(now());
+    } else if (!want && mini) {
+      mini.remove();
+      mini = null;
+    }
+  }
+
+  function act(e) {
+    const a = e.target.closest('button')?.dataset.a;
+    if (a === 'back') setTime(now() - 10);
+    if (a === 'fwd') setTime(now() + 10);
+    if (a === 'rate') cycleRate();
+    if (a === 'toggle') toggle();
+    if (a === 'close') { miniClosed = true; updateMini(); }
+  }
+
+  player.querySelector('.ap-play').addEventListener('click', toggle);
+  player.querySelector('.ap-tools').addEventListener('click', act);
+  seek.addEventListener('input', () => { dragging = true; player.querySelector('.ap-time').textContent = clock(Number(seek.value)); });
+  seek.addEventListener('change', () => { dragging = false; setTime(Number(seek.value)); });
+
+  audio.addEventListener('loadedmetadata', () => { if (pending) audio.currentTime = pending; });
+  audio.addEventListener('timeupdate', () => { render(audio.currentTime); save(false); });
+  audio.addEventListener('play', () => {
+    started = true;
+    miniClosed = false;
+    sub.textContent = `${minutesText(info.d)} · синтезированный голос`;
+    icons();
+    updateMini();
+    if ('mediaSession' in navigator && !navigator.mediaSession.metadata && 'MediaMetadata' in window) {
+      const img = document.querySelector('meta[property="og:image"]')?.content;
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: article.querySelector('.article-title')?.textContent.trim() || document.title,
+        artist: 'Сергей Брык',
+        album: 'Христианский монотеизм',
+        artwork: img ? [{ src: img, sizes: '1200x630', type: 'image/jpeg' }] : [],
+      });
+      const handlers = {
+        play: () => audio.play(), pause: () => audio.pause(),
+        seekbackward: () => setTime(now() - 10), seekforward: () => setTime(now() + 10),
+        seekto: (d) => setTime(d.seekTime),
+      };
+      for (const [k, f] of Object.entries(handlers)) { try { navigator.mediaSession.setActionHandler(k, f); } catch { /* */ } }
+    }
+  });
+  audio.addEventListener('pause', () => { icons(); save(true); });
+  audio.addEventListener('ended', () => {
+    started = false;
+    current = -1;
+    highlight(null);
+    pending = 0;
+    try { localStorage.removeItem(KEY); } catch { /* */ }
+    icons();
+    updateMini();
+  });
+  audio.addEventListener('error', () => { if (loaded) notify('Запись сейчас недоступна. Попробуйте позже.'); });
+  window.addEventListener('pagehide', () => save(true));
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => { playerVisible = e.isIntersecting; updateMini(); }).observe(player);
+  }
+}
+
+if (article && prose) {
+  for (const ev of ['wheel', 'touchmove', 'keydown']) window.addEventListener(ev, () => { userScrolledAt = Date.now(); }, { passive: true });
+  audioEntry().then((info) => { if (info) setupAudio(info); else setupSpeech(); });
 }

@@ -10,5 +10,10 @@
   "theme_light": "#f4f5f2",
   "theme_dark": "#15181c",
   "feed_items": 30,
-  "new_items": 40
+  "new_items": 40,
+  "audio": {
+    "azure_voice": "ru-RU-DmitryNeural",
+    "yandex_voice": "filipp",
+    "bitrate": "48k"
+  }
 }

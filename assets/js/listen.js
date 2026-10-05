@@ -25,10 +25,16 @@ let bar;
 let wakeLock = null;
 let userScrolledAt = 0;
 
+// Что читается вслух: абзацы, заголовки и пункты списков; схемы (<figure>) пропускаются.
+// То же правило в tools/make_audio.py (класс Blocks), иначе подсветка разойдётся с записью.
+function speakableBlock(el) {
+  return el && !(el.matches('li') && el.querySelector('p')) && !el.closest('figure');
+}
+
 function collect() {
   const home = prose?.dataset.home || null;
   const els = [article.querySelector('.article-title'), ...prose.querySelectorAll('p, h2, h3, li')];
-  blocks = els.filter((el) => el && !(el.matches('li') && el.querySelector('p')));
+  blocks = els.filter(speakableBlock);
   queue = [];
   blocks.forEach((el, bi) => {
     const text = speakable(el.textContent, home);
@@ -259,7 +265,7 @@ function setupAudio(info) {
   const audio = new Audio();
   audio.preload = 'none';
   const els = [article.querySelector('.article-title'), ...prose.querySelectorAll('p, h2, h3, li')]
-    .filter((el) => el && !(el.matches('li') && el.querySelector('p')));
+    .filter(speakableBlock);
   const starts = info.s || [];
   const sync = els.length === starts.length;
   let saved = 0;

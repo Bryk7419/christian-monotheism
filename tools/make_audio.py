@@ -52,9 +52,12 @@ class Blocks(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.items = []     # [тег, [части текста], есть ли внутри <p>]
         self.open = []
+        self.figure = 0     # схемы (<figure>) не читаются, как и в listen.js
 
     def handle_starttag(self, tag, attrs):
-        if tag not in self.TAGS:
+        if tag == 'figure':
+            self.figure += 1
+        if tag not in self.TAGS or self.figure:
             return
         if tag == 'p':
             for it in self.open:
@@ -65,6 +68,8 @@ class Blocks(HTMLParser):
         self.open.append(item)
 
     def handle_endtag(self, tag):
+        if tag == 'figure':
+            self.figure = max(0, self.figure - 1)
         if tag not in self.TAGS:
             return
         for i in range(len(self.open) - 1, -1, -1):

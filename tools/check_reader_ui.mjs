@@ -55,7 +55,7 @@ await p.setViewportSize({width:390,height:844});await p.waitForTimeout(80);await
 await p.evaluate(()=>scrollTo(0,0));await p.locator('.prose .vref').first().click();ok((await p.locator('.vpop').innerText()).includes('В начале было Слово'),'verse popup');await p.keyboard.press('Escape');
 for(const width of [320,390,768,1280,1440]){
  await p.setViewportSize({width,height:900});
- for(const route of ['', 'about/', 'faith/', 'articles/', 'answers/edinyy-istinnyy-bog/', 'answers/slovo-bylo-bog/', 'answers/bog-krepkiy/']){
+ for(const route of ['', 'about/', 'bez-kupyur/', 'articles/', 'answers/edinyy-istinnyy-bog/', 'answers/slovo-bylo-bog/', 'answers/bog-krepkiy/']){
   await go(route);
   ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'no overflow '+width+' '+route);
  }

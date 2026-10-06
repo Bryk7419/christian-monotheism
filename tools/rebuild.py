@@ -205,7 +205,7 @@ def validate(m):
 def verses_data(m):
     """Тексты стихов, на которые ссылается каждая статья (для всплывающих подсказок)."""
     docs = [{'slug': a['slug'], 'passage': a['passages'][0] if a['passages'] else '',
-             'blocks': S.html_to_text(m['pages'][a['slug']]['prose']).split('\n')} for a in m['articles']]
+             'blocks': S.html_to_text(m['pages'][a['slug']]['prose'], theses=True).split('\n')} for a in m['articles']]
     res = subprocess.run(['node', str(S.TOOLS / 'verses.mjs')], input=json.dumps(docs, ensure_ascii=False),
                          capture_output=True, text=True, check=True).stdout
     return json.loads(res)

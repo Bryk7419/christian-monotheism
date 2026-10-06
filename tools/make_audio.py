@@ -52,11 +52,12 @@ class Blocks(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.items = []     # [тег, [части текста], есть ли внутри <p>]
         self.open = []
-        self.figure = 0     # схемы (<figure>) и ссылки на видео (p.video-cue) не читаются, как и в listen.js
+        self.figure = 0     # схемы (<figure>), ссылки на видео (p.video-cue) и блок «Коротко» (aside.theses) не читаются, как и в listen.js
         self.skipping = []
 
     def handle_starttag(self, tag, attrs):
-        if tag == 'figure' or (tag == 'p' and 'video-cue' in (dict(attrs).get('class') or '')):
+        cls = dict(attrs).get('class') or ''
+        if tag == 'figure' or (tag == 'p' and 'video-cue' in cls) or (tag == 'aside' and 'theses' in cls):
             self.figure += 1
             self.skipping.append(tag)
             return

@@ -58,6 +58,8 @@ def add_heading_ids(prose):
 
 
 def toc(prose):
+    if 'class="theses"' in prose:   # блок «Коротко» сам ведёт к разделам статьи
+        return ''
     heads = re.findall(r'<h2[^>]*\bid="([^"]+)"[^>]*>(.*?)</h2>', prose)
     if len(heads) < 3:
         return ''

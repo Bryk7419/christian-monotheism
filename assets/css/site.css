@@ -695,3 +695,34 @@ mark { background: var(--mark); color: var(--ink); padding: 0 0.1em; border-radi
   .vref { color: inherit; text-decoration: none; }
   .is-speaking { background: none; box-shadow: none; }
 }
+
+/* Коротко: тезисы длинной статьи с переходами к разделам (вместо оглавления).
+   Разметка: aside.theses > p.theses-title, p.theses-lead, ol.theses-list > li > a[href="#раздел"] + пояснение. */
+.theses {
+  margin: 0 0 2.4rem; padding: 1.05rem clamp(0.95rem, 3vw, 1.4rem) 0.35rem;
+  background: var(--surface); border: 1px solid var(--rule); border-top: 3px solid var(--rubric); border-radius: var(--radius);
+}
+.prose .theses-title {
+  margin: 0 0 0.55rem;
+  font: 700 0.78rem/1.3 var(--font-ui); letter-spacing: 0.09em; text-transform: uppercase; color: var(--rubric);
+}
+.prose .theses-lead { margin: 0 0 0.85rem; font-size: 1.02em; line-height: 1.55; }
+.prose .theses-list { list-style: none; margin: 0; padding: 0; counter-reset: thesis; }
+.prose .theses-list li {
+  position: relative; margin: 0; padding: 0.8rem 0 0.9rem 2rem; border-top: 1px solid var(--rule);
+  counter-increment: thesis; font-size: 0.93em; line-height: 1.55;
+}
+.prose .theses-list li::before {
+  content: counter(thesis); position: absolute; left: 0.1rem; top: 0.72rem;
+  font: 700 1.3rem/1.2 var(--font-display); color: var(--rubric);
+}
+.prose .theses-list a {
+  display: block; margin-bottom: 0.25rem; font-weight: 600; font-size: 1.07em; line-height: 1.38;
+  color: var(--ink); text-decoration: none; hyphens: manual; -webkit-hyphens: manual; text-wrap: pretty;
+}
+.prose .theses-list a::after { content: "\00a0↓"; content: "\00a0↓" / ""; color: var(--rubric); font-weight: 400; }
+.prose .theses-list a:hover { color: var(--rubric); text-decoration: underline; text-underline-offset: 0.15em; }
+@media print {
+  .theses { border: 1px solid #999; break-inside: avoid; }
+  .prose .theses-list a::after { content: none; }
+}

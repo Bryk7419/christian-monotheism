@@ -367,9 +367,12 @@ def render_scripture_main(m, entries):
 
 
 # --- Поисковый индекс -------------------------------------------------------------
-def html_to_text(h):
-    """Текст для индекса: блоки на отдельных строках, как в действующем индексе. Ссылки на видео (.video-cue) не входят."""
+def html_to_text(h, theses=False):
+    """Текст для индекса: блоки на отдельных строках, как в действующем индексе. Ссылки на видео (.video-cue) не входят,
+    блок «Коротко» (aside.theses) — тоже, если не просят theses=True: он пересказывает саму статью."""
     h = re.sub(r'<p class="video-cue".*?</p>', '', h, flags=re.S)
+    if not theses:
+        h = re.sub(r'<aside class="theses".*?</aside>', '', h, flags=re.S)
     h = re.sub(r'</(p|h2|h3|li|dd|dt)>', '\n', h)
     h = re.sub(r'<[^>]+>', '', h)
     lines = [html.unescape(x).strip() for x in h.split('\n')]

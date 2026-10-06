@@ -695,3 +695,54 @@ mark { background: var(--mark); color: var(--ink); padding: 0 0.1em; border-radi
   .vref { color: inherit; text-decoration: none; }
   .is-speaking { background: none; box-shadow: none; }
 }
+
+/* Ответ под заголовком статьи: <p class="article-lead">, подпись «Мой ответ:» ставит tools/sitegen.py */
+.article-title:has(+ .article-lead) { margin-bottom: 0.7rem; }
+.article-lead { margin: 0 0 1rem; max-width: 38rem; font: 400 1.1rem/1.5 var(--font-text); color: var(--ink); text-wrap: pretty; }
+.lead-label { font-weight: 600; color: var(--rubric); }
+
+/* «Разделы»: кнопка внизу экрана и список разделов статьи (assets/js/site.js, берётся из оглавления) */
+.sections-fab {
+  position: fixed; z-index: 20; bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+  right: calc(1rem + 44px + 0.5rem + env(safe-area-inset-right, 0px));
+  display: inline-flex; align-items: center; gap: 0.45rem; height: 44px; padding: 0 1rem 0 0.85rem;
+  border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); color: var(--ink);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.12); font: 600 0.9rem var(--font-ui); cursor: pointer;
+}
+.sections-fab[hidden] { display: none; }
+.sections-fab:hover { color: var(--rubric); border-color: var(--rubric); }
+.sections-pos { font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; }
+.sections-sheet {
+  width: 100%; max-width: 100%; max-height: min(75vh, 42rem); margin: auto auto 0; padding: 0; overflow: auto;
+  border: 0; border-radius: 16px 16px 0 0; background: var(--surface); color: var(--ink);
+  box-shadow: 0 -8px 30px rgb(0 0 0 / 0.2); overscroll-behavior: contain;
+}
+.sections-sheet::backdrop { background: rgb(0 0 0 / 0.35); }
+@media (min-width: 48rem) {
+  .sections-sheet { width: min(34rem, calc(100% - 2rem)); margin: auto; border-radius: 14px; }
+}
+.sheet-head {
+  position: sticky; top: 0; display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.55rem 0.5rem 0.45rem 1rem; background: var(--surface); border-bottom: 1px solid var(--rule);
+}
+.sheet-title { flex: 1; font: 700 0.78rem/1.3 var(--font-ui); letter-spacing: 0.09em; text-transform: uppercase; color: var(--rubric); }
+.sheet-top { padding: 0.5rem; font: 0.9rem var(--font-ui); color: var(--muted); text-decoration: none; }
+.sheet-top:hover { color: var(--rubric); }
+.sheet-close {
+  display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px;
+  border: 0; border-radius: 50%; background: none; color: var(--muted); cursor: pointer;
+}
+.sheet-close:hover { color: var(--ink); background: var(--bg); }
+.sheet-list { list-style: none; margin: 0; padding: 0 1rem 1rem; counter-reset: section; }
+.sheet-list li { counter-increment: section; }
+.sheet-list li + li { border-top: 1px solid var(--rule); }
+.sheet-list a {
+  display: grid; grid-template-columns: 1.7rem 1fr; gap: 0.3rem; padding: 0.65rem 0.2rem;
+  color: var(--ink); text-decoration: none; font: 0.98rem/1.38 var(--font-ui);
+}
+.sheet-list a::before { content: counter(section); color: var(--muted); font-variant-numeric: tabular-nums; }
+.sheet-list a:hover { color: var(--rubric); }
+.sheet-list .is-here a, .sheet-list .is-here a::before { color: var(--rubric); font-weight: 600; }
+.sheet-here { display: block; margin-top: 0.1rem; font: 500 0.78rem var(--font-ui); color: var(--muted); }
+@media print { .sections-fab, .sections-sheet { display: none !important; } }
+.to-top[hidden] + .sections-fab { right: calc(1rem + env(safe-area-inset-right, 0px)); }

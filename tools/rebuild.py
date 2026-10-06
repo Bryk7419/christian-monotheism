@@ -13,7 +13,7 @@
 Скрипт пересобирает: страницы статей (ссылки на указатель, время чтения, дата прописью),
 страницы тем, каталог статей, страницу вопросов, список тем, страницу видео, указатель Писания,
 плитки тем и «С чего начать» на главной, а также assets/search-index.json.
-Страницы «Без купюр» и «Об авторе» правятся вручную; в индекс попадает их текст.
+Страницы «Комменты на YouTube» и «Об авторе» правятся вручную; в индекс попадает их текст.
 
 Кроме того (tools/siteextras.py): служебный блок <head> всех страниц, оглавление и кнопки статей,
 тексты стихов assets/verses/<адрес>.json (tools/verses.mjs), sitemap.xml, feed.xml, llms.txt и new/index.html.
@@ -228,7 +228,7 @@ def verses_data(m):
     return json.loads(res)
 
 
-STATIC_PAGES = [('bez-kupyur/index.html', 'Без купюр: вы спрашиваете — я отвечаю'), ('about/index.html', 'Об авторе'), ('search/index.html', 'Поиск')]
+STATIC_PAGES = [('bez-kupyur/index.html', 'Комменты на YouTube без купюр: что мне пишут'), ('about/index.html', 'Об авторе'), ('search/index.html', 'Поиск')]
 
 
 def render_all(m):

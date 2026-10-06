@@ -454,7 +454,7 @@ a.ref:hover { text-decoration: underline; }
   padding-block: 0.6rem; border-top: 1px solid var(--rule); scroll-margin-top: 1rem;
 }
 .passage:target { background: var(--mark); box-shadow: 0 0 0 0.5rem var(--mark); }
-.passage-ref { padding-top: 0.1em; }
+.passage-ref { padding-top: 0.1em; white-space: normal; }   /* длинный отрывок «Быт. 18:22–19:13» переносится, а не залезает на название статьи */
 .passage-articles { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; min-width: 0; line-height: 1.45; }
 .video-list-full { margin-top: 1.5rem; }
 

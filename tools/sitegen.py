@@ -316,7 +316,6 @@ def scripture_entries(m):
 
 def render_scripture_main(m, entries):
     titles = {a['slug']: a['title'] for a in m['articles']}
-    firsts = {a['slug']: a['passages'][0] for a in m['articles'] if a['passages']}
     present = []
     for e in entries:
         if e['book'] not in present:
@@ -356,10 +355,7 @@ def render_scripture_main(m, entries):
                         f'          <span class="ref passage-ref">{e["label"]}</span>\n'
                         '          <ul class="passage-articles">\n')
                 for s in e['articles']:
-                    mark = ''
-                    if m.get('mark_parallels') and firsts.get(s) != e['label']:
-                        mark = ' <span class="passages-label">— параллель</span>'
-                    out += f'            <li><a href="../answers/{s}/index.html">{titles[s]}</a>{mark}</li>\n'
+                    out += f'            <li><a href="../answers/{s}/index.html">{titles[s]}</a></li>\n'
                 out += '          </ul>\n        </li>\n'
             out += '      </ul>\n    </section>\n'
         out += '  </section>\n'

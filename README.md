@@ -17,7 +17,7 @@ The empty `.nojekyll` file tells GitHub Pages to serve the files exactly as they
 ## Structure
 
 - `index.html` — home page; every section lives in its own folder with an `index.html`
-  (`faith/`, `topics/`, `questions/`, `articles/`, `answers/`, `scripture/`, `videos/`, `about/`, `search/`).
+  (`bez-kupyur/`, `topics/`, `questions/`, `articles/`, `answers/`, `scripture/`, `videos/`, `about/`, `search/`).
 - `assets/css/site.css` — styles; `assets/fonts/` — self-hosted fonts (SIL Open Font License).
 - `assets/js/` — menu, link copying and site search; `assets/search-index.json` — search data.
 

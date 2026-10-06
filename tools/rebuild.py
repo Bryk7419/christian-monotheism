@@ -8,13 +8,12 @@
   * темы: topics/<id>/index.html (исповедание, основные места, «Подробнее», видео, связанные темы);
   * вопросы «А как же…?»: questions/index.html;
   * видео: videos/index.html (карточки без блока «Статьи по теме записи»).
-Из assets/search-index.json берутся только порядок статей и тем, синонимы поиска (aliases)
-и заголовки служебных страниц. Новая статья добавляется в конец порядка.
+Из assets/search-index.json берутся только порядок статей и тем и синонимы поиска (aliases). Новая статья добавляется в конец порядка.
 
 Скрипт пересобирает: страницы статей (ссылки на указатель, время чтения, дата прописью),
 страницы тем, каталог статей, страницу вопросов, список тем, страницу видео, указатель Писания,
 плитки тем и «С чего начать» на главной, а также assets/search-index.json.
-Страницы «Во что я верю» и «Об авторе» правятся вручную; в индекс попадает их текст.
+Страницы «Комменты на YouTube» и «Об авторе» правятся вручную; в индекс попадает их текст.
 
 Кроме того (tools/siteextras.py): служебный блок <head> всех страниц, оглавление и кнопки статей,
 тексты стихов assets/verses/<адрес>.json (tools/verses.mjs), sitemap.xml, feed.xml, llms.txt и new/index.html.
@@ -229,7 +228,7 @@ def verses_data(m):
     return json.loads(res)
 
 
-STATIC_PAGES = [('faith/index.html', 'Во что я верю'), ('about/index.html', 'Об авторе'), ('search/index.html', 'Поиск')]
+STATIC_PAGES = [('bez-kupyur/index.html', 'Комменты на YouTube без купюр: что мне пишут'), ('about/index.html', 'Об авторе'), ('search/index.html', 'Поиск')]
 
 
 def render_all(m):
@@ -287,12 +286,12 @@ def current(p):
 
 
 def search_index(m):
-    old_docs = m['old_docs']
-
     def page_doc(path, url):
         prose = re.search(r'<div class="prose prose-page">\n(.*?)\n  </div>', S.read(path), re.S).group(1)
-        d = old_docs[url]
-        return {'type': 'page', 'url': url, 'title': d['title'], 'summary': d['summary'], 'topics': [], 'passages': [],
+        source = S.read(path)
+        title = S.html_to_text(re.search(r'<h1[^>]*>(.*?)</h1>', source, re.S).group(1))
+        summary = S.html_to_text(re.search(r'<meta name="description" content="([^"]*)"', source).group(1))
+        return {'type': 'page', 'url': url, 'title': title, 'summary': summary, 'topics': [], 'passages': [],
                 'aliases': [], 'body': S.html_to_text(prose)}
 
     def video_topics(vid):
@@ -311,7 +310,7 @@ def search_index(m):
         docs.append({'type': 'topic', 'url': f'/topics/{t["id"]}/', 'title': t['title'], 'summary': t['confession'],
                      'topics': [t['id']], 'passages': [label for _, label, _ in t['key_verses']], 'aliases': [],
                      'body': t['confession'] + '\n' + '\n'.join(f'{label} — {desc}' for _, label, desc in t['key_verses'])})
-    docs.append(page_doc('faith/index.html', '/faith/'))
+    docs.append(page_doc('bez-kupyur/index.html', '/bez-kupyur/'))
     docs.append(page_doc('about/index.html', '/about/'))
     for vid, f in m['vfields'].items():
         docs.append({'type': 'video', 'url': f'/videos/#{vid}', 'title': f['title'], 'summary': f['desc'],

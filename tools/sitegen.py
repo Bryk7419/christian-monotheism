@@ -143,7 +143,7 @@ def video_cues(prose, vfields):
         return (f'<p class="video-cue" data-video="{vid}" data-t="{sec}"><a class="ext" href="{f["url"]}?t={sec}" target="_blank" rel="noopener">'
                 f'<span class="video-cue-play">{PLAY}</span><span class="video-cue-body">'
                 f'<span class="video-cue-head">Смотреть в видео с <time datetime="PT{sec}S">{label}</time></span> '
-                f'<span class="video-cue-chapter">{desc}</span> <span class="video-cue-title">{f["title"]}</span></span>'
+                f'<span class="video-cue-chapter">{desc}</span></span>'
                 '<span class="visually-hidden"> (YouTube, откроется в новой вкладке)</span></a></p>')
     return re.sub(r'<p class="video-cue" data-video="(v\d+)" data-t="(\d+)">.*?</p>', fill, prose, flags=re.S)
 
@@ -179,17 +179,60 @@ def catalog_header(title, intro):
 
 def render_articles_index(m):
     out = '<main id="main" class="main" tabindex="-1">\n\n\n<div class="catalog catalog-articles">\n'
-    out += catalog_header('Все статьи', m.get('articles_intro', 'Материалы о Боге, Иисусе Христе, Писании, воскресении и жизни веры.'))
-    out += jump_nav(m)
+    out += catalog_header('Все статьи', m['articles_intro'])
+    out += '''  <form class="catalog-filter" action="../search/index.html" method="get" data-catalog-form role="search">
+    <label class="search-label" for="catalog-q">Слово, вопрос или место Писания</label>
+    <div class="search-row">
+      <input class="search-input" id="catalog-q" name="q" type="search" placeholder="Например: воскресение или Ин. 1:1" autocomplete="off" enterkeyhint="search">
+      <button class="button" type="submit">Найти</button>
+    </div>
+    <div class="catalog-selects">
+      <label>Тема<select name="topic" id="catalog-topic"><option value="">Все темы</option>'''
     for t in m['topics']:
-        arts = articles_in(m, t['id'])
-        out += (f'  <section class="catalog-group" id="{t["id"]}" aria-labelledby="{t["id"]}-h">\n'
-                f'    <h2 class="group-title" id="{t["id"]}-h"><a href="../topics/{t["id"]}/index.html">{t["title"]}</a> '
-                f'<span class="group-count">{len(arts)}</span></h2>\n    \n')
-        out += cards([(a['slug'], a['title'], a['summary']) for a in arts], '../answers/',
-                     {a['slug']: a.get('kind') for a in arts})
-        out += '\n  </section>\n'
+        out += f'<option value="{t["id"]}">{t["title"]}</option>'
+    out += '''</select></label>
+      <label data-catalog-enhanced hidden>Порядок<select id="catalog-sort"><option value="default">Все статьи</option><option value="updated">Сначала обновлённые</option></select></label>
+    </div>
+    <button class="catalog-reset" type="reset" data-catalog-enhanced hidden>Сбросить фильтры</button>
+  </form>
+  <details class="catalog-guides"><summary>Тематические подборки</summary><nav aria-label="Подборки по темам"><ul class="chips">
+'''
+    # Сохраняем цели старых ссылок /articles/#<тема>; JS включает фильтр.
+    for t in m['topics']:
+        out += f'    <li><a class="chip" id="{t["id"]}" href="../topics/{t["id"]}/index.html">{t["title"]}</a></li>\n'
+    out += ('  </ul></nav></details>\n'
+            f'  <p class="catalog-status" role="status" aria-live="polite" data-catalog-status>Всего: {n_articles(len(m["articles"]))}.</p>\n'
+            '  <ul class="cards catalog-list" data-catalog-list>\n')
+    for a in m['articles']:
+        p = m['pages'][a['slug']]
+        meta = f'{a["kind"]} · ' if a.get('kind') else ''
+        meta += f'{p["minutes"]} {plural(p["minutes"], "минута", "минуты", "минут")} чтения'
+        out += (f'    <li class="card" data-slug="{a["slug"]}" data-topics="{" ".join(a["topics"])}" data-date="{p["date"]}">\n'
+                f'      <p class="card-meta">{meta}</p>\n'
+                f'      <a class="card-link" href="../answers/{a["slug"]}/index.html">{a["title"]}</a>\n'
+                f'      <p class="card-summary">{a["summary"]}</p>\n'
+                f'      <p class="card-updated">Обновлено <time datetime="{p["date"]}">{human_date(p["date"])}</time></p>\n'
+                '    </li>\n')
+    out += ('  </ul>\n  <p class="catalog-empty" data-catalog-empty hidden>Попробуйте другое слово или выберите «Все темы».</p>\n'
+            '  <script type="module" src="../assets/js/catalog.js"></script>\n')
     return out + '</div>\n\n</main>'
+
+
+def render_home_start(m):
+    arts = {a['slug']: a for a in m['articles']}
+    total = sum(m['pages'][s]['minutes'] for s in m['start'])
+    out = ('<section class="home-block home-start" id="start" aria-labelledby="start-h">\n'
+           '  <h2 class="section-label" id="start-h">С чего начать</h2>\n'
+           f'  <p class="start-intro">Пять статей: от основ веры к молитве и надежде. Около {total} минут на всё знакомство.</p>\n'
+           '  <ol class="cards start-cards">\n')
+    for i, slug in enumerate(m['start'], 1):
+        a, p = arts[slug], m['pages'][slug]
+        out += (f'    <li class="card"><span class="start-number" aria-hidden="true">{i:02}</span><div>\n'
+                f'      <a class="card-link" href="answers/{slug}/index.html">{a["title"]}</a>\n'
+                f'      <p class="card-summary">{a["summary"]}</p>\n'
+                f'      <p class="card-meta">{p["minutes"]} {plural(p["minutes"], "минута", "минуты", "минут")} чтения</p>\n'
+                '    </div></li>\n')
+    return out + '  </ol>\n</section>'
 
 
 def render_questions_index(m):
@@ -271,7 +314,7 @@ def render_topic_main(m, t):
             '    <h2 class="section-label" id="related-h">Связанные темы</h2>\n    \n')
     out += chips([(f'../{r}/index.html', topic_title(m, r)) for r in t['related']])
     out += ('\n  </section>\n\n'
-            f'  <p class="topic-all"><a href="../../articles/index.html#{t["id"]}">Все статьи темы «{t["title"]}» '
+            f'  <p class="topic-all"><a href="../../articles/index.html?topic={t["id"]}">Все статьи темы «{t["title"]}» '
             f'({len(articles_in(m, t["id"]))})</a></p>\n</article>\n\n</main>')
     return out
 
@@ -399,6 +442,39 @@ def parse_article_page(s):
     return p
 
 
+def article_title(title):
+    """Два уровня одного заголовка; полный текст сохраняется для поиска и озвучки."""
+    parts = re.match(r'^(«[^»]{3,65}»)(: )(.*)$', title)
+    if not parts or len(title) < 60:
+        return title
+    first, sep, rest = parts.groups()
+    return (f'<span class="article-title-main">{first}</span><span class="article-subtitle">'
+            f'<span class="visually-hidden">{sep}</span>{rest}</span>')
+
+
+def article_video(v, fields, only=None, primary=False, passages=None):
+    """Краткая карточка; исходное название и все выбранные отметки доступны в details."""
+    attr = f' data-t="{",".join(str(t) for t in only)}"' if only else ''
+    heading = (('Видеоразбор: ' + ', '.join(passages)) if passages else 'Беседа по теме статьи') if primary else fields['title']
+    out = (f'<article class="video" id="{v["id"]}"{attr}>\n'
+           f'  <h3 class="video-title">{heading}</h3>\n'
+           f'  <p class="video-link"><a class="ext" href="{fields["url"]}" target="_blank" rel="noopener">Смотреть на YouTube{EXT}</a></p>\n'
+           '  <details class="video-details"><summary>О записи и отметки времени</summary>\n'
+           f'    <p class="video-original-title">{fields["title"]}</p>\n'
+           f'    <p class="video-desc">{fields["desc"]}</p>\n')
+    stamps = [t for t in fields['timestamps'] if not only or t[0] in only]
+    if stamps:
+        out += '    <ol class="timestamps" aria-label="Отметки времени">\n'
+        for sec, label, desc in stamps:
+            out += (f'      <li><a class="ext timestamp" href="{fields["url"]}?t={sec}" target="_blank" rel="noopener">'
+                    f'<time datetime="PT{sec}S">{label}</time><span class="visually-hidden"> (YouTube, откроется в новой вкладке)</span></a>'
+                    f'<span class="timestamp-desc">{desc}</span></li>\n')
+        out += '    </ol>\n'
+    out += (f'    <p class="video-more"><a href="../../videos/index.html#{v["id"]}">Запись и все отметки на странице «Видео»</a></p>\n'
+            '  </details>\n</article>\n')
+    return out
+
+
 def render_article_main(m, a, p, anchors):
     """a: данные статьи (title, topics, passages, videos); p: crumb, minutes, date, prose, sources, next.
 
@@ -408,12 +484,19 @@ def render_article_main(m, a, p, anchors):
     arts = {x['slug']: x for x in m['articles']}
     vids = videos_by_id(m)
     prose = video_cues(X.add_heading_ids(p['prose']), m['vfields'])
+    continuation = re.search(r'<p class="intro-next">.*?href="\.\./([^/]+)/index.html"', prose, re.S)
+    next_slugs = [s for s in p['next'] if not continuation or s != continuation.group(1)]
     home = m.get('verses', {}).get(a['slug'], {}).get('home') or ''
+    route = ''
+    if a['slug'] in m['start']:
+        step = m['start'].index(a['slug']) + 1
+        route = f'<p class="intro-route"><a href="../../index.html#start">С чего начать</a><span>Статья {step} из {len(m["start"])}</span></p>\n'
     out = ('<main id="main" class="main" tabindex="-1">\n\n<article class="article">\n  <header class="article-header">\n'
            '    <nav class="crumbs" aria-label="Вы здесь">\n'
            f'      <a href="../../articles/index.html">Все статьи</a><span aria-hidden="true">/</span>'
            f'<a href="../../topics/{p["crumb"]}/index.html">{topic_title(m, p["crumb"])}</a>\n    </nav>\n'
-           f'    <h1 class="article-title">{a["title"]}</h1>\n'
+           f'    <h1 class="article-title">{article_title(a["title"])}</h1>\n'
+           + route
            + (f'    <p class="article-lead"><span class="lead-label">Мой ответ:</span> {p["lead"]}</p>\n' if p.get('lead') else '')
            + '    <p class="article-meta">\n'
            + (f'      <span>{a["kind"]}</span>\n      <span class="sep" aria-hidden="true">·</span>\n' if a.get('kind') else '')
@@ -424,25 +507,36 @@ def render_article_main(m, a, p, anchors):
         out += '    <p class="article-passages">\n      <span class="passages-label">Разбираемые места:</span>\n'
         links = [f'      <a class="ref" href="../../scripture/index.html#{anchors[lab]}">{lab}</a>' for lab in a['passages']]
         out += '<span class="sep" aria-hidden="true"> · </span>\n'.join(links) + '\n    </p>\n'
-    out += (X.article_tools() + '  </header>\n\n' + X.toc(prose)
-            + f'  <div class="prose" data-home="{home}" data-verses="../../assets/verses/{a["slug"]}.json" data-slug="{a["slug"]}" data-audio="../../assets/audio/">\n' + prose + '\n\n  </div>\n\n')
-    out += ('  <footer class="article-footer">\n' + X.article_end()
-            + '    <section class="apparatus" aria-labelledby="sources-h">\n'
-            '      <h2 class="section-label" id="sources-h">Места Писания и источники</h2>\n      <ul class="source-list">\n')
+    out += (X.article_tools() + '  </header>\n\n  <div class="article-reading">\n' + X.toc(prose)
+            + f'  <div class="prose" data-home="{home}" data-verses="../../assets/verses/{a["slug"]}.json" data-slug="{a["slug"]}" data-audio="../../assets/audio/">\n' + prose + '\n\n  </div>\n  </div>\n\n')
+    out += ('  <footer class="article-footer">\n'
+            '    <section aria-labelledby="next-h">\n      <h2 class="section-label" id="next-h">Читать дальше</h2>\n'
+            + cards([(s, arts[s]['title'], arts[s]['summary']) for s in next_slugs], '../')
+            + '\n    </section>\n'
+            '    <section class="apparatus" aria-labelledby="sources-h">\n'
+            '      <h2 class="section-label" id="sources-h">Места Писания и источники</h2>\n'
+            f'      <details class="source-details"><summary>Открыть источники ({len(p["sources"])})</summary>\n      <ul class="source-list">\n')
     for href, label in p['sources']:
         out += f'        <li><a class="ext" href="{href}" target="_blank" rel="noopener">{label}{EXT}</a></li>\n'
-    out += '      </ul>\n'
-    out += '    </section>\n'
+    out += '      </ul>\n      </details>\n    </section>\n'
     if a['videos']:
+        cue_ids = [v for v, _ in a['video_cues']]
+        primary = next((v for v in cue_ids if v in a['videos']), a['videos'][0])
+        ordered = [primary] + [v for v in a['videos'] if v != primary]
         out += ('    <section class="article-videos" aria-labelledby="video-h">\n'
                 '      <h2 class="section-label" id="video-h">Видео</h2>\n      <div class="video-list">\n')
-        for vid in a['videos']:
-            out += video_block(vids[vid], 'h3', only=a.get('video_t', {}).get(vid)) + '\n'
+        for i, vid in enumerate(ordered):
+            if i == 1:
+                count = len(ordered) - 1
+                out += f'<details class="more-videos"><summary>Ещё {count} {plural(count, "запись", "записи", "записей")} по теме</summary><div class="video-list">\n'
+            out += article_video(vids[vid], m['vfields'][vid], only=a.get('video_t', {}).get(vid),
+                                 primary=i == 0, passages=a['passages'])
+        if len(ordered) > 1:
+            out += '</div></details>\n'
         out += '      </div>\n    </section>\n'
-    out += ('    <section aria-labelledby="next-h">\n      <h2 class="section-label" id="next-h">Читать дальше</h2>\n      \n'
-            + cards([(s, arts[s]['title'], arts[s]['summary']) for s in p['next']], '../')
-            + '\n    </section>\n    <section class="article-topics" aria-labelledby="topics-h">\n'
-            '      <h2 class="section-label" id="topics-h">Темы</h2>\n      \n'
+    out += (X.article_end()
+            + '    <section class="article-topics" aria-labelledby="topics-h">\n'
+            '      <h2 class="section-label" id="topics-h">Темы</h2>\n'
             + chips([(f'../../topics/{t}/index.html', topic_title(m, t)) for t in a['topics']])
             + '\n    </section>\n  </footer>\n</article>\n\n</main>')
     return out

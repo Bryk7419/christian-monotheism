@@ -746,3 +746,84 @@ mark { background: var(--mark); color: var(--ink); padding: 0 0.1em; border-radi
 .sheet-here { display: block; margin-top: 0.1rem; font: 500 0.78rem var(--font-ui); color: var(--muted); }
 @media print { .sections-fab, .sections-sheet { display: none !important; } }
 .to-top[hidden] + .sections-fab { right: calc(1rem + env(safe-area-inset-right, 0px)); }
+
+/* Ясный путь от знакомства к чтению. Общая книжная палитра сохранена. */
+.hero { margin-top: 1rem; margin-bottom: 2.75rem; }
+.hero-author { gap: 1.25rem; margin-bottom: 1.75rem; }
+.hero-photo { width: 104px; height: 104px; }
+.hero-name { font-size: clamp(1.875rem, 1.4rem + 1vw, 2.3rem); }
+.hero-lead p:first-child { font-size: 1.18em; line-height: 1.55; }
+.hero-lead .hero-purpose { margin-top: 1.35rem; color: var(--muted); font-size: 0.9375rem; line-height: 1.65; }
+.hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0.9rem 1.5rem; margin-top: 1.5rem; }
+.hero-actions .button { gap: 0.7rem; }
+.hero-question { font: 500 0.9375rem/1.5 var(--font-ui); padding-block: 0.65rem; }
+.start-intro { margin: -0.25rem 0 1.25rem; color: var(--muted); font-size: 0.9375rem; }
+.start-cards .card { display: grid; grid-template-columns: 2.2rem minmax(0, 1fr); gap: 0.75rem; padding-block: 1.25rem; }
+.start-number { font: 400 1.5rem/1.4 var(--font-display); color: var(--rubric); font-variant-numeric: tabular-nums; }
+.start-cards .card-link { font-size: 1.125rem; }
+.start-cards .card-summary { margin-top: 0.45rem; color: var(--muted); }
+.card-meta { margin: 0 0 0.35rem; color: var(--muted); font: 0.8rem/1.5 var(--font-ui); }
+.start-cards .card-meta { margin: 0.5rem 0 0; }
+@media (max-width: 30rem) {
+  .hero-photo { width: 80px; height: 80px; }
+  .hero-author { gap: 1rem; margin-bottom: 1.4rem; }
+  .hero-role { font-size: 0.875rem; }
+  .start-cards .card { grid-template-columns: 1.8rem minmax(0, 1fr); gap: 0.55rem; }
+  .header-actions a.icon-button { padding-inline: 0.4rem; }
+  .header-actions a .icon-button-label { position: static; width: auto; height: auto; overflow: visible; clip-path: none; }
+}
+
+/* Один материал — одна строка каталога; фильтры работают поверх обычного HTML. */
+.catalog-filter { margin: 1.5rem 0 1rem; padding: 1.25rem; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); }
+.catalog-selects { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1rem; }
+.catalog-selects label { flex: 1 1 12rem; min-width: 0; display: grid; gap: 0.4rem; font: 500 0.875rem/1.4 var(--font-ui); }
+.catalog-selects select { width: 100%; min-width: 0; min-height: 44px; padding: 0.55rem 0.65rem; border: 1px solid var(--muted); border-radius: 4px; background: var(--bg); color: var(--ink); font: 0.9375rem var(--font-ui); }
+.catalog-reset { margin-top: 0.65rem; min-height: 44px; padding: 0; border: 0; background: none; color: var(--rubric); text-decoration: underline; text-underline-offset: 0.2em; font: 0.875rem var(--font-ui); cursor: pointer; }
+.catalog-guides { margin-bottom: 1.5rem; font: 0.9375rem/1.5 var(--font-ui); }
+.catalog-guides summary { padding-block: 0.65rem; cursor: pointer; }
+.catalog-guides .chips { padding-block: 0.5rem; }
+.catalog-status { margin: 1.25rem 0 0.75rem; color: var(--muted); font: 0.875rem/1.5 var(--font-ui); }
+.catalog-list .card { padding-block: 1.2rem; }
+.catalog-list .card-link { font-size: 1.125rem; }
+.catalog-list .card-summary { margin-top: 0.45rem; }
+.card-updated { display: none; margin: 0.5rem 0 0; color: var(--muted); font: 0.8rem/1.5 var(--font-ui); }
+.is-date-order .card-updated { display: block; }
+.catalog-empty { margin-top: 1.5rem; }
+@media (max-width: 30rem) { .catalog-filter { padding: 1rem; } }
+
+/* Заголовок, маршрут знакомства и продолжение чтения. */
+.article-title-main { display: block; }
+.article-subtitle { display: block; margin-top: 0.55rem; font: 400 clamp(1.15rem, 1rem + 0.5vw, 1.4rem)/1.45 var(--font-text); letter-spacing: 0; text-wrap: pretty; }
+.intro-route { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; margin: 0 0 1.15rem; color: var(--muted); font: 0.8125rem/1.5 var(--font-ui); }
+.intro-route a { color: var(--rubric); }
+.prose .intro-next { margin: 2rem 0 0; padding: 1.2rem 1.3rem; background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--rubric); border-radius: var(--radius); color: var(--muted); font: 0.875rem/1.5 var(--font-ui); hyphens: manual; }
+.intro-next a { display: block; margin-top: 0.4rem; font: 600 1.125rem/1.45 var(--font-text); }
+.article-footer { gap: 1.75rem; margin-top: 2.25rem; padding-top: 1.5rem; }
+.article-footer .section-label { margin-bottom: 0.8rem; }
+.article-footer .article-end { margin: 0; padding: 1rem 1.2rem; }
+.article-end p:last-child { margin-bottom: 0; }
+.article-end p { font-size: 0.9375rem; }
+.source-details, .video-details, .more-videos { font: 0.9375rem/1.5 var(--font-ui); }
+.source-details summary, .video-details summary, .more-videos > summary { padding-block: 0.65rem; min-height: 44px; cursor: pointer; color: var(--muted); }
+.source-details .source-list { margin-top: 0.6rem; }
+.video-details[open] { margin-top: 0.7rem; border-top: 1px solid var(--rule); }
+.video-original-title { margin: 0.5rem 0; font-weight: 600; color: var(--ink); }
+.more-videos .video-list { margin-top: 0.6rem; }
+.article-videos .video-link { margin-bottom: 0; }
+.toc a[aria-current="location"] { color: var(--rubric); font-weight: 600; }
+
+/* На широком экране оглавление занимает поле рядом с прежней колонкой текста. */
+@media (min-width: 80rem) {
+  .article-reading { display: grid; grid-template-columns: 15rem minmax(0, 40rem) 15rem; column-gap: 2rem; max-width: 74rem; margin-inline: auto; align-items: start; }
+  .article-reading > .prose { grid-column: 2; grid-row: 1; width: 100%; min-width: 0; }
+  .article-reading > .toc { grid-column: 1; grid-row: 1; position: sticky; top: 1.25rem; margin: 0; width: 100%; max-height: calc(100dvh - 2.5rem); overflow-y: auto; border-bottom: 0; }
+  .article-reading .toc summary { gap: 0.4rem; flex-wrap: wrap; }
+  .article-reading .toc ol { padding-left: 1.5rem; padding-right: 0.5rem; font-size: 0.875rem; line-height: 1.5; }
+  .article-reading .toc li + li { margin-top: 0.6rem; }
+  .article-reading .toc a { display: block; padding-block: 0.1rem; }
+  .sections-fab { display: none !important; }
+}
+@media print {
+  .article-reading { display: block; }
+  .catalog-filter, .catalog-guides, .intro-route, .intro-next { display: none !important; }
+}

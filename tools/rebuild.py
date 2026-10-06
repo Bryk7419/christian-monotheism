@@ -148,7 +148,6 @@ def load():
                            f'Над заголовком указан жанр: {KINDS_TEXT}.')
     m['scripture_intro'] = intro_of('scripture/index.html')
     m['videos_intro'] = intro_of('videos/index.html')
-    m['mark_parallels'] = True
     return m
 
 
@@ -180,6 +179,22 @@ def validate(m):
                     errors.append(f'{where}: у видео {v} нет отметки {sec} с (см. videos/index.html)')
         if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', p['date']):
             errors.append(f'{where}: дата должна быть в виде ГГГГ-ММ-ДД')
+    # «Разбираемые места» — то, что статья действительно разбирает; из них собирается указатель Писания.
+    # Дополнительное место, которого нет в тексте статьи, — явная ошибка (параллели сюда не ставятся, см. AGENTS.md).
+    m['verses'] = verses_data(m)
+    prefs = S.run_refs([{'type': 'article', 'passages': a['passages'], 'aliases': [], 'body': ''} for a in m['articles']])
+    for a, r in zip(m['articles'], prefs):
+        seen = {}
+        for key in m['verses'][a['slug']]['verses']:
+            book, cv = key.split(' ')
+            c, v = cv.split(':')
+            seen.setdefault(book, set()).add(int(c) * 1000 + int(v))
+        for label, pref in list(zip(a['passages'], r['passageRefs']))[1:]:
+            if not pref:
+                continue
+            book, segs = pref
+            if not any(lo <= k <= hi for k in seen.get(book, ()) for lo, hi in segs):
+                errors.append(f'answers/{a["slug"]}: в «Разбираемых местах» указано {label}, но в тексте статьи это место не разбирается')
     for t in m['topics']:
         for s in t['more']:
             if s not in arts:
@@ -219,7 +234,7 @@ def render_all(m):
     entries = S.scripture_entries(m)
     anchors = {e['label']: e['anchor'] for e in entries}
     arts = {a['slug']: a for a in m['articles']}
-    m['verses'] = verses_data(m)
+    m['verses'] = m.get('verses') or verses_data(m)
     for a in m['articles']:
         path = f'answers/{a["slug"]}/index.html'
         p = m['pages'][a['slug']]

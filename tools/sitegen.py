@@ -316,7 +316,6 @@ def scripture_entries(m):
 
 def render_scripture_main(m, entries):
     titles = {a['slug']: a['title'] for a in m['articles']}
-    firsts = {a['slug']: a['passages'][0] for a in m['articles'] if a['passages']}
     present = []
     for e in entries:
         if e['book'] not in present:
@@ -356,10 +355,7 @@ def render_scripture_main(m, entries):
                         f'          <span class="ref passage-ref">{e["label"]}</span>\n'
                         '          <ul class="passage-articles">\n')
                 for s in e['articles']:
-                    mark = ''
-                    if m.get('mark_parallels') and firsts.get(s) != e['label']:
-                        mark = ' <span class="passages-label">— параллель</span>'
-                    out += f'            <li><a href="../answers/{s}/index.html">{titles[s]}</a>{mark}</li>\n'
+                    out += f'            <li><a href="../answers/{s}/index.html">{titles[s]}</a></li>\n'
                 out += '          </ul>\n        </li>\n'
             out += '      </ul>\n    </section>\n'
         out += '  </section>\n'
@@ -393,6 +389,8 @@ def parse_article_page(s):
     p['crumb'] = re.search(r'<a href="\.\./\.\./topics/([^/]+)/index.html">[^<]+</a>\n    </nav>', s).group(1)
     p['minutes'] = int(re.search(r'<span>(\d+) минут', s).group(1))
     p['date'] = re.search(r'<time datetime="([^"]+)">', s).group(1)
+    lead = re.search(r'<p class="article-lead">(?:<span class="lead-label">[^<]*</span>\s*)?(.*?)</p>', s, re.S)
+    p['lead'] = lead.group(1).strip() if lead else ''
     p['prose'] = re.search(r'<div class="prose"[^>]*>\n(.*?)\n\n  </div>', s, re.S).group(1)
     p['sources'] = re.findall(r'<li><a class="ext" href="([^"]+)" target="_blank" rel="noopener">(.*?)' + re.escape(EXT) + r'</a></li>',
                               re.search(r'<ul class="source-list">(.*?)</ul>', s, re.S).group(1))
@@ -416,7 +414,8 @@ def render_article_main(m, a, p, anchors):
            f'      <a href="../../articles/index.html">Все статьи</a><span aria-hidden="true">/</span>'
            f'<a href="../../topics/{p["crumb"]}/index.html">{topic_title(m, p["crumb"])}</a>\n    </nav>\n'
            f'    <h1 class="article-title">{a["title"]}</h1>\n'
-           '    <p class="article-meta">\n'
+           + (f'    <p class="article-lead"><span class="lead-label">Мой ответ:</span> {p["lead"]}</p>\n' if p.get('lead') else '')
+           + '    <p class="article-meta">\n'
            + (f'      <span>{a["kind"]}</span>\n      <span class="sep" aria-hidden="true">·</span>\n' if a.get('kind') else '')
            + f'      <span>{p["minutes"]} {plural(p["minutes"], "минута", "минуты", "минут")} чтения</span>\n'
            '      <span class="sep" aria-hidden="true">·</span>\n'

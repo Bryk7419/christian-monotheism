@@ -74,7 +74,7 @@ def block(s, pattern):
 
 def parse_article_meta(s):
     a = {}
-    a['title'] = re.search(r'<h1 class="article-title">(.*?)</h1>', s).group(1)
+    a['title'] = re.sub(r'<[^>]+>', '', re.search(r'<h1 class="article-title">(.*?)</h1>', s).group(1))
     a['summary'] = html.unescape(re.search(r'<meta name="description" content="([^"]*)">', s).group(1))
     kind = re.search(r'<p class="article-meta">\n      <span>([^<\d][^<]*)</span>', s)
     a['kind'] = kind.group(1) if kind else None
@@ -143,9 +143,10 @@ def load():
         m['pages'][slug] = p
 
     n = len(m['articles'])
-    m['articles_intro'] = ('Статьи собраны в подборки по темам: одна статья может входить в несколько подборок. '
-                           f'Всего на сайте {n} {S.plural(n, "самостоятельный материал", "самостоятельных материала", "самостоятельных материалов")}. '
-                           f'Над заголовком указан жанр: {KINDS_TEXT}.')
+    m['articles_intro'] = (f'{S.n_articles(n)} о Боге, Иисусе Христе, Писании и жизни веры. '
+                           'Найдите интересующий вопрос или выберите тему.')
+    start = block(S.read('index.html'), r'<section class="home-block home-start".*?>(.*?)</section>')
+    m['start'] = re.findall(r'class="card-link" href="answers/([^/]+)/index.html"', start)
     m['scripture_intro'] = ('Здесь собраны статьи, посвящённые разбору конкретного места Писания. '
                             'Одна статья может относиться к двум текстам, если она разбирает их вместе. '
                             'Упоминания стихов и ссылки для сравнения в указатель не включены.')
@@ -269,11 +270,8 @@ def render_all(m):
     home = S.read('index.html')
     home = re.sub(r'<section class="home-block" aria-labelledby="home-topics-h">.*?</section>',
                   lambda _: S.render_home_topics(m), home, count=1, flags=re.S)
-    start = re.search(r'(<h2 class="section-label">С чего начать</h2>\n)(<ul class="cards">.*?</ul>\n)', home, re.S)
-    if start:
-        slugs = re.findall(r'class="card-link" href="answers/([^/]+)/index.html"', start.group(2))
-        cards = S.cards([(s, arts[s]['title'], arts[s]['summary']) for s in slugs if s in arts], 'answers/')
-        home = home[:start.start(2)] + cards + home[start.end(2):]
+    home = re.sub(r'<section class="home-block home-start".*?</section>',
+                  lambda _: S.render_home_start(m), home, count=1, flags=re.S)
     out['index.html'] = X.apply_head(home, 'index.html', X.simple_info('index.html'))
     out['assets/search-index.json'] = search_index(m)
     pages = [p for p in out if p.endswith('.html')]

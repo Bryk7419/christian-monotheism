@@ -92,10 +92,9 @@ def article_tools():
 def article_end():
     return ('    <section class="article-end" aria-labelledby="ask-h">\n'
             '      <h2 class="section-label" id="ask-h">Остался вопрос?</h2>\n'
-            '      <p>Если после статьи остался вопрос или возражение, напишите мне. Отвечаю по Писанию.</p>\n'
-            f'      <p><a class="button" href="{esc(CONFIG["ask_url"])}" target="_blank" rel="noopener">Задать вопрос автору{S.EXT}</a></p>\n'
-            '      <div class="article-tools" aria-label="Поделиться статьёй">\n'
-            + share_buttons('        ') + '      </div>\n    </section>\n')
+            '      <p>Вопрос или возражение можно обсудить в Telegram. '
+            f'<a href="{esc(CONFIG["ask_url"])}" target="_blank" rel="noopener">Перейти в Telegram{S.EXT}</a></p>\n'
+            '    </section>\n')
 
 
 # --- Служебный блок <head> -----------------------------------------------------------------------------

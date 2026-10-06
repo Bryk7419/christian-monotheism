@@ -2,6 +2,22 @@
 
 const isPreview = Boolean(document.querySelector('meta[name="site-preview"]'));
 
+// Старые ссылки на видео и другие якоря раскрывают содержащий их блок.
+function revealAnchor() {
+  if (!location.hash) return;
+  let target;
+  try { target = document.getElementById(decodeURIComponent(location.hash.slice(1))); } catch { return; }
+  if (!target) return;
+  let parent = target.parentElement, changed = false;
+  while (parent) {
+    if (parent.tagName === 'DETAILS' && !parent.open) { parent.open = true; changed = true; }
+    parent = parent.parentElement;
+  }
+  if (changed) requestAnimationFrame(() => target.scrollIntoView({ block: 'start' }));
+}
+revealAnchor();
+window.addEventListener('hashchange', revealAnchor);
+
 // --- Меню на узком экране ---------------------------------------------------
 const toggle = document.querySelector('.menu-toggle');
 const nav = document.getElementById('site-nav');
@@ -91,6 +107,7 @@ if (navigator.share) {
 // --- Статья: полоска прочитанного, кнопка «Наверх», чтение вслух, всплывающие стихи ----------
 const articleEl = document.querySelector('.article');
 if (articleEl) {
+  const prose = articleEl.querySelector('.prose');
   const bar = document.createElement('div');
   bar.className = 'read-progress';
   bar.setAttribute('aria-hidden', 'true');
@@ -103,14 +120,16 @@ if (articleEl) {
   let ticking = false;
   const update = () => {
     ticking = false;
-    const r = articleEl.getBoundingClientRect();
+    const r = (prose || articleEl).getBoundingClientRect();
     const total = r.height - window.innerHeight;
-    const done = total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 0;
+    const done = total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : Number(r.bottom <= window.innerHeight);
     bar.style.transform = `scaleX(${done})`;
     up.hidden = window.scrollY < window.innerHeight * 1.5;
   };
   const sections = sectionsNav();
   window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { update(); sections?.update(); }); } }, { passive: true });
+  window.addEventListener('resize', () => { update(); sections?.update(); });
+  document.fonts?.ready.then(() => { update(); sections?.update(); });
   update();
   sections?.update();
   if (!isPreview) {
@@ -127,6 +146,11 @@ function sectionsNav() {
   const links = toc ? [...toc.querySelectorAll('a[href^="#"]')] : [];
   const heads = links.map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1))));
   if (links.length < 3 || heads.some((h) => !h) || typeof HTMLDialogElement !== 'function') return null;
+  const wide = matchMedia('(min-width: 80rem)');
+  const details = toc.querySelector('details');
+  const syncToc = () => { details.open = wide.matches; };
+  syncToc();
+  wide.addEventListener('change', () => { syncToc(); if (sheet.open) sheet.close(); update(); });
 
   const fab = document.createElement('button');
   fab.type = 'button';
@@ -164,7 +188,11 @@ function sectionsNav() {
     heads.forEach((h, k) => { if (h.getBoundingClientRect().top <= line) i = k; });
     current = i;
     pos.textContent = i >= 0 ? `${i + 1} из ${heads.length}` : String(heads.length);
-    fab.hidden = sheet.open || toc.getBoundingClientRect().bottom > 0;
+    fab.hidden = wide.matches || sheet.open || toc.getBoundingClientRect().bottom > 0;
+    links.forEach((a, k) => {
+      if (k === i) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
+    });
   };
 
   fab.addEventListener('click', () => {

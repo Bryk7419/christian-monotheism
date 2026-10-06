@@ -6,6 +6,7 @@ import html
 import re
 import sys
 from pathlib import Path
+from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parent.parent
 SKIP = {'.git', 'editorial', 'tools'}
@@ -21,7 +22,8 @@ def main():
             if re.match(r'^(https?:|mailto:|tel:|data:|javascript:)', url):
                 continue
             checked += 1
-            path, _, frag = url.partition('#')
+            parts = urlsplit(url)
+            path, frag = unquote(parts.path), unquote(parts.fragment)
             target = f.resolve() if not path else (f.parent / path).resolve()
             if target.is_dir():
                 target = target / 'index.html'

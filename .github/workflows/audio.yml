@@ -42,8 +42,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: ffmpeg
-        run: command -v ffmpeg || (sudo apt-get update && sudo apt-get install -y ffmpeg)
+      - name: ffmpeg и edge-tts
+        run: |
+          command -v ffmpeg || (sudo apt-get update && sudo apt-get install -y ffmpeg)
+          # голос Edge: сторонний пакет, версия закреплена, чтобы её нельзя было незаметно подменить
+          python3 -m venv "$RUNNER_TEMP/audio-venv"
+          "$RUNNER_TEMP/audio-venv/bin/pip" install --quiet 'edge-tts==7.2.8'
       - name: Озвучить новые и изменённые статьи
         env:
           AZURE_SPEECH_KEY: ${{ secrets.AZURE_SPEECH_KEY }}
@@ -53,9 +57,9 @@ jobs:
           ARTICLE: ${{ inputs.article }}
         run: |
           if [ -n "$ARTICLE" ]; then
-            AUDIO_SERVICE=edge python3 tools/make_audio.py --only "$ARTICLE"
+            AUDIO_SERVICE=edge "$RUNNER_TEMP/audio-venv/bin/python" tools/make_audio.py --only "$ARTICLE"
           else
-            python3 tools/make_audio.py --max-minutes 320
+            "$RUNNER_TEMP/audio-venv/bin/python" tools/make_audio.py --max-minutes 320
           fi
       - name: Сохранить записи на сайте
         if: ${{ !cancelled() }}   # и после сбоя: готовые записи не должны пропасть

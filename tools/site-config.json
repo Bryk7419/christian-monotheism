@@ -12,6 +12,7 @@
   "feed_items": 30,
   "new_items": 40,
   "audio": {
+    "service": "",
     "azure_voice": "ru-RU-DmitryNeural",
     "yandex_voice": "filipp",
     "bitrate": "48k"

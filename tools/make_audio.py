@@ -9,7 +9,10 @@
 Служба озвучки выбирается по переменным окружения (в GitHub — секреты репозитория):
   AZURE_SPEECH_KEY и AZURE_SPEECH_REGION   Microsoft Azure, голос audio.azure_voice из tools/site-config.json;
   YANDEX_API_KEY (и при нужде YANDEX_FOLDER_ID)   Яндекс SpeechKit, голос audio.yandex_voice.
-Без ключа скрипт ничего не делает. Озвучиваются только новые и изменённые статьи.
+Без ключа — голос Microsoft из чтения вслух браузера Edge (пакет edge-tts, ключ и регистрация не нужны), если
+в tools/site-config.json указано "audio": {"service": "edge"} или задана переменная AUDIO_SERVICE=edge.
+Это неофициальный путь: Microsoft может его закрыть, тогда готовые записи останутся, а новые не появятся.
+Если служба не выбрана, скрипт ничего не делает. Озвучиваются только новые и изменённые статьи.
 
   python3 tools/make_audio.py                 # озвучить то, что изменилось
   python3 tools/make_audio.py --dry-run       # показать, что будет озвучено, и сколько это знаков
@@ -19,6 +22,7 @@
 Нужны Python 3.10+, Node.js 18+ и ffmpeg.
 """
 import argparse
+import asyncio
 import hashlib
 import json
 import math
@@ -196,6 +200,47 @@ class Yandex:
                        urllib.parse.urlencode(form).encode(), {'Authorization': f'Api-Key {self.key}'})
 
 
+class Edge:
+    """Голос Microsoft из чтения вслух браузера Edge (пакет edge-tts): без ключа и регистрации, но неофициально."""
+    rate = 24000
+
+    def __init__(self):
+        try:
+            import edge_tts
+        except ImportError:
+            sys.exit('Для озвучки голосом Edge нужен пакет edge-tts: pip install edge-tts')
+        self.edge_tts = edge_tts
+        self.voice = AUDIO.get('azure_voice', 'ru-RU-DmitryNeural')
+
+    @property
+    def id(self):
+        return f'edge:{self.voice}'
+
+    async def mp3(self, text):
+        out = bytearray()
+        async for part in self.edge_tts.Communicate(text, self.voice).stream():
+            if part['type'] == 'audio':
+                out += part['data']
+        return bytes(out)
+
+    def __call__(self, text):
+        attempts = 6
+        for n in range(attempts):
+            try:
+                mp3 = asyncio.run(self.mp3(text))
+                if not mp3:
+                    raise RuntimeError('служба не вернула звук')
+                break
+            except Exception as e:      # обрывы связи и отказы службы: подождать и повторить
+                if n == attempts - 1:
+                    sys.exit(f'Ошибка службы озвучки Edge: {e}')
+                print(f'  служба Edge: {e}; повтор', flush=True)
+                time.sleep(min(60, 2 ** (n + 1)))
+        time.sleep(0.3)                 # не торопить службу
+        return subprocess.run(['ffmpeg', '-loglevel', 'error', '-f', 'mp3', '-i', '-', '-f', 's16le',
+                               '-ar', str(self.rate), '-ac', '1', '-'], input=mp3, capture_output=True, check=True).stdout
+
+
 class Fake:
     """Для проверки плеера без службы: тихий тон, длина по числу знаков."""
     rate = 24000
@@ -217,6 +262,8 @@ def provider(args):
         return Azure(os.environ['AZURE_SPEECH_KEY'].strip(), region.strip())
     if os.environ.get('YANDEX_API_KEY'):
         return Yandex(os.environ['YANDEX_API_KEY'].strip(), os.environ.get('YANDEX_FOLDER_ID', '').strip())
+    if (os.environ.get('AUDIO_SERVICE') or AUDIO.get('service')) == 'edge':
+        return Edge()
     return None
 
 
@@ -260,15 +307,18 @@ def main():
     args = ap.parse_args()
     started = time.time()
 
-    voice = provider(args)
+    voice = None if args.dry_run else provider(args)
     if voice is None and not args.dry_run:
-        print('Ключ службы озвучки не задан (AZURE_SPEECH_KEY или YANDEX_API_KEY): озвучка пропущена.')
+        print('Служба озвучки не выбрана (ключ AZURE_SPEECH_KEY или YANDEX_API_KEY, либо audio.service "edge"): озвучка пропущена.')
         return
     articles = {}
     for f in sorted((ROOT / 'answers').glob('*/index.html')):
         a = read_article(f)
         if a:
             articles[f.parent.name] = a
+    unknown = [slug for slug in args.only or [] if slug not in articles]
+    if unknown:
+        sys.exit(f'Нет такой статьи: {", ".join(unknown)}. Адрес — имя папки в answers/, например slovo-bylo-bog.')
     phrases = speakable(articles)
     index = json.loads(INDEX.read_text(encoding='utf-8')) if INDEX.exists() else {}
     vid = voice.id if voice else 'dry-run'

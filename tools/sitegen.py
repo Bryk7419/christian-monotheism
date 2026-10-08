@@ -445,6 +445,7 @@ def parse_article_page(s):
     p['lead'] = lead.group(1).strip() if lead else ''
     p['prose'] = re.search(r'<div class="prose"[^>]*>\n(.*?)\n\n  </div>', s, re.S).group(1)
     p['sources'] = parse_source_list(re.search(r'<ul class="source-list">(.*?)</ul>', s, re.S).group(1))
+    p['sources_open'] = bool(re.search(r'<details class="source-details"[^>]*\sopen(?:\s|>|=)', s))
     nxt = re.search(r'id="next-h">Читать дальше</h2>(.*?)</section>', s, re.S).group(1)
     p['next'] = re.findall(r'class="card-link" href="\.\./([^/]+)/index.html"', nxt)
     return p
@@ -517,13 +518,15 @@ def render_article_main(m, a, p, anchors):
         out += '<span class="sep" aria-hidden="true"> · </span>\n'.join(links) + '\n    </p>\n'
     out += (X.article_tools() + '  </header>\n\n  <div class="article-reading">\n' + X.toc(prose)
             + f'  <div class="prose" data-home="{home}" data-verses="../../assets/verses/{a["slug"]}.json" data-slug="{a["slug"]}" data-audio="../../assets/audio/">\n' + prose + '\n\n  </div>\n  </div>\n\n')
+    sources_open = ' open' if p.get('sources_open') else ''
+    sources_caption = 'Источники' if sources_open else 'Открыть источники'
     out += ('  <footer class="article-footer">\n'
             '    <section aria-labelledby="next-h">\n      <h2 class="section-label" id="next-h">Читать дальше</h2>\n'
             + cards([(s, arts[s]['title'], arts[s]['summary']) for s in next_slugs], '../')
             + '\n    </section>\n'
             '    <section class="apparatus" aria-labelledby="sources-h">\n'
             '      <h2 class="section-label" id="sources-h">Места Писания и источники</h2>\n'
-            f'      <details class="source-details"><summary>Открыть источники ({len(p["sources"])})</summary>\n      <ul class="source-list">\n')
+            f'      <details class="source-details"{sources_open}><summary>{sources_caption} ({len(p["sources"])})</summary>\n      <ul class="source-list">\n')
     for item in p['sources']:
         out += f'        {item}\n'
     out += '      </ul>\n      </details>\n    </section>\n'

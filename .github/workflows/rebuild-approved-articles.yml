@@ -1,0 +1,30 @@
+name: Разовая пересборка утверждённых статей
+on:
+  push:
+    branches: ['publish/approved-three-articles-2026-10-08']
+permissions:
+  contents: write
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Пересобрать сайт и проверить ссылки
+        run: |
+          python3 tools/rebuild.py
+          python3 tools/check_links.py
+          python3 tools/rebuild.py --check
+      - name: Сохранить производные файлы в ветке
+        run: |
+          git add -A
+          if git diff --cached --quiet; then echo "Производные файлы актуальны"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Пересобрать каталоги, поиск и ссылки после редакции"
+          git push origin HEAD:publish/approved-three-articles-2026-10-08

@@ -426,6 +426,15 @@ def human_date(iso):
     return f'{int(d)} {MONTHS[int(mo) - 1]} {y}'
 
 
+def parse_source_list(s):
+    """Сохранять библиографические записи целиком, включая пояснения и несколько ссылок."""
+    pattern = r'<li\b[^>]*>(?:(?!<li\b).)*?</li>'
+    items = re.findall(pattern, s, re.S)
+    if re.sub(pattern, '', s, flags=re.S).strip():
+        raise ValueError('Не удалось разобрать список источников без потери содержимого')
+    return items
+
+
 def parse_article_page(s):
     """Части готовой страницы статьи — для проверки шаблона."""
     p = {}
@@ -435,8 +444,7 @@ def parse_article_page(s):
     lead = re.search(r'<p class="article-lead">(?:<span class="lead-label">[^<]*</span>\s*)?(.*?)</p>', s, re.S)
     p['lead'] = lead.group(1).strip() if lead else ''
     p['prose'] = re.search(r'<div class="prose"[^>]*>\n(.*?)\n\n  </div>', s, re.S).group(1)
-    p['sources'] = re.findall(r'<li><a class="ext" href="([^"]+)" target="_blank" rel="noopener">(.*?)' + re.escape(EXT) + r'</a></li>',
-                              re.search(r'<ul class="source-list">(.*?)</ul>', s, re.S).group(1))
+    p['sources'] = parse_source_list(re.search(r'<ul class="source-list">(.*?)</ul>', s, re.S).group(1))
     nxt = re.search(r'id="next-h">Читать дальше</h2>(.*?)</section>', s, re.S).group(1)
     p['next'] = re.findall(r'class="card-link" href="\.\./([^/]+)/index.html"', nxt)
     return p
@@ -516,8 +524,8 @@ def render_article_main(m, a, p, anchors):
             '    <section class="apparatus" aria-labelledby="sources-h">\n'
             '      <h2 class="section-label" id="sources-h">Места Писания и источники</h2>\n'
             f'      <details class="source-details"><summary>Открыть источники ({len(p["sources"])})</summary>\n      <ul class="source-list">\n')
-    for href, label in p['sources']:
-        out += f'        <li><a class="ext" href="{href}" target="_blank" rel="noopener">{label}{EXT}</a></li>\n'
+    for item in p['sources']:
+        out += f'        {item}\n'
     out += '      </ul>\n      </details>\n    </section>\n'
     if a['videos']:
         cue_ids = [v for v, _ in a['video_cues']]

@@ -1,7 +1,7 @@
-name: Публикация утверждённого разбора воскресения
+name: Разовая пересборка утверждённых статей
 on:
   push:
-    branches: ['codex/resurrection-polemic-2026-10-08']
+    branches: ['publish/approved-three-articles-2026-10-08']
 permissions:
   contents: write
 jobs:
@@ -15,16 +15,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Сохранить запись источников и восстановить рабочий процесс
-        run: |
-          python3 - <<'PYTHON'
-          from pathlib import Path
-          ledger = Path('editorial/source-ledger.md')
-          note = Path('editorial/resurrection-note-for-publish.md')
-          ledger.write_text(ledger.read_text() + note.read_text())
-          note.unlink()
-          PYTHON
-          git show 8c935b7679ed4e88502947780adf50f70f8e83ba:.github/workflows/rebuild-approved-articles.yml > .github/workflows/rebuild-approved-articles.yml
       - name: Пересобрать сайт и проверить ссылки
         run: |
           python3 tools/rebuild.py
@@ -37,4 +27,4 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Пересобрать каталоги, поиск и ссылки после редакции"
-          git push origin HEAD:codex/resurrection-polemic-2026-10-08
+          git push origin HEAD:publish/approved-three-articles-2026-10-08

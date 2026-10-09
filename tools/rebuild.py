@@ -232,8 +232,59 @@ def page_prose(path):
     return re.search(r'<div class="prose prose-page"[^>]*>\n(.*?)\n  </div>', S.read(path), re.S).group(1)
 
 
-# Обычные страницы со всплывающими стихами: у их .prose есть data-verses="../assets/verses/<имя>.json"
-VERSE_PAGES = [('bez-kupyur', 'bez-kupyur/index.html')]
+# «Комменты на YouTube»: bez-kupyur/index.html — папки, bez-kupyur/<папка>/index.html — комментарии и ответы.
+# Порядок папок на странице — этот список. Новую папку делайте копией существующей и добавьте сюда.
+COMMENT_FOLDERS = ['iisus-chelovek', 'iisus-v-vethom-zavete', 'dusha-i-smert']
+FOLDER_ICON = ('<svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" focusable="false">'
+               '<path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h4.6l2 2.2h8.4A1.5 1.5 0 0 1 21 8.7v9.8a1.5 1.5 0 0 1-1.5 1.5h-15'
+               'A1.5 1.5 0 0 1 3 18.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>')
+
+
+def comment_folders():
+    out = []
+    for slug in COMMENT_FOLDERS:
+        s = S.read(f'bez-kupyur/{slug}/index.html')
+        title = S.html_to_text(re.search(r'<h1 class="page-title">(.*?)</h1>', s, re.S).group(1))
+        threads = re.findall(r'<article class="yt-thread" id="([^"]+)">\n<h2 class="yt-q"><a [^>]*>(.*?)</a></h2>', s)
+        if not threads:
+            raise ValueError(f'bez-kupyur/{slug}: нет ни одного комментария')
+        out.append({'slug': slug, 'title': title, 'threads': threads})
+    return out
+
+
+def render_folders(folders, current=None):
+    """Папки на главной странице «Комментов» (current=None) или «Другие папки» на странице папки."""
+    up = '' if current is None else '../'
+    rows = []
+    for f in folders:
+        if f['slug'] == current:
+            continue
+        n = len(f['threads'])
+        href = f'{up}{f["slug"]}/index.html'
+        preview = ''.join(f'<li><a href="{href}#{tid}">{t}</a></li>' for tid, t in f['threads'][:3])
+        rows.append(f'  <li class="yt-folder">\n'
+                    f'    <a class="yt-folder-link" href="{href}"><span class="yt-folder-icon">{FOLDER_ICON}</span>'
+                    f'<span class="yt-folder-title">{f["title"]}</span>'
+                    f'<span class="yt-folder-count">{n} {S.plural(n, "комментарий", "комментария", "комментариев")}</span></a>\n'
+                    f'    <ul class="yt-folder-preview">{preview}</ul>\n  </li>')
+    if not rows:
+        return '<!-- yt:folders -->\n<!-- /yt:folders -->'
+    head = ('<section class="yt-folders" aria-label="Папки с комментариями">\n' if current is None else
+            '<section class="yt-folders yt-folders-other" aria-labelledby="yt-other-h">\n'
+            '<h2 class="section-label" id="yt-other-h">Другие папки</h2>\n')
+    return ('<!-- yt:folders -->\n' + head + '<ul class="yt-folder-list">\n' + '\n'.join(rows)
+            + '\n</ul>\n</section>\n<!-- /yt:folders -->')
+
+
+def fill_folders(s, folders, current=None):
+    s, n = re.subn(r'<!-- yt:folders -->.*?<!-- /yt:folders -->', lambda _: render_folders(folders, current), s, flags=re.S)
+    if n != 1:
+        raise ValueError('нет места для папок: <!-- yt:folders --><!-- /yt:folders -->')
+    return s
+
+
+# Обычные страницы со всплывающими стихами: у их .prose есть data-verses="…/assets/verses/<имя>.json"
+VERSE_PAGES = [(f'bez-kupyur-{slug}', f'bez-kupyur/{slug}/index.html') for slug in COMMENT_FOLDERS]
 
 
 def page_verses():
@@ -244,7 +295,8 @@ def page_verses():
     return json.loads(res)
 
 
-STATIC_PAGES = [('bez-kupyur/index.html', 'Комменты на YouTube без купюр: что мне пишут'), ('about/index.html', 'Об авторе'), ('search/index.html', 'Поиск')]
+STATIC_PAGES = [('about/index.html', 'Об авторе'), ('search/index.html', 'Поиск')]
+COMMENTS_TITLE = 'Самые интересные комментарии на YouTube и мои ответы на них'
 
 
 def render_all(m):
@@ -284,6 +336,12 @@ def render_all(m):
     out['new/index.html'] = S.replace_main(new, X.render_new_main(m))
     for path, title in STATIC_PAGES:
         out[path] = X.apply_head(S.read(path), path, X.simple_info(path, title))
+    folders = comment_folders()
+    path = 'bez-kupyur/index.html'
+    out[path] = X.apply_head(fill_folders(S.read(path), folders), path, X.simple_info(path, COMMENTS_TITLE))
+    for f in folders:
+        path = f'bez-kupyur/{f["slug"]}/index.html'
+        out[path] = X.apply_head(fill_folders(S.read(path), folders, f['slug']), path, X.simple_info(path, f['title']))
     home = S.read('index.html')
     home = re.sub(r'<section class="home-block" aria-labelledby="home-topics-h">.*?</section>',
                   lambda _: S.render_home_topics(m), home, count=1, flags=re.S)
@@ -329,6 +387,8 @@ def search_index(m):
                      'topics': [t['id']], 'passages': [label for _, label, _ in t['key_verses']], 'aliases': [],
                      'body': t['confession'] + '\n' + '\n'.join(f'{label} — {desc}' for _, label, desc in t['key_verses'])})
     docs.append(page_doc('bez-kupyur/index.html', '/bez-kupyur/'))
+    for slug in COMMENT_FOLDERS:
+        docs.append(page_doc(f'bez-kupyur/{slug}/index.html', f'/bez-kupyur/{slug}/'))
     docs.append(page_doc('about/index.html', '/about/'))
     for vid, f in m['vfields'].items():
         docs.append({'type': 'video', 'url': f'/videos/#{vid}', 'title': f['title'], 'summary': f['desc'],

@@ -827,3 +827,70 @@ mark { background: var(--mark); color: var(--ink); padding: 0 0.1em; border-radi
   .article-reading { display: block; }
   .catalog-filter, .catalog-guides, .intro-route, .intro-next { display: none !important; }
 }
+
+/* --- «Комменты на YouTube»: папки с комментариями и ответы ----------------------------------------- */
+.yt-folders { margin-top: 1.75rem; }
+.yt-folders-other { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+.yt-folder-list {
+  list-style: none; margin: 0; padding: 0; display: grid; gap: 1.6rem 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+}
+/* папка с ярлычком сверху */
+.yt-folder {
+  position: relative; margin-top: 0.8rem; padding: 1rem 1.1rem 0.9rem;
+  background: var(--surface); border: 1px solid var(--rule); border-radius: 0 var(--radius) var(--radius) var(--radius);
+}
+.yt-folder::before {
+  content: ""; position: absolute; left: -1px; top: -0.8rem; width: 6.5rem; height: 0.8rem;
+  background: var(--surface); border: 1px solid var(--rule); border-bottom: 0; border-radius: var(--radius) var(--radius) 0 0;
+}
+.yt-folder:hover, .yt-folder:focus-within { border-color: var(--rubric); }
+.yt-folder:hover::before, .yt-folder:focus-within::before { border-color: var(--rubric); }
+.yt-folder-link {
+  display: grid; grid-template-columns: auto 1fr; column-gap: 0.7rem; align-items: center;
+  color: var(--ink); text-decoration: none;
+}
+.yt-folder-link::after { content: ""; position: absolute; inset: -0.8rem 0 0; } /* вся папка — ссылка */
+.yt-folder-icon { grid-row: span 2; display: flex; color: var(--rubric); }
+.yt-folder-title { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; line-height: 1.2; }
+.yt-folder-count { font: 0.8125rem/1.4 var(--font-ui); color: var(--muted); }
+.yt-folder-link:hover .yt-folder-title { color: var(--rubric); }
+.yt-folder-preview {
+  position: relative; z-index: 1; list-style: none; margin: 0.8rem 0 0; padding: 0.65rem 0 0;
+  border-top: 1px dashed var(--rule); font-size: 0.9375rem; line-height: 1.4;
+}
+.yt-folder-preview li + li { margin-top: 0.45rem; }
+.yt-folder-preview a { color: var(--muted); text-decoration: none; }
+.yt-folder-preview a:hover { color: var(--rubric); text-decoration: underline; }
+
+/* страница папки: комментарий — «облачко», ответ раскрывается */
+.prose .yt-folder-desc { color: var(--muted); font-size: 1.0625rem; }
+.yt-thread { margin-top: 2.25rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); scroll-margin-top: 1rem; }
+.prose .yt-q { margin: 0 0 0.85rem; font-size: 1.35rem; }
+.yt-q-link { color: inherit; text-decoration: none; }
+.yt-q-link:hover { color: var(--rubric); }
+.yt-comment {
+  padding: 0.8rem 1rem 0.9rem; background: var(--surface); border: 1px solid var(--rule);
+  border-radius: 1.1rem 1.1rem 1.1rem 0.3rem;
+}
+.prose .yt-comment p { margin: 0.35rem 0 0; }
+.prose .yt-comment .yt-who { margin: 0; display: flex; align-items: center; gap: 0.4rem; font: 0.8125rem/1.4 var(--font-ui); color: var(--muted); }
+.yt-who svg { color: var(--rubric); flex: none; }
+.yt-answer { margin-top: 0.8rem; }
+.yt-answer > summary {
+  list-style: none; cursor: pointer; display: flex; align-items: center; gap: 0.6rem; width: fit-content; margin-left: auto;
+  padding: 0.35rem 0.9rem 0.35rem 0.35rem; border: 1px solid var(--rule); border-radius: 999px;
+  font: 600 0.9375rem/1.3 var(--font-ui); color: var(--ink); background: var(--bg);
+}
+.yt-answer > summary::-webkit-details-marker { display: none; }
+.yt-answer > summary:hover { border-color: var(--rubric); }
+.yt-answer[open] > summary { margin-left: 0; }
+.yt-avatar { width: 2.25rem; height: 2.25rem; border-radius: 50%; object-fit: cover; }
+.yt-answer-hint { font-weight: 500; color: var(--rubric); }
+.yt-answer-hint::before { content: "· читать"; }
+.yt-answer[open] .yt-answer-hint::before { content: "· свернуть"; }
+.yt-answer-body { margin-top: 0.85rem; padding-left: 1rem; border-left: 3px solid var(--rubric); }
+.prose .yt-answer-body .comment-more { font-size: 0.9375rem; color: var(--muted); }
+@media print {
+  .yt-answer > summary { display: none; }
+}

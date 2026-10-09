@@ -223,7 +223,7 @@ def render_home_start(m):
     total = sum(m['pages'][s]['minutes'] for s in m['start'])
     out = ('<section class="home-block home-start" id="start" aria-labelledby="start-h">\n'
            '  <h2 class="section-label" id="start-h">С чего начать</h2>\n'
-           f'  <p class="start-intro">Пять статей: от основ веры к молитве и надежде. Около {total} минут на всё знакомство.</p>\n'
+           f'  <p class="start-intro">Пять статей: от основ веры к молитве и надежде. Всего около {total} минут чтения.</p>\n'
            '  <ol class="cards start-cards">\n')
     for i, slug in enumerate(m['start'], 1):
         a, p = arts[slug], m['pages'][slug]

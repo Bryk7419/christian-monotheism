@@ -894,3 +894,12 @@ mark { background: var(--mark); color: var(--ink); padding: 0 0.1em; border-radi
 @media print {
   .yt-answer > summary { display: none; }
 }
+
+/* --- Лента времени в статье (например, история движения в «Что такое библейский унитаризм») ------------ */
+.prose .timeline { list-style: none; margin: 1.6em 0 1.8em; padding: 0 0 0 1.5rem; border-left: 2px solid var(--rule); }
+.prose .timeline > li { position: relative; margin: 0 0 1.25em; }
+.prose .timeline > li::before {
+  content: ""; position: absolute; left: calc(-1.5rem - 7px); top: 0.3em; width: 12px; height: 12px;
+  border-radius: 50%; background: var(--bg); border: 2px solid var(--rubric);
+}
+.timeline-when { display: block; margin-bottom: 0.15em; font: 700 0.875rem/1.4 var(--font-ui); letter-spacing: 0.03em; color: var(--rubric); }

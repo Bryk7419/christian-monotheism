@@ -228,6 +228,22 @@ def verses_data(m):
     return json.loads(res)
 
 
+def page_prose(path):
+    return re.search(r'<div class="prose prose-page"[^>]*>\n(.*?)\n  </div>', S.read(path), re.S).group(1)
+
+
+# Обычные страницы со всплывающими стихами: у их .prose есть data-verses="../assets/verses/<имя>.json"
+VERSE_PAGES = [('bez-kupyur', 'bez-kupyur/index.html')]
+
+
+def page_verses():
+    docs = [{'slug': slug, 'passage': '', 'blocks': S.html_to_text(page_prose(path)).split('\n')}
+            for slug, path in VERSE_PAGES]
+    res = subprocess.run(['node', str(S.TOOLS / 'verses.mjs')], input=json.dumps(docs, ensure_ascii=False),
+                         capture_output=True, text=True, check=True).stdout
+    return json.loads(res)
+
+
 STATIC_PAGES = [('bez-kupyur/index.html', 'Комменты на YouTube без купюр: что мне пишут'), ('about/index.html', 'Об авторе'), ('search/index.html', 'Поиск')]
 
 
@@ -244,6 +260,8 @@ def render_all(m):
         s = X.apply_head(s, path, X.article_info(m, a, p))
         out[path] = S.replace_main(s, S.render_article_main(m, a, p, anchors))
         out[f'assets/verses/{a["slug"]}.json'] = json.dumps(m['verses'][a['slug']]['verses'], ensure_ascii=False, separators=(',', ':')) + '\n'
+    for slug, v in page_verses().items():
+        out[f'assets/verses/{slug}.json'] = json.dumps(v['verses'], ensure_ascii=False, separators=(',', ':')) + '\n'
     for t in m['topics']:
         path = f'topics/{t["id"]}/index.html'
         s = S.set_head(S.read(path), t['title'], t['confession'], t['title'])
@@ -287,7 +305,7 @@ def current(p):
 
 def search_index(m):
     def page_doc(path, url):
-        prose = re.search(r'<div class="prose prose-page">\n(.*?)\n  </div>', S.read(path), re.S).group(1)
+        prose = page_prose(path)
         source = S.read(path)
         title = S.html_to_text(re.search(r'<h1[^>]*>(.*?)</h1>', source, re.S).group(1))
         summary = S.html_to_text(re.search(r'<meta name="description" content="([^"]*)"', source).group(1))

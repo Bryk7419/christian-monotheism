@@ -132,11 +132,11 @@ if (articleEl) {
   document.fonts?.ready.then(() => { update(); sections?.update(); });
   update();
   sections?.update();
-  if (!isPreview) {
-    import('./listen.js').catch(() => {});
-    import('./verses.js').catch(() => {});
-  }
+  if (!isPreview) import('./listen.js').catch(() => {});
 }
+
+// --- Всплывающие стихи: в статьях и на страницах, у которых .prose[data-verses] (например, «Комменты на YouTube»)
+if (!isPreview && document.querySelector('.prose[data-verses]')) import('./verses.js').catch(() => {});
 
 // --- «Разделы»: кнопка внизу экрана с номером текущего раздела и список разделов статьи ----------
 // Список берётся из оглавления (.toc), поэтому кнопка есть в статьях от трёх разделов.

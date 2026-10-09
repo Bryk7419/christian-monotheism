@@ -3,7 +3,7 @@
 Сайт Сергея Брыка: статьи, темы и ответы по Писанию.
 
 A static website (plain HTML, CSS and JavaScript, no build step), published with GitHub Pages:
-https://bryk7419.github.io/christian-monotheism/
+https://godisone.faith/
 
 ## Publishing with GitHub Pages
 
@@ -13,6 +13,9 @@ https://bryk7419.github.io/christian-monotheism/
 
 GitHub publishes the site within a minute or two, and republishes it after every push to `main`.
 The empty `.nojekyll` file tells GitHub Pages to serve the files exactly as they are.
+
+The custom domain is set in `CNAME`; the canonical base URL is in `tools/site-config.json`.
+DNS and activation steps for Porkbun: [editorial/domain-godisone-faith.md](editorial/domain-godisone-faith.md).
 
 ## Structure
 

@@ -81,9 +81,11 @@ def parse_article_meta(s):
                                block(s, r'<p class="article-passages">(.*?)</p>'))
     a['topics'] = re.findall(r'class="chip" href="\.\./\.\./topics/([^/]+)/index.html"',
                              block(s, r'<section class="article-topics"(.*?)</section>'))
-    vids = re.findall(r'<article class="video" id="(v\d+)"(?: data-t="([\d,]+)")?>', block(s, r'<section class="article-videos"(.*?)</section>'))
-    a['videos'] = [v for v, _ in vids]
-    a['video_t'] = {v: [int(x) for x in ts.split(',')] for v, ts in vids if ts}
+    vids = re.findall(r'<article class="video" id="(v\d+)"(?: data-t="([\d,]+)")?(?: data-title="([^"]*)")?>',
+                      block(s, r'<section class="article-videos"(.*?)</section>'))
+    a['videos'] = [v for v, _, _ in vids]
+    a['video_t'] = {v: [int(x) for x in ts.split(',')] for v, ts, _ in vids if ts}
+    a['video_title'] = {v: html.unescape(title) for v, _, title in vids if title}
     a['video_cues'] = [(v, int(sec)) for v, sec in re.findall(r'<p class="video-cue" data-video="(v\d+)" data-t="(\d+)">', s)]
     return a
 

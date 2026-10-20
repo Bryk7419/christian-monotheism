@@ -461,10 +461,14 @@ def article_title(title):
             f'<span class="visually-hidden">{sep}</span>{rest}</span>')
 
 
-def article_video(v, fields, only=None, primary=False, passages=None):
-    """Краткая карточка; исходное название и все выбранные отметки доступны в details."""
+def article_video(v, fields, only=None, primary=False, passages=None, title=None):
+    """Краткая карточка; исходное название и все выбранные отметки доступны в details.
+
+    title (data-title) — своя подпись, когда видео разбирает не все «Разбираемые места» статьи."""
     attr = f' data-t="{",".join(str(t) for t in only)}"' if only else ''
-    heading = (('Видеоразбор: ' + ', '.join(passages)) if passages else 'Беседа по теме статьи') if primary else fields['title']
+    if title:
+        attr += f' data-title="{html.escape(title, quote=True)}"'
+    heading = title or ((('Видеоразбор: ' + ', '.join(passages)) if passages else 'Беседа по теме статьи') if primary else fields['title'])
     out = (f'<article class="video" id="{v["id"]}"{attr}>\n'
            f'  <h3 class="video-title">{heading}</h3>\n'
            f'  <p class="video-link"><a class="ext" href="{fields["url"]}" target="_blank" rel="noopener">Смотреть на YouTube{EXT}</a></p>\n'
@@ -541,7 +545,7 @@ def render_article_main(m, a, p, anchors):
                 count = len(ordered) - 1
                 out += f'<details class="more-videos"><summary>Ещё {count} {plural(count, "запись", "записи", "записей")} по теме</summary><div class="video-list">\n'
             out += article_video(vids[vid], m['vfields'][vid], only=a.get('video_t', {}).get(vid),
-                                 primary=i == 0, passages=a['passages'])
+                                 primary=i == 0, passages=a['passages'], title=a.get('video_title', {}).get(vid))
         if len(ordered) > 1:
             out += '</div></details>\n'
         out += '      </div>\n    </section>\n'

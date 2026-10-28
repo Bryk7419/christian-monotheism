@@ -233,6 +233,42 @@ function sectionsNav() {
   return { update };
 }
 
+// --- Посещаемость (GoatCounter) ------------------------------------------------
+// Числа берутся из счётчика и появляются, только если в его настройках включено
+// «Allow adding visitor counts on your website». Иначе страница не меняется.
+function plural(n, one, few, many) {
+  const m10 = n % 10, m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return one;
+  if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
+  return many;
+}
+async function visitCount(base, path) {
+  try {
+    const res = await fetch(`${base}/counter/${encodeURIComponent(path)}.json`);
+    if (!res.ok) return 0;
+    return Number(String((await res.json()).count).replace(/\D/g, '')) || 0;
+  } catch { return 0; }
+}
+const counterScript = document.querySelector('script[data-goatcounter]');
+if (!isPreview && counterScript && location.protocol === 'https:') {
+  const base = counterScript.dataset.goatcounter.replace(/\/count$/, '');
+  const meta = document.querySelector('.article-meta');
+  const canonical = document.querySelector('link[rel="canonical"]');
+  if (meta && canonical) {
+    visitCount(base, new URL(canonical.href).pathname).then((n) => {
+      if (!n) return;
+      meta.insertAdjacentHTML('beforeend', '<span class="sep" aria-hidden="true">·</span>'
+        + `<span class="article-views">${n.toLocaleString('ru-RU')} ${plural(n, 'просмотр', 'просмотра', 'просмотров')}</span>`);
+    });
+  }
+  const footer = document.querySelector('.footer-inner');
+  if (footer) {
+    visitCount(base, 'TOTAL').then((n) => {
+      if (n) footer.insertAdjacentHTML('beforeend', `<p class="footer-text footer-visits">Посещений сайта: ${n.toLocaleString('ru-RU')}</p>`);
+    });
+  }
+}
+
 // --- Приложение: работа без интернета для уже открытых страниц -------------------------------
 const manifestLink = document.querySelector('link[rel="manifest"]');
 if (!isPreview && manifestLink && 'serviceWorker' in navigator && location.protocol === 'https:') {

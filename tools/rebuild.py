@@ -236,7 +236,7 @@ def page_prose(path):
 
 # «Комменты на YouTube»: bez-kupyur/index.html — папки, bez-kupyur/<папка>/index.html — комментарии и ответы.
 # Порядок папок на странице — этот список. Новую папку делайте копией существующей и добавьте сюда.
-COMMENT_FOLDERS = ['iisus-chelovek', 'iisus-v-vethom-zavete', 'dusha-i-smert']
+COMMENT_FOLDERS = ['iisus-chelovek', 'iisus-v-vethom-zavete', 'dusha-i-smert', 'troitsa']
 FOLDER_ICON = ('<svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" focusable="false">'
                '<path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h4.6l2 2.2h8.4A1.5 1.5 0 0 1 21 8.7v9.8a1.5 1.5 0 0 1-1.5 1.5h-15'
                'A1.5 1.5 0 0 1 3 18.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>')

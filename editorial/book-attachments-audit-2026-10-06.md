@@ -86,7 +86,7 @@
 | 057 | 1 Тим. 3:16 — «Бог» или «Который» | **Частично**: [voploshchenie](../answers/voploshchenie/index.html) | 1 Тим. 3:16 кратко упомянут; сама статья сообщает, что отдельного разбора нет. |
 | 058 | Два подлежащих и единственное число глагола | **Есть материал**: [odin-glagol-dva-podlezhashchih](../answers/odin-glagol-dva-podlezhashchih/index.html) | Самостоятельная грамматическая статья есть. |
 | 059 | Ин. 8:58 и перечень ἐγώ εἰμι | **Есть материал**: [prezhde-avraama](../answers/prezhde-avraama/index.html), [nazval-li-iisus-sebya-yahve](../answers/nazval-li-iisus-sebya-yahve/index.html) | Ин. 8:58 уже разобран; объединять редактуру с 012/049. |
-| 060 | «Слово Божие» — Откр. 19 и Ин. 1 | **Частично**: [slovo-bylo-bog](../answers/slovo-bylo-bog/index.html) | Пролог разобран; самостоятельного сопоставления с титулом в Откр. 19 нет. |
+| 060 | «Слово Божие» — Откр. 19 и Ин. 1 | **Есть материал** (2 ноября 2026): [imya-emu-slovo-bozhie](../answers/imya-emu-slovo-bozhie/index.html), [slovo-bylo-bog](../answers/slovo-bylo-bog/index.html) | Отдельный разбор Откр. 19:13 написан; исходный пост автора при этом был недоступен — сверить статью с ним, когда автор его пришлёт. |
 | 061 | Притч. 30:4 — «имя Ему и имя сыну Его» | **Есть материал**: [imya-synu-ego](../answers/imya-synu-ego/index.html) | Есть обновлённый разбор; объединять с 062. |
 | 062 | Притч. 30:4 — контекст Агура и множественное число LXX | **Есть материал**: [imya-synu-ego](../answers/imya-synu-ego/index.html) | Контекст Агура и вариант LXX разобраны. Проверять новую редакцию, а не заменять старым постом. |
 

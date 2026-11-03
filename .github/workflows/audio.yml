@@ -47,7 +47,7 @@ jobs:
           command -v ffmpeg || (sudo apt-get update && sudo apt-get install -y ffmpeg)
           # голос Edge: сторонний пакет, версия закреплена, чтобы её нельзя было незаметно подменить
           python3 -m venv "$RUNNER_TEMP/audio-venv"
-          "$RUNNER_TEMP/audio-venv/bin/pip" install --quiet 'edge-tts==7.2.8'
+          "$RUNNER_TEMP/audio-venv/bin/pip" install --quiet 'edge-tts==7.3.1'
       - name: Озвучить новые и изменённые статьи
         env:
           AZURE_SPEECH_KEY: ${{ secrets.AZURE_SPEECH_KEY }}

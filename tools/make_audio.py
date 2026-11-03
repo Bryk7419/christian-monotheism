@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Озвучка статей нейроголосом: assets/audio/<адрес>.mp3 и общий список assets/audio/index.json.
 
-Текст для озвучки тот же, что у кнопки «Слушать» (assets/js/speech-text.js): заголовок и абзацы статьи,
-ссылки на Писание в скобках пропускаются, греческий читается традиционно. Каждый абзац озвучивается
+Текст для озвучки тот же, что у кнопки «Слушать» (assets/js/speech-text.js): заголовок и абзацы статьи без
+подзаголовков, ссылки на Писание в скобках пропускаются, греческие, еврейские и латинские вставки тоже; у ссылки
+внутри фразы голос читает подсказку data-say, если она есть. Между разделами пауза длиннее. Каждый абзац озвучивается
 отдельно, поэтому в index.json записано, с какой секунды начинается каждый абзац: плеер подсвечивает
 абзац, который сейчас звучит.
 
@@ -43,26 +44,40 @@ OUT = ROOT / 'assets' / 'audio'
 INDEX = OUT / 'index.json'
 CONFIG = json.loads((ROOT / 'tools' / 'site-config.json').read_text(encoding='utf-8'))
 AUDIO = CONFIG.get('audio', {})
-FORMAT = 1                      # меняйте, если меняется способ сборки записи: всё переозвучится
-PAUSE = {'title': 0.9, 'h2': 0.7, 'h3': 0.6, 'p': 0.45, 'li': 0.35}
+FORMAT = 2                      # меняйте, если меняется способ сборки записи: всё переозвучится
+PAUSE = {'title': 0.9, 'section': 1.2, 'p': 0.45, 'li': 0.35}   # section — последний абзац перед подзаголовком
 CHUNK = 1500                    # знаков в одном запросе к службе
 
 
-# --- Абзацы статьи: как в assets/js/listen.js — заголовок, затем p, h2, h3, li внутри .prose -------------
+# --- Абзацы статьи: как в assets/js/listen.js — заголовок, затем p и li внутри .prose (подзаголовки не читаются) -
 class Blocks(HTMLParser):
-    TAGS = ('p', 'h2', 'h3', 'li')
+    TAGS = ('p', 'li')
+    HEADINGS = ('h2', 'h3')
 
     def __init__(self):
         super().__init__(convert_charrefs=True)
-        self.items = []     # [тег, [части текста], есть ли внутри <p>]
+        self.items = []     # [тег, [части текста], есть ли внутри <p>, последний абзац раздела]
         self.open = []
         self.figure = 0     # схемы (<figure>) и ссылки на видео (p.video-cue) не читаются, как и в listen.js
         self.skipping = []
+        self.say = None     # [тег, глубина]: внутри элемента с data-say текст заменён подсказкой для голоса
 
     def handle_starttag(self, tag, attrs):
-        if tag == 'figure' or (tag == 'p' and 'video-cue' in (dict(attrs).get('class') or '')):
+        if self.say:
+            if tag == self.say[0]:
+                self.say[1] += 1
+            return
+        a = dict(attrs)
+        if tag == 'figure' or (tag == 'p' and 'video-cue' in (a.get('class') or '')):
             self.figure += 1
             self.skipping.append(tag)
+            return
+        if 'data-say' in a and not self.figure:
+            self.handle_data(a['data-say'] or '')
+            self.say = [tag, 1]
+            return
+        if tag in self.HEADINGS and not self.figure and self.items:
+            self.items[-1][3] = True
             return
         if tag not in self.TAGS or self.figure:
             return
@@ -70,11 +85,17 @@ class Blocks(HTMLParser):
             for it in self.open:
                 if it[0] == 'li':
                     it[2] = True
-        item = [tag, [], False]
+        item = [tag, [], False, False]
         self.items.append(item)
         self.open.append(item)
 
     def handle_endtag(self, tag):
+        if self.say:
+            if tag == self.say[0]:
+                self.say[1] -= 1
+                if not self.say[1]:
+                    self.say = None
+            return
         if self.skipping and tag == self.skipping[-1]:
             self.skipping.pop()
             self.figure = max(0, self.figure - 1)
@@ -87,6 +108,8 @@ class Blocks(HTMLParser):
                 break
 
     def handle_data(self, data):
+        if self.say:
+            return
         for it in self.open:
             it[1].append(data)
 
@@ -105,7 +128,8 @@ def read_article(path):
     t = Blocks()
     t.feed(f'<p>{title.group(1)}</p>')
     blocks = [('title', ''.join(t.items[0][1]))]
-    blocks += [(tag, ''.join(parts)) for tag, parts, has_p in p.items if not (tag == 'li' and has_p)]
+    blocks += [('section' if end else tag, ''.join(parts)) for tag, parts, has_p, end in p.items
+               if not (tag == 'li' and has_p)]
     return {'home': home.group(1) if home else '', 'blocks': blocks,
             'title': re.sub(r'\s+', ' ', ''.join(t.items[0][1])).strip()}
 

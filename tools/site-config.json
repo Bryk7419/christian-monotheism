@@ -15,6 +15,6 @@
     "service": "",
     "azure_voice": "ru-RU-DmitryNeural",
     "yandex_voice": "filipp",
-    "bitrate": "48k"
+    "bitrate": "32k"
   }
 }

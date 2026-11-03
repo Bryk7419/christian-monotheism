@@ -25,19 +25,29 @@ let bar;
 let wakeLock = null;
 let userScrolledAt = 0;
 
-// Что читается вслух: абзацы, заголовки и пункты списков; схемы (<figure>) и ссылки на видео (.video-cue) пропускаются.
-// То же правило в tools/make_audio.py (класс Blocks), иначе подсветка разойдётся с записью.
+// Что читается вслух: заголовок статьи, абзацы и пункты списков; подзаголовки, схемы (<figure>)
+// и ссылки на видео (.video-cue) пропускаются. То же правило в tools/make_audio.py (класс Blocks),
+// иначе подсветка разойдётся с записью.
+const BLOCKS = 'p, li';
 function speakableBlock(el) {
   return el && !(el.matches('li') && el.querySelector('p')) && !el.closest('figure, .video-cue');
 }
 
+// Текст абзаца для голоса: вместо элемента с data-say звучит его подсказка (так в tools/make_audio.py)
+function sayText(el) {
+  if (!el.querySelector('[data-say]')) return el.textContent;
+  const copy = el.cloneNode(true);
+  for (const x of copy.querySelectorAll('[data-say]')) x.replaceWith(x.getAttribute('data-say') || '');
+  return copy.textContent;
+}
+
 function collect() {
   const home = prose?.dataset.home || null;
-  const els = [article.querySelector('.article-title'), ...prose.querySelectorAll('p, h2, h3, li')];
+  const els = [article.querySelector('.article-title'), ...prose.querySelectorAll(BLOCKS)];
   blocks = els.filter(speakableBlock);
   queue = [];
   blocks.forEach((el, bi) => {
-    const text = speakable(el.textContent, home);
+    const text = speakable(sayText(el), home);
     for (const s of sentences(text)) queue.push({ el, bi, text: s });
   });
 }
@@ -264,7 +274,7 @@ function setupAudio(info) {
   const KEY = `audio:${location.pathname}`;
   const audio = new Audio();
   audio.preload = 'none';
-  const els = [article.querySelector('.article-title'), ...prose.querySelectorAll('p, h2, h3, li')]
+  const els = [article.querySelector('.article-title'), ...prose.querySelectorAll(BLOCKS)]
     .filter(speakableBlock);
   const starts = info.s || [];
   const sync = els.length === starts.length;

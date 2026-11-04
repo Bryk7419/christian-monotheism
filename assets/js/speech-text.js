@@ -176,7 +176,7 @@ export function speakable(text, home) {
   // 3. ссылки внутри фразы → словами, после предлога — в нужном падеже («в Ин. 8:58» → «в Евангелии от Иоанна…»);
   // через «и», «или», запятую падеж переходит на следующую ссылку («в Ин. 1:1 и Ин. 1:14»)
   let prev = null;
-  t = t.replace(/(\S+)?(\s*)\u0001(\d+)\u0002/g, (all, word, space, i, at) => {
+  t = t.replace(/([^\s\u0001\u0002]+)?(\s*)\u0001(\d+)\u0002/g, (all, word, space, i, at) => {
     const before = (word || '').toLowerCase();
     let c = space ? PREP_CASE[before] ?? (GENITIVE_AFTER.has(before) ? 0 : ACC_AFTER.has(before) ? 4 : null) : null;
     let inherited = false;

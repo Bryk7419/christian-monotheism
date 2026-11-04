@@ -68,11 +68,12 @@ class Blocks(HTMLParser):
                 self.say[1] += 1
             return
         a = dict(attrs)
-        if tag == 'figure' or (tag == 'p' and 'video-cue' in (a.get('class') or '')):
+        # схемы, ссылки на видео и абзацы с пустой подсказкой (data-say="") не читаются
+        if tag == 'figure' or (tag == 'p' and 'video-cue' in (a.get('class') or '')) or (tag in self.TAGS and a.get('data-say') == ''):
             self.figure += 1
             self.skipping.append(tag)
             return
-        if 'data-say' in a and not self.figure:
+        if 'data-say' in a and not self.figure and tag not in self.TAGS:
             self.handle_data(a['data-say'] or '')
             self.say = [tag, 1]
             return
@@ -88,14 +89,20 @@ class Blocks(HTMLParser):
         item = [tag, [], False, False]
         self.items.append(item)
         self.open.append(item)
+        if 'data-say' in a:             # подсказка на весь абзац
+            self.handle_data(a['data-say'])
+            self.say = [tag, 1]
 
     def handle_endtag(self, tag):
         if self.say:
-            if tag == self.say[0]:
-                self.say[1] -= 1
-                if not self.say[1]:
-                    self.say = None
-            return
+            if tag != self.say[0]:
+                return
+            self.say[1] -= 1
+            if self.say[1]:
+                return
+            self.say = None
+            if tag not in self.TAGS:
+                return
         if self.skipping and tag == self.skipping[-1]:
             self.skipping.pop()
             self.figure = max(0, self.figure - 1)

@@ -30,11 +30,13 @@ let userScrolledAt = 0;
 // иначе подсветка разойдётся с записью.
 const BLOCKS = 'p, li';
 function speakableBlock(el) {
-  return el && !(el.matches('li') && el.querySelector('p')) && !el.closest('figure, .video-cue');
+  return el && !(el.matches('li') && el.querySelector('p')) && !el.closest('figure, .video-cue, p[data-say=""], li[data-say=""]');
 }
 
-// Текст абзаца для голоса: вместо элемента с data-say звучит его подсказка (так в tools/make_audio.py)
+// Текст абзаца для голоса: вместо элемента с data-say звучит его подсказка (так в tools/make_audio.py);
+// абзац с пустой подсказкой (data-say="") не читается вовсе
 function sayText(el) {
+  if (el.hasAttribute('data-say')) return el.getAttribute('data-say');
   if (!el.querySelector('[data-say]')) return el.textContent;
   const copy = el.cloneNode(true);
   for (const x of copy.querySelectorAll('[data-say]')) x.replaceWith(x.getAttribute('data-say') || '');

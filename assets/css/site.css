@@ -314,6 +314,28 @@ a.ref:hover { text-decoration: underline; }
 .video-player iframe { display: block; width: 100%; height: 100%; border: 0; border-radius: 4px; background: #000; }
 .video-link { margin: 0; font: 0.9375rem/1.5 var(--font-ui); }
 .video-more { margin: 0.7rem 0 0; font: 0.875rem/1.5 var(--font-ui); }
+/* Главная: приглашение посмотреть исповедание на YouTube — крупная заметная кнопка-карточка */
+.video-invite { margin: 0.25rem 0 1.5rem; }
+.video-invite-link {
+  display: inline-flex; align-items: center; gap: 0.9rem; max-width: 100%; padding: 0.85rem 1.25rem 0.85rem 0.85rem;
+  border: 2px solid var(--rubric); border-radius: 999px; background: var(--surface); color: var(--ink);
+  text-decoration: none; font-family: var(--font-ui);
+}
+.video-invite-link:hover, .video-invite-link:focus-visible { background: var(--rubric); color: var(--bg); }
+.video-invite-link:hover .video-invite-sub, .video-invite-link:focus-visible .video-invite-sub { color: inherit; }
+.video-invite-play {
+  flex: none; display: inline-flex; align-items: center; justify-content: center; width: 3rem; height: 3rem;
+  border-radius: 50%; background: var(--rubric); color: var(--bg);
+}
+.video-invite-link:hover .video-invite-play, .video-invite-link:focus-visible .video-invite-play { background: var(--bg); color: var(--rubric); }
+.video-invite-text { display: grid; gap: 0.15rem; min-width: 0; }
+.video-invite-title { font-size: 1.1875rem; font-weight: 700; line-height: 1.25; }
+.video-invite-sub { font-size: 0.875rem; color: var(--muted); line-height: 1.35; }
+@media (max-width: 30rem) {
+  .video-invite-link { display: flex; border-radius: 18px; }
+  .video-invite-title { font-size: 1.0625rem; }
+}
+
 /* Ссылка на нужное место видео в тексте статьи: <p class="video-cue" data-video="vNN" data-t="секунды"></p> */
 .prose .video-cue { margin: -0.2rem 0 1.5rem; }
 .prose .video-cue a {

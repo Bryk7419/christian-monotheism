@@ -11,7 +11,7 @@
 Из assets/search-index.json берутся только порядок статей и тем и синонимы поиска (aliases). Новая статья добавляется в конец порядка.
 
 Скрипт пересобирает: страницы статей (ссылки на указатель, время чтения, дата прописью),
-страницы тем, каталог статей, страницу вопросов, список тем, страницу видео, указатель Писания,
+страницы тем, страницу вопросов, список тем с поиском по статьям, страницу видео, указатель Писания,
 плитки тем и «С чего начать» на главной, а также assets/search-index.json.
 Страницы «Комменты на YouTube» и «Об авторе» правятся вручную; в индекс попадает их текст.
 
@@ -263,7 +263,10 @@ def render_folders(folders, current=None):
             continue
         n = len(f['threads'])
         href = f'{up}{f["slug"]}/index.html'
-        preview = ''.join(f'<li><a href="{href}#{tid}">{t}</a></li>' for tid, t in f['threads'][:3])
+        # на главной «Комментов» в превью все комментарии: первые три видны, остальные открывает поиск по странице
+        shown = f['threads'] if current is None else f['threads'][:3]
+        preview = ''.join(f'<li{"" if i < 3 else " class=\"yt-more\" hidden"}><a href="{href}#{tid}">{t}</a></li>'
+                          for i, (tid, t) in enumerate(shown))
         rows.append(f'  <li class="yt-folder">\n'
                     f'    <a class="yt-folder-link" href="{href}"><span class="yt-folder-icon">{FOLDER_ICON}</span>'
                     f'<span class="yt-folder-title">{f["title"]}</span>'
@@ -276,6 +279,18 @@ def render_folders(folders, current=None):
             '<h2 class="section-label" id="yt-other-h">Другие папки</h2>\n')
     return ('<!-- yt:folders -->\n' + head + '<ul class="yt-folder-list">\n' + '\n'.join(rows)
             + '\n</ul>\n</section>\n<!-- /yt:folders -->')
+
+
+def fill_filter(s, up, folder):
+    """Поиск по странице «Комментов»: на главной — по папкам и комментариям, в папке — по её комментариям."""
+    form = (S.page_filter(up, 'Найти комментарий', 'Например: душа или Троица', '.yt-folder',
+                          parts='.yt-folder-preview li', idle='.yt-more') if not folder else
+            S.page_filter(up, 'Найти в этой папке', 'Например: Дух или воскресение', '.yt-thread'))
+    s, n = re.subn(r'<!-- page:filter -->.*?<!-- /page:filter -->', lambda _: f'<!-- page:filter -->\n{form}<!-- /page:filter -->',
+                   s, flags=re.S)
+    if n != 1:
+        raise ValueError('нет места для поиска по странице: <!-- page:filter --><!-- /page:filter -->')
+    return s
 
 
 def fill_folders(s, folders, current=None):
@@ -322,7 +337,6 @@ def render_all(m):
         s = X.apply_head(s, path, X.topic_info(t))
         out[path] = S.replace_main(s, S.render_topic_main(m, t))
     for path, title, intro, main in [
-            ('articles/index.html', 'Все статьи', m['articles_intro'], S.render_articles_index(m)),
             ('questions/index.html', None, None, S.render_questions_index(m)),
             ('topics/index.html', None, None, S.render_topics_index(m)),
             ('videos/index.html', 'Видео', m['videos_intro'], S.render_videos_main(m)),
@@ -332,24 +346,28 @@ def render_all(m):
             s = S.set_head(s, title, intro, title)
         s = X.apply_head(s, path, X.simple_info(path, title or X.plain(re.search(r'<title>(.*?) — ', s).group(1))))
         out[path] = S.replace_main(s, main)
-    # «Что нового»: страница по образцу каталога статей
-    new = S.set_head(S.read('articles/index.html'), 'Что нового', 'Новые и обновлённые статьи сайта, от последних к более ранним.', 'Что нового')
+    # «Что нового»: страница по образцу списка тем
+    new = S.set_head(S.read('topics/index.html'), 'Что нового', 'Новые и обновлённые статьи сайта, от последних к более ранним.', 'Что нового')
     new = X.apply_head(new, 'new/index.html', X.simple_info('new/index.html', 'Что нового'))
     out['new/index.html'] = S.replace_main(new, X.render_new_main(m))
     for path, title in STATIC_PAGES:
         out[path] = X.apply_head(S.read(path), path, X.simple_info(path, title))
     folders = comment_folders()
     path = 'bez-kupyur/index.html'
-    out[path] = X.apply_head(fill_folders(S.read(path), folders), path, X.simple_info(path, COMMENTS_TITLE))
+    out[path] = X.apply_head(fill_filter(fill_folders(S.read(path), folders), '../', False), path, X.simple_info(path, COMMENTS_TITLE))
     for f in folders:
         path = f'bez-kupyur/{f["slug"]}/index.html'
-        out[path] = X.apply_head(fill_folders(S.read(path), folders, f['slug']), path, X.simple_info(path, f['title']))
+        page = fill_filter(fill_folders(S.read(path), folders, f['slug']), '../../', True)
+        out[path] = X.apply_head(page, path, X.simple_info(path, f['title']))
     home = S.read('index.html')
     home = re.sub(r'<section class="home-block" aria-labelledby="home-topics-h">.*?</section>',
                   lambda _: S.render_home_topics(m), home, count=1, flags=re.S)
     home = re.sub(r'<section class="home-block home-start".*?</section>',
                   lambda _: S.render_home_start(m), home, count=1, flags=re.S)
     out['index.html'] = X.apply_head(home, 'index.html', X.simple_info('index.html'))
+    for p in out:
+        if p.endswith('.html'):
+            out[p] = X.set_nav(out[p], p)
     out['assets/search-index.json'] = search_index(m)
     pages = [p for p in out if p.endswith('.html')]
     out['sitemap.xml'] = X.sitemap(m, pages)

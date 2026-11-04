@@ -790,6 +790,15 @@ mark { background: var(--mark); color: var(--ink); padding: 0 0.1em; border-radi
 .is-date-order .card-updated { display: block; }
 .catalog-empty { margin-top: 1.5rem; }
 @media (max-width: 30rem) { .catalog-filter { padding: 1rem; } }
+/* «Темы»: свёрнутый список всех статей, его раскрывает поиск. Поиск по странице на других разделах. */
+.catalog-status:empty { display: none; }
+.catalog-results { margin: 0 0 1.5rem; font-family: var(--font-ui); }
+.catalog-results > summary { display: flex; align-items: center; min-height: 44px; padding-block: 0.5rem; cursor: pointer; color: var(--rubric); font: 500 0.9375rem/1.4 var(--font-ui); }
+.catalog-results > summary:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+.catalog-results .catalog-list { font-family: var(--font-text); }
+.topic-entry-meta a { color: inherit; text-underline-offset: 0.2em; }
+.topic-entry-meta a:hover { color: var(--rubric); }
+.page-filter { margin-bottom: 1.5rem; }
 
 /* Заголовок, маршрут знакомства и продолжение чтения. */
 .article-title-main { display: block; }

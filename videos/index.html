@@ -56,13 +56,11 @@
   </div>
   <nav id="site-nav" class="site-nav" aria-label="Разделы сайта">
     <ul>
-      <li><a href="../">Главная</a></li>
-      <li><a href="../bez-kupyur/index.html">Комменты на YouTube</a></li>
       <li><a href="../topics/index.html">Темы</a></li>
-      <li><a href="../questions/index.html">Вопросы и ответы</a></li>
-      <li><a href="../articles/index.html">Все статьи</a></li>
       <li><a href="../scripture/index.html">По местам Писания</a></li>
-      <li><a href="index.html" aria-current="page">Видео</a></li>
+      <li><a href="../questions/index.html">Вопросы и ответы</a></li>
+      <li><a href="../videos/index.html" aria-current="page">Видео</a></li>
+      <li><a href="../bez-kupyur/index.html">Комменты на YouTube</a></li>
       <li><a href="../about/index.html">Об авторе</a></li>
     </ul>
   </nav>
@@ -77,6 +75,17 @@
     <div class="catalog-intro"><p>Беседы и разборы по темам сайта. По отметкам времени можно сразу перейти к нужной части записи.</p>
 </div>
   </header>
+  <form class="catalog-filter page-filter" action="../search/index.html" method="get" role="search" data-page-filter data-items=".video-list-full > .video" data-parts=".timestamps li">
+    <label class="search-label" for="page-q">Найти в видео</label>
+    <div class="search-row">
+      <input class="search-input" id="page-q" name="q" type="search" placeholder="Например: Троица или Евр. 1" autocomplete="off" enterkeyhint="search">
+      <button class="button" type="submit">Найти</button>
+    </div>
+    <button class="catalog-reset" type="button" data-page-filter-reset hidden>Очистить</button>
+  </form>
+  <p class="catalog-status" role="status" aria-live="polite" data-page-filter-status></p>
+  <p class="catalog-empty" data-page-filter-empty hidden>На этой странице ничего не нашлось. <a href="../search/index.html" data-base="../search/index.html">Искать по всему сайту</a></p>
+  <script type="module" src="../assets/js/page-filter.js"></script>
   <div class="video-list video-list-full">
 <article class="video" id="v01">
   <p class="eyebrow">Видео</p>
@@ -806,15 +815,13 @@
   <div class="footer-inner">
     <p class="footer-text">Статьи, темы и ответы по Писанию.</p>
     <ul class="footer-nav">
-      <li><a href="../">Главная</a></li>
-      <li><a href="../bez-kupyur/index.html">Комменты на YouTube</a></li>
       <li><a href="../topics/index.html">Темы</a></li>
-      <li><a href="../questions/index.html">Вопросы и ответы</a></li>
-      <li><a href="../articles/index.html">Все статьи</a></li>
       <li><a href="../scripture/index.html">По местам Писания</a></li>
-      <li><a href="index.html">Видео</a></li>
-      <li><a href="../new/index.html">Что нового</a></li>
+      <li><a href="../questions/index.html">Вопросы и ответы</a></li>
+      <li><a href="../videos/index.html">Видео</a></li>
+      <li><a href="../bez-kupyur/index.html">Комменты на YouTube</a></li>
       <li><a href="../about/index.html">Об авторе</a></li>
+      <li><a href="../new/index.html">Что нового</a></li>
       <li><a href="../search/index.html">Поиск</a></li>
     </ul>
   </div>

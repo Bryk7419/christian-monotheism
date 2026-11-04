@@ -163,6 +163,10 @@ def chunks(phrases):
 
 
 # --- Службы озвучки: каждая возвращает PCM 16 бит, моно, с частотой self.rate ----------------------------
+class VoiceError(Exception):
+    """Служба не дала звук и после повторов: статья пропускается, запуск идёт дальше (её озвучит следующий)."""
+
+
 def request(url, data, headers, attempts=6):
     for n in range(attempts):
         try:
@@ -175,12 +179,12 @@ def request(url, data, headers, attempts=6):
                 print(f'  служба ответила {e.code}, повтор через {wait:.0f} с', flush=True)
                 time.sleep(wait)
                 continue
-            sys.exit(f'Ошибка службы озвучки {e.code}: {body}')
+            raise VoiceError(f'служба ответила {e.code}: {body}')
         except urllib.error.URLError as e:
             if n < attempts - 1:
                 time.sleep(min(60, 2 ** (n + 1)))
                 continue
-            sys.exit(f'Нет связи со службой озвучки: {e.reason}')
+            raise VoiceError(f'нет связи со службой: {e.reason}')
 
 
 class Azure:
@@ -255,7 +259,8 @@ class Edge:
         return bytes(out)
 
     def __call__(self, text):
-        attempts = 6
+        # служба Edge временами перестаёт отдавать звук («No audio was received»): ждать дольше, до 4 минут
+        attempts = 7
         for n in range(attempts):
             try:
                 mp3 = asyncio.run(self.mp3(text))
@@ -264,10 +269,11 @@ class Edge:
                 break
             except Exception as e:      # обрывы связи и отказы службы: подождать и повторить
                 if n == attempts - 1:
-                    sys.exit(f'Ошибка службы озвучки Edge: {e}')
-                print(f'  служба Edge: {e}; повтор', flush=True)
-                time.sleep(min(60, 2 ** (n + 1)))
-        time.sleep(0.3)                 # не торопить службу
+                    raise VoiceError(f'служба Edge: {e}') from e
+                wait = min(240, 4 * 2 ** n)
+                print(f'  служба Edge: {e}; повтор через {wait} с', flush=True)
+                time.sleep(wait)
+        time.sleep(1)                   # не торопить службу
         return subprocess.run(['ffmpeg', '-loglevel', 'error', '-f', 'mp3', '-i', '-', '-f', 's16le',
                                '-ar', str(self.rate), '-ac', '1', '-'], input=mp3, capture_output=True, check=True).stdout
 
@@ -377,19 +383,32 @@ def main():
             print(' ', slug)
         return
 
-    done = 0
+    done, failed, streak = 0, [], 0
     for slug, h in todo:
         if args.max_minutes and time.time() - started > args.max_minutes * 60:
             print('Время вышло: остальное озвучится при следующем запуске.')
             break
         a = articles[slug]
         print(f'озвучиваю: {slug}', flush=True)
-        pcm, starts = build(voice, a['blocks'], phrases[slug])
+        try:
+            pcm, starts = build(voice, a['blocks'], phrases[slug])
+        except VoiceError as e:         # статью озвучит следующий запуск; три отказа подряд — служба не отвечает
+            failed.append(slug)
+            streak += 1
+            print(f'  пропущена ({e})', flush=True)
+            if streak >= 3:
+                print('Служба трижды подряд не дала звук: остальное озвучится при следующем запуске.')
+                break
+            time.sleep(120)
+            continue
+        streak = 0
         encode(pcm, voice.rate, OUT / f'{slug}.mp3', a['title'])
         index[slug] = {'h': h, 'd': round(len(pcm) / 2 / voice.rate, 1), 'v': vid, 's': starts}
         save(index)
         done += 1
-    print(f'Готово: {done} из {len(todo)}.')
+    print(f'Готово: {done} из {len(todo)}.' + (f' Пропущены: {", ".join(failed)}.' if failed else ''))
+    if failed and not done:
+        sys.exit(1)
 
 
 if __name__ == '__main__':

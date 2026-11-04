@@ -57,13 +57,11 @@
   </div>
   <nav id="site-nav" class="site-nav" aria-label="Разделы сайта">
     <ul>
-      <li><a href="../">Главная</a></li>
-      <li><a href="index.html" aria-current="page">Комменты на YouTube</a></li>
       <li><a href="../topics/index.html">Темы</a></li>
-      <li><a href="../questions/index.html">Вопросы и ответы</a></li>
-      <li><a href="../articles/index.html">Все статьи</a></li>
       <li><a href="../scripture/index.html">По местам Писания</a></li>
+      <li><a href="../questions/index.html">Вопросы и ответы</a></li>
       <li><a href="../videos/index.html">Видео</a></li>
+      <li><a href="../bez-kupyur/index.html" aria-current="page">Комменты на YouTube</a></li>
       <li><a href="../about/index.html">Об авторе</a></li>
     </ul>
   </nav>
@@ -77,12 +75,25 @@
 <p>Острые вопросы, жёсткие возражения и комментарии без церемоний. Здесь я показываю, что мне пишут под видео на YouTube, и отвечаю по существу — без купюр.</p>
 <p>Комментарии разложены по папкам. Откройте папку с интересной вам темой: в ней видно, что мне написали, а мой ответ раскрывается одним нажатием.</p>
   </div>
+<!-- page:filter -->
+  <form class="catalog-filter page-filter" action="../search/index.html" method="get" role="search" data-page-filter data-items=".yt-folder" data-parts=".yt-folder-preview li" data-idle-hidden=".yt-more">
+    <label class="search-label" for="page-q">Найти комментарий</label>
+    <div class="search-row">
+      <input class="search-input" id="page-q" name="q" type="search" placeholder="Например: душа или Троица" autocomplete="off" enterkeyhint="search">
+      <button class="button" type="submit">Найти</button>
+    </div>
+    <button class="catalog-reset" type="button" data-page-filter-reset hidden>Очистить</button>
+  </form>
+  <p class="catalog-status" role="status" aria-live="polite" data-page-filter-status></p>
+  <p class="catalog-empty" data-page-filter-empty hidden>На этой странице ничего не нашлось. <a href="../search/index.html" data-base="../search/index.html">Искать по всему сайту</a></p>
+  <script type="module" src="../assets/js/page-filter.js"></script>
+<!-- /page:filter -->
 <!-- yt:folders -->
 <section class="yt-folders" aria-label="Папки с комментариями">
 <ul class="yt-folder-list">
   <li class="yt-folder">
     <a class="yt-folder-link" href="iisus-chelovek/index.html"><span class="yt-folder-icon"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" focusable="false"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h4.6l2 2.2h8.4A1.5 1.5 0 0 1 21 8.7v9.8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="yt-folder-title">Иисус — Человек и после воскресения</span><span class="yt-folder-count">4 комментария</span></a>
-    <ul class="yt-folder-preview"><li><a href="iisus-chelovek/index.html#net-spasitelya-krome-menya">Если «нет Спасителя кроме Меня», как Спасителем может быть Иисус?</a></li><li><a href="iisus-chelovek/index.html#svidetelstvo-v-svoe-vremya">«Таково было в своё время свидетельство»: перестал ли Иисус быть человеком?</a></li><li><a href="iisus-chelovek/index.html#odin-glagol">Один глагол при Отце и Сыне — значит, одно лицо?</a></li></ul>
+    <ul class="yt-folder-preview"><li><a href="iisus-chelovek/index.html#net-spasitelya-krome-menya">Если «нет Спасителя кроме Меня», как Спасителем может быть Иисус?</a></li><li><a href="iisus-chelovek/index.html#svidetelstvo-v-svoe-vremya">«Таково было в своё время свидетельство»: перестал ли Иисус быть человеком?</a></li><li><a href="iisus-chelovek/index.html#odin-glagol">Один глагол при Отце и Сыне — значит, одно лицо?</a></li><li class="yt-more" hidden><a href="iisus-chelovek/index.html#foma-i-drugie-teksty">«Господь мой и Бог мой», «Бог явился во плоти»: разве Иисус не назван Богом?</a></li></ul>
   </li>
   <li class="yt-folder">
     <a class="yt-folder-link" href="iisus-v-vethom-zavete/index.html"><span class="yt-folder-icon"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" focusable="false"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h4.6l2 2.2h8.4A1.5 1.5 0 0 1 21 8.7v9.8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="yt-folder-title">Являлся ли Иисус в Ветхом Завете?</span><span class="yt-folder-count">3 комментария</span></a>
@@ -90,7 +101,7 @@
   </li>
   <li class="yt-folder">
     <a class="yt-folder-link" href="dusha-i-smert/index.html"><span class="yt-folder-icon"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" focusable="false"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h4.6l2 2.2h8.4A1.5 1.5 0 0 1 21 8.7v9.8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="yt-folder-title">Душа и смерть</span><span class="yt-folder-count">7 комментариев</span></a>
-    <ul class="yt-folder-preview"><li><a href="dusha-i-smert/index.html#ne-materializm-li">Чем библейский взгляд на смерть отличается от материализма?</a></li><li><a href="dusha-i-smert/index.html#chelovek-i-zhivotnoe">Чем смерть человека отличается от смерти животного?</a></li><li><a href="dusha-i-smert/index.html#krov-i-dusha">Кровь — лишь видимая часть души?</a></li></ul>
+    <ul class="yt-folder-preview"><li><a href="dusha-i-smert/index.html#ne-materializm-li">Чем библейский взгляд на смерть отличается от материализма?</a></li><li><a href="dusha-i-smert/index.html#chelovek-i-zhivotnoe">Чем смерть человека отличается от смерти животного?</a></li><li><a href="dusha-i-smert/index.html#krov-i-dusha">Кровь — лишь видимая часть души?</a></li><li class="yt-more" hidden><a href="dusha-i-smert/index.html#telo-dushevnoe">«Сеется тело душевное»: разве душа не живёт после смерти?</a></li><li class="yt-more" hidden><a href="dusha-i-smert/index.html#ne-boytes-ubivayushchih-telo">«Не бойтесь убивающих тело, души же не могущих убить»: разве это не о бессмертии души?</a></li><li class="yt-more" hidden><a href="dusha-i-smert/index.html#predayu-duh-moy">«В руки Твои предаю дух Мой»: куда ушёл дух Христа?</a></li><li class="yt-more" hidden><a href="dusha-i-smert/index.html#dushi-pod-zhertvennikom">Души под жертвенником вопиют — значит, они живы?</a></li></ul>
   </li>
   <li class="yt-folder">
     <a class="yt-folder-link" href="troitsa/index.html"><span class="yt-folder-icon"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" focusable="false"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h4.6l2 2.2h8.4A1.5 1.5 0 0 1 21 8.7v9.8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="yt-folder-title">Троица и Святой Дух</span><span class="yt-folder-count">2 комментария</span></a>
@@ -107,15 +118,13 @@
   <div class="footer-inner">
     <p class="footer-text">Статьи, темы и ответы по Писанию.</p>
     <ul class="footer-nav">
-      <li><a href="../">Главная</a></li>
-      <li><a href="index.html">Комменты на YouTube</a></li>
       <li><a href="../topics/index.html">Темы</a></li>
-      <li><a href="../questions/index.html">Вопросы и ответы</a></li>
-      <li><a href="../articles/index.html">Все статьи</a></li>
       <li><a href="../scripture/index.html">По местам Писания</a></li>
+      <li><a href="../questions/index.html">Вопросы и ответы</a></li>
       <li><a href="../videos/index.html">Видео</a></li>
-      <li><a href="../new/index.html">Что нового</a></li>
+      <li><a href="../bez-kupyur/index.html">Комменты на YouTube</a></li>
       <li><a href="../about/index.html">Об авторе</a></li>
+      <li><a href="../new/index.html">Что нового</a></li>
       <li><a href="../search/index.html">Поиск</a></li>
     </ul>
   </div>

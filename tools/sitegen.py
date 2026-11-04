@@ -177,10 +177,9 @@ def catalog_header(title, intro):
             f'    <div class="catalog-intro"><p>{intro}</p>\n</div>\n  </header>\n')
 
 
-def render_articles_index(m):
-    out = '<main id="main" class="main" tabindex="-1">\n\n\n<div class="catalog catalog-articles">\n'
-    out += catalog_header('Все статьи', m['articles_intro'])
-    out += '''  <form class="catalog-filter" action="../search/index.html" method="get" data-catalog-form role="search">
+def catalog_form(m):
+    """Поиск по статьям с выбором темы (страница «Темы»). Без JavaScript ведёт в общий поиск."""
+    out = '''  <form class="catalog-filter" action="../search/index.html" method="get" data-catalog-form role="search">
     <label class="search-label" for="catalog-q">Слово, вопрос или место Писания</label>
     <div class="search-row">
       <input class="search-input" id="catalog-q" name="q" type="search" placeholder="Например: воскресение или Ин. 1:1" autocomplete="off" enterkeyhint="search">
@@ -191,31 +190,56 @@ def render_articles_index(m):
     for t in m['topics']:
         out += f'<option value="{t["id"]}">{t["title"]}</option>'
     out += '''</select></label>
-      <label data-catalog-enhanced hidden>Порядок<select id="catalog-sort"><option value="default">Все статьи</option><option value="updated">Сначала обновлённые</option></select></label>
+      <label data-catalog-enhanced hidden>Порядок<select id="catalog-sort"><option value="default">Как на сайте</option><option value="updated">Сначала обновлённые</option></select></label>
     </div>
     <button class="catalog-reset" type="reset" data-catalog-enhanced hidden>Сбросить фильтры</button>
   </form>
-  <details class="catalog-guides"><summary>Тематические подборки</summary><nav aria-label="Подборки по темам"><ul class="chips">
 '''
-    # Сохраняем цели старых ссылок /articles/#<тема>; JS включает фильтр.
-    for t in m['topics']:
-        out += f'    <li><a class="chip" id="{t["id"]}" href="../topics/{t["id"]}/index.html">{t["title"]}</a></li>\n'
-    out += ('  </ul></nav></details>\n'
-            f'  <p class="catalog-status" role="status" aria-live="polite" data-catalog-status>Всего: {n_articles(len(m["articles"]))}.</p>\n'
-            '  <ul class="cards catalog-list" data-catalog-list>\n')
+    return out
+
+
+def catalog_list(m):
+    """Все статьи карточками: свёрнутый список на странице «Темы»; поиск раскрывает его и оставляет найденное."""
+    n = n_articles(len(m['articles']))
+    out = (f'  <p class="catalog-status" role="status" aria-live="polite" data-catalog-status></p>\n'
+           f'  <details class="catalog-results" data-catalog-results>\n'
+           f'    <summary data-catalog-summary data-all="Все статьи списком ({len(m["articles"])})">Все статьи списком ({len(m["articles"])})</summary>\n'
+           '    <ul class="cards catalog-list" data-catalog-list>\n')
     for a in m['articles']:
         p = m['pages'][a['slug']]
         meta = f'{a["kind"]} · ' if a.get('kind') else ''
         meta += f'{p["minutes"]} {plural(p["minutes"], "минута", "минуты", "минут")} чтения'
-        out += (f'    <li class="card" data-slug="{a["slug"]}" data-topics="{" ".join(a["topics"])}" data-date="{p["date"]}">\n'
-                f'      <p class="card-meta">{meta}</p>\n'
-                f'      <a class="card-link" href="../answers/{a["slug"]}/index.html">{a["title"]}</a>\n'
-                f'      <p class="card-summary">{a["summary"]}</p>\n'
-                f'      <p class="card-updated">Обновлено <time datetime="{p["date"]}">{human_date(p["date"])}</time></p>\n'
-                '    </li>\n')
-    out += ('  </ul>\n  <p class="catalog-empty" data-catalog-empty hidden>Попробуйте другое слово или выберите «Все темы».</p>\n'
-            '  <script type="module" src="../assets/js/catalog.js"></script>\n')
-    return out + '</div>\n\n</main>'
+        out += (f'      <li class="card" data-slug="{a["slug"]}" data-topics="{" ".join(a["topics"])}" data-date="{p["date"]}">\n'
+                f'        <p class="card-meta">{meta}</p>\n'
+                f'        <a class="card-link" href="../answers/{a["slug"]}/index.html">{a["title"]}</a>\n'
+                f'        <p class="card-summary">{a["summary"]}</p>\n'
+                f'        <p class="card-updated">Обновлено <time datetime="{p["date"]}">{human_date(p["date"])}</time></p>\n'
+                '      </li>\n')
+    out += ('    </ul>\n    <p class="catalog-empty" data-catalog-empty hidden>Попробуйте другое слово или выберите «Все темы».</p>\n'
+            '  </details>\n  <script type="module" src="../assets/js/catalog.js"></script>\n')
+    return out
+
+
+def page_filter(up, label, placeholder, items, groups='', parts='', idle='', busy=''):
+    """Поиск по странице (assets/js/page-filter.js): одинаковая строка на «По местам Писания», «Вопросах и ответах»,
+    «Видео» и «Комментах на YouTube». up — путь к корню сайта; без JavaScript форма ведёт в общий поиск."""
+    attrs = f' data-items="{items}"'
+    for name, val in (('groups', groups), ('parts', parts), ('idle-hidden', idle), ('busy-hide', busy)):
+        if val:
+            attrs += f' data-{name}="{val}"'
+    search = f'{up}search/index.html'
+    return (f'  <form class="catalog-filter page-filter" action="{search}" method="get" role="search" data-page-filter{attrs}>\n'
+            f'    <label class="search-label" for="page-q">{label}</label>\n'
+            '    <div class="search-row">\n'
+            f'      <input class="search-input" id="page-q" name="q" type="search" placeholder="{placeholder}" autocomplete="off" enterkeyhint="search">\n'
+            '      <button class="button" type="submit">Найти</button>\n'
+            '    </div>\n'
+            '    <button class="catalog-reset" type="button" data-page-filter-reset hidden>Очистить</button>\n'
+            '  </form>\n'
+            '  <p class="catalog-status" role="status" aria-live="polite" data-page-filter-status></p>\n'
+            f'  <p class="catalog-empty" data-page-filter-empty hidden>На этой странице ничего не нашлось. '
+            f'<a href="{search}" data-base="{search}">Искать по всему сайту</a></p>\n'
+            f'  <script type="module" src="{up}assets/js/page-filter.js"></script>\n')
 
 
 def render_home_start(m):
@@ -235,10 +259,17 @@ def render_home_start(m):
     return out + '  </ol>\n</section>'
 
 
+# Что значит «А как же…?» — объяснение на странице «Вопросы и ответы» (текст утверждает автор)
+QUESTIONS_INTRO = ('«А как же…?» — так обычно начинается возражение. Когда я говорю, что единый Бог — Отец, '
+                   'а Иисус — Его Сын, Человек и Мессия, мне отвечают: «А как же Ин. 1:1?», «А как же „Я и Отец — одно“?» '
+                   'Здесь такие вопросы собраны по темам. Нажмите на вопрос, и откроется мой ответ.')
+
+
 def render_questions_index(m):
     out = '<main id="main" class="main" tabindex="-1">\n\n\n<div class="catalog catalog-questions">\n'
-    out += catalog_header('А как же…?', 'Вопросы к библейскому унитарному пониманию веры и ответы по Писанию. '
-                          'Каждый ответ можно прочитать полностью здесь, на сайте.')
+    out += catalog_header('Вопросы и ответы', QUESTIONS_INTRO)
+    out += page_filter('../', 'Найти вопрос', 'Например: Ин. 1:1 или Троица', '.catalog-group li',
+                       groups='.catalog-group', busy='.jump')
     out += jump_nav(m)
     for t in m['topics']:
         out += (f'  <section class="catalog-group" id="{t["id"]}" aria-labelledby="{t["id"]}-h">\n'
@@ -254,11 +285,14 @@ def topic_meta(m, t):
 
 def render_topics_index(m):
     out = '<main id="main" class="main" tabindex="-1">\n\n\n<div class="catalog catalog-topics">\n'
-    out += catalog_header('Темы', 'Выберите тему. Начните с краткого исповедания и основных текстов Писания, '
-                          'затем переходите к статьям и вопросам.')
+    out += catalog_header('Темы', f'{n_articles(len(m["articles"]))} о Боге, Иисусе Христе, Писании и жизни веры. '
+                          'Найдите статью по слову или месту Писания, или выберите тему: в каждой — краткое исповедание, '
+                          'основные места Писания, статьи и вопросы.')
+    out += catalog_form(m) + catalog_list(m)
     out += '  <ul class="topic-list">\n'
     for t in m['topics']:
         a, q, v = topic_meta(m, t)
+        a = f'<a href="?topic={t["id"]}" data-topic-link="{t["id"]}">{a}</a>'
         meta = f'{a} · {q}' + (f' · {v}' if t['videos'] else '')
         out += ('    <li class="topic-entry">\n'
                 f'      <h2 class="topic-entry-title"><a href="{t["id"]}/index.html">{t["title"]}</a></h2>\n'
@@ -301,7 +335,7 @@ def render_topic_main(m, t):
             '    <h2 class="section-label" id="more-h">Подробнее</h2>\n    \n')
     out += cards([(s, arts[s]['title'], arts[s]['summary']) for s in t['more']], '../../answers/')
     out += ('\n  </section>\n  <section class="topic-block" aria-labelledby="questions-h">\n'
-            '    <h2 class="section-label" id="questions-h">А как же…?</h2>\n    \n')
+            '    <h2 class="section-label" id="questions-h">Вопросы и ответы</h2>\n    \n')
     out += questions_list(m['questions'][t['id']], '../../answers/')
     out += '\n  </section>\n'
     if t['videos']:
@@ -314,7 +348,7 @@ def render_topic_main(m, t):
             '    <h2 class="section-label" id="related-h">Связанные темы</h2>\n    \n')
     out += chips([(f'../{r}/index.html', topic_title(m, r)) for r in t['related']])
     out += ('\n  </section>\n\n'
-            f'  <p class="topic-all"><a href="../../articles/index.html?topic={t["id"]}">Все статьи темы «{t["title"]}» '
+            f'  <p class="topic-all"><a href="../index.html?topic={t["id"]}">Все статьи темы «{t["title"]}» '
             f'({len(articles_in(m, t["id"]))})</a></p>\n</article>\n\n</main>')
     return out
 
@@ -323,6 +357,7 @@ def render_videos_main(m):
     out = '<main id="main" class="main" tabindex="-1">\n\n\n<div class="catalog catalog-videos">\n'
     out += catalog_header('Видео', m.get('videos_intro', 'Беседы и разборы по темам сайта. Рядом со статьями можно найти подходящую запись, '
                           'а здесь — всю подборку. Отметки времени перенесены из авторских анонсов.'))
+    out += page_filter('../', 'Найти в видео', 'Например: Троица или Евр. 1', '.video-list-full > .video', parts='.timestamps li')
     out += '  <div class="video-list video-list-full">\n'
     for v in m['videos']:
         out += video_block(v, 'h2', video_related(m, v['id'])) + '\n'
@@ -365,13 +400,9 @@ def render_scripture_main(m, entries):
             present.append(e['book'])
     out = ('<main id="main" class="main" tabindex="-1">\n\n\n<div class="catalog catalog-scripture">\n'
            + catalog_header('По местам Писания', m.get('scripture_intro', 'Указатель стихов и отрывков, которые разбираются в статьях.'))
-           + '  \n<form class="search-form" action="../search/index.html" method="get" role="search">\n'
-           '  <label class="search-label" for="scripture-q">Поиск по статьям, темам и местам Писания</label>\n'
-           '  <div class="search-row">\n'
-           '    <input class="search-input" id="scripture-q" name="q" type="search" autocomplete="off" '
-           'placeholder="Например: 1 Кор 8:6" enterkeyhint="search">\n'
-           '    <button class="button" type="submit">Найти</button>\n  </div>\n</form>\n\n'
-           '  <nav class="jump jump-books" aria-label="Книги">\n')
+           + page_filter('../', 'Найти место Писания или статью', 'Например: Ин 8:58 или Римлянам', 'li.passage',
+                         groups='.book, .scripture-section', busy='.jump-books')
+           + '  <nav class="jump jump-books" aria-label="Книги">\n')
     for sid, sname in SECTIONS:
         bs = [BOOK[b] for b in present if BOOK[b]['section'] == sid]
         if not bs:
@@ -506,7 +537,7 @@ def render_article_main(m, a, p, anchors):
         route = f'<p class="intro-route"><a href="../../index.html#start">С чего начать</a><span>Статья {step} из {len(m["start"])}</span></p>\n'
     out = ('<main id="main" class="main" tabindex="-1">\n\n<article class="article">\n  <header class="article-header">\n'
            '    <nav class="crumbs" aria-label="Вы здесь">\n'
-           f'      <a href="../../articles/index.html">Все статьи</a><span aria-hidden="true">/</span>'
+           f'      <a href="../../topics/index.html">Темы</a><span aria-hidden="true">/</span>'
            f'<a href="../../topics/{p["crumb"]}/index.html">{topic_title(m, p["crumb"])}</a>\n    </nav>\n'
            f'    <h1 class="article-title">{article_title(a["title"])}</h1>\n'
            + route

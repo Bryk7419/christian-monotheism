@@ -16,7 +16,10 @@ try {
 const p=await browser.newPage({viewport:{width:390,height:844}});p.on('pageerror',e=>errors.push(e.message));
 const go=async route=>{await p.goto(base+route,{waitUntil:'networkidle'});};
 const visible=()=>p.locator('[data-catalog-list] > li:visible');
-await go('articles/');
+await go('topics/');
+ok(await p.locator('#site-nav a').allTextContents().then(a=>a.join('|'))==='Темы|По местам Писания|Вопросы и ответы|Видео|Комменты на YouTube|Об авторе','menu order');
+ok(await visible().count()===0,'topics: article list folded');
+await p.locator('[data-catalog-summary]').click();
 ok(await visible().count()===total,'unique article count');
 ok(await p.locator('.card-link').evaluateAll(a=>new Set(a.map(x=>x.href)).size)===total,'no duplicate article links');
 await p.selectOption('#catalog-topic','iisus-hristos');
@@ -27,13 +30,14 @@ ok(dates.every((d,i)=>!i||dates[i-1]>=d),'date sort');
 await p.goBack();ok(await p.inputValue('#catalog-sort')==='default','back restores sort');
 await p.goBack();ok(await p.inputValue('#catalog-topic')==='','back restores topic');
 await p.fill('#catalog-q','Ин 1:1');await p.locator('[data-catalog-form]').evaluate(f=>f.requestSubmit());
-await p.waitForFunction(()=>document.querySelector('[data-catalog-status]').textContent.startsWith('Показано'));
+await p.waitForFunction(()=>document.querySelector('[data-catalog-status]').textContent.startsWith('Найдено'));
 ok((await visible().first().getAttribute('data-slug'))==='slovo-bylo-bog','passage search ranked result');
 await p.fill('#catalog-q','zzqv987qzx');await p.locator('[data-catalog-form]').evaluate(f=>f.requestSubmit());
 await p.waitForFunction(()=>document.querySelector('[data-catalog-empty]').hidden===false);
 ok(await visible().count()===0,'empty result');
-await p.click('.catalog-reset');ok(await visible().count()===total,'reset returns all articles');ok(await p.inputValue('#catalog-q')==='','reset clears query');
-await go('articles/?topic=svyatoy-duh&sort=updated');ok(await visible().count()===inTopic('svyatoy-duh'),'shareable URL filters');
+await p.click('.catalog-reset');ok(await p.locator('[data-catalog-list] > li:not([hidden])').count()===total,'reset returns all articles');ok(await p.inputValue('#catalog-q')==='','reset clears query');
+ok(!(await p.locator('[data-catalog-results]').evaluate(d=>d.open)),'reset folds the list');
+await go('articles/?topic=svyatoy-duh&sort=updated');ok(p.url().includes('topics/'),'old catalog address leads to topics');ok(await visible().count()===inTopic('svyatoy-duh'),'shareable URL filters');
 await go('articles/#spasenie');ok(await p.inputValue('#catalog-topic')==='spasenie','legacy topic hash');ok(await visible().count()===inTopic('spasenie'),'legacy topic results');
 await go('');await p.click('.hero-actions a[href="#start"]');ok(await p.locator('#start').evaluate(e=>Math.abs(e.getBoundingClientRect().top)<60),'start CTA anchor');
 await p.locator('.start-cards .card-link').first().click();ok((await p.locator('.intro-route').innerText()).includes('Статья 1 из 5'),'first step marker');
@@ -55,18 +59,27 @@ await p.setViewportSize({width:390,height:844});await p.waitForTimeout(80);await
 await p.evaluate(()=>scrollTo(0,0));await p.locator('.prose .vref').first().click();ok((await p.locator('.vpop').innerText()).includes('В начале было Слово'),'verse popup');await p.keyboard.press('Escape');
 for(const width of [320,390,768,1280,1440]){
  await p.setViewportSize({width,height:900});
- for(const route of ['', 'about/', 'bez-kupyur/', 'articles/', 'answers/edinyy-istinnyy-bog/', 'answers/slovo-bylo-bog/', 'answers/bog-krepkiy/']){
+ for(const route of ['', 'about/', 'bez-kupyur/', 'topics/', 'questions/', 'scripture/', 'videos/', 'answers/edinyy-istinnyy-bog/', 'answers/slovo-bylo-bog/', 'answers/bog-krepkiy/']){
   await go(route);
   ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'no overflow '+width+' '+route);
  }
 }
-await p.emulateMedia({colorScheme:'dark'});await p.setViewportSize({width:390,height:844});await go('articles/');
+await p.emulateMedia({colorScheme:'dark'});await p.setViewportSize({width:390,height:844});await go('topics/');
 ok(await p.locator('body').evaluate(e=>getComputedStyle(e).backgroundColor)==='rgb(21, 24, 28)','dark theme');
 const nojs=await browser.newPage({javaScriptEnabled:false,viewport:{width:390,height:844}});
-await nojs.goto(base+'articles/');ok(await nojs.locator('.catalog-list .card:visible').count()===total,'no JS has all articles');ok(await nojs.locator('.catalog-filter').getAttribute('action')==='../search/index.html','no JS form has search destination');
+await nojs.goto(base+'topics/');await nojs.locator('.catalog-results summary').click();ok(await nojs.locator('.catalog-list .card:visible').count()===total,'no JS has all articles');ok(await nojs.locator('.catalog-filter').getAttribute('action')==='../search/index.html','no JS form has search destination');
 await nojs.goto(base+'answers/slovo-bylo-bog/');await nojs.locator('.source-details summary').click();ok(await nojs.locator('.source-list').isVisible(),'no JS sources');await nojs.locator('.toc summary').click();ok(await nojs.locator('.toc ol').isVisible(),'no JS TOC');
-const fail=await browser.newPage();await fail.route('**/assets/search-index.json',r=>r.abort());await fail.goto(base+'articles/');await fail.fill('#catalog-q','Логос');await fail.locator('[data-catalog-form]').evaluate(f=>f.requestSubmit());await fail.waitForFunction(()=>document.querySelector('[data-catalog-status]').textContent.includes('временно недоступен'));
+const fail=await browser.newPage();await fail.route('**/assets/search-index.json',r=>r.abort());await fail.goto(base+'topics/');await fail.fill('#catalog-q','Логос');await fail.locator('[data-catalog-form]').evaluate(f=>f.requestSubmit());await fail.waitForFunction(()=>document.querySelector('[data-catalog-status]').textContent.includes('временно недоступен'));
 ok(await fail.locator('[data-slug="slovo-bylo-bog"]').isVisible(),'catalog search fallback when index fails');
+// поиск по странице: вопросы, указатель Писания, видео, комментарии
+const pf=async(route,q,sel)=>{await go(route);const all=await p.locator(sel+':visible').count();await p.fill('#page-q',q);await p.waitForTimeout(300);return [await p.locator(sel+':visible').count(),all];};
+let [n,all]=await pf('questions/','Троица','.catalog-group li');ok(n>0&&n<all,'questions filter');
+[n,all]=await pf('scripture/','Ин 8:58','li.passage');ok(n>0&&n<all&&(await p.locator('li.passage:visible .passage-ref').allTextContents()).includes('Ин. 8:58'),'scripture verse filter');
+[n,all]=await pf('videos/','Троица','.video-list-full > .video');ok(n>0&&n<all,'videos filter');
+[n,all]=await pf('bez-kupyur/troitsa/','спастись','.yt-thread');ok(n>0&&n<all,'comments folder filter');
+await p.fill('#page-q','zzqv987qzx');await p.waitForTimeout(300);ok(await p.locator('[data-page-filter-empty]').isVisible(),'page filter empty state');
+await go('answers/slovo-bylo-bog/');ok(await p.locator('[data-copy-link]').count()===0&&await p.locator('.article-tools [data-share]').isVisible(),'one share button');
+ok((await p.locator('.crumbs a').first().textContent())==='Темы','article crumbs start with topics');
 ok(errors.length===0,'no JS errors: '+errors.join(';'));
 console.log(JSON.stringify({checks,errors,status:'passed'}));
 } finally { await browser.close(); }

@@ -77,10 +77,9 @@ ICON_SHARE = ('<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true
 
 
 def share_buttons(indent='      '):
-    # «Поделиться» открывает системное меню устройства (там Telegram, почта и т. д.) и показывается,
-    # только если браузер его поддерживает; «Скопировать ссылку» есть всегда.
-    return (f'{indent}<button class="button button-quiet" type="button" data-share hidden>{ICON_SHARE} Поделиться</button>\n'
-            f'{indent}<button class="button button-quiet copy-link" type="button" data-copy-link>{ICON_LINK} Скопировать ссылку</button>\n')
+    # Одна кнопка: системное меню «Поделиться» (Telegram, почта, «Скопировать ссылку»), а где его нет —
+    # копирует постоянную ссылку. Без JavaScript кнопки нет.
+    return f'{indent}<button class="button button-quiet" type="button" data-share hidden>{ICON_SHARE} Поделиться</button>\n'
 
 
 def article_tools():
@@ -95,6 +94,36 @@ def article_end():
             '      <p>Вопрос или возражение можно обсудить в Telegram. '
             f'<a href="{esc(CONFIG["ask_url"])}" target="_blank" rel="noopener">Перейти в Telegram{S.EXT}</a></p>\n'
             '    </section>\n')
+
+
+# --- Меню и подвал: одинаковые на всех страницах, собираются здесь ---------------------------------------
+# Порядок разделов — этот список (просьба автора: Темы, По местам Писания, Вопросы и ответы, затем остальное,
+# «Комменты на YouTube» — предпоследним). На главную ведёт эмблема в шапке.
+NAV = [('topics/', 'Темы'), ('scripture/', 'По местам Писания'), ('questions/', 'Вопросы и ответы'),
+       ('videos/', 'Видео'), ('bez-kupyur/', 'Комменты на YouTube'), ('about/', 'Об авторе')]
+FOOTER_NAV = NAV + [('new/', 'Что нового'), ('search/', 'Поиск')]
+
+
+def set_nav(s, path):
+    """Меню в шапке и ссылки в подвале для страницы path (например, answers/x/index.html)."""
+    up = '../' * path.count('/')
+
+    def items(entries, mark):
+        out = []
+        for sec, label in entries:
+            cur = ''
+            if mark and path.startswith(sec):
+                cur = ' aria-current="page"' if path == sec + 'index.html' else ' aria-current="true"'
+            out.append(f'      <li><a href="{up}{sec}index.html"{cur}>{label}</a></li>')
+        return '\n'.join(out)
+
+    s, n = re.subn(r'(<nav id="site-nav" class="site-nav" aria-label="Разделы сайта">\n    <ul>\n).*?(\n    </ul>\n  </nav>)',
+                   lambda m: m.group(1) + items(NAV, True) + m.group(2), s, count=1, flags=re.S)
+    s, k = re.subn(r'(<ul class="footer-nav">\n).*?(\n    </ul>)', lambda m: m.group(1) + items(FOOTER_NAV, False) + m.group(2),
+                   s, count=1, flags=re.S)
+    if n != 1 or k != 1:
+        raise ValueError(f'{path}: не найдено меню в шапке или в подвале')
+    return s
 
 
 # --- Служебный блок <head> -----------------------------------------------------------------------------
@@ -164,7 +193,7 @@ def article_info(m, a, p):
            'inLanguage': 'ru', 'dateModified': p['date'], 'author': person(), 'publisher': person(),
            'image': BASE + img[0], 'mainEntityOfPage': url, 'articleSection': topic,
            'isPartOf': {'@type': 'WebSite', 'name': CONFIG['site_name'], 'url': BASE}}
-    crumbs = breadcrumbs([('Все статьи', BASE + 'articles/'), (topic, BASE + f'topics/{p["crumb"]}/'), (plain(a['title']), url)])
+    crumbs = breadcrumbs([('Темы', BASE + 'topics/'), (topic, BASE + f'topics/{p["crumb"]}/'), (plain(a['title']), url)])
     return {'url': url, 'image': img, 'image_alt': plain(a['title']), 'jsonld': [art, crumbs]}
 
 

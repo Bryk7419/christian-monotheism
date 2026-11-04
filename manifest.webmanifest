@@ -15,7 +15,7 @@
     { "src": "assets/img/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "shortcuts": [
-    { "name": "Все статьи", "url": "articles/index.html" },
+    { "name": "Темы", "url": "topics/index.html" },
     { "name": "Поиск", "url": "search/index.html" },
     { "name": "Что нового", "url": "new/index.html" }
   ]

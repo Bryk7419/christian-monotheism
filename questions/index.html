@@ -56,13 +56,11 @@
   </div>
   <nav id="site-nav" class="site-nav" aria-label="Разделы сайта">
     <ul>
-      <li><a href="../">Главная</a></li>
-      <li><a href="../bez-kupyur/index.html">Комменты на YouTube</a></li>
       <li><a href="../topics/index.html">Темы</a></li>
-      <li><a href="index.html" aria-current="page">Вопросы и ответы</a></li>
-      <li><a href="../articles/index.html">Все статьи</a></li>
       <li><a href="../scripture/index.html">По местам Писания</a></li>
+      <li><a href="../questions/index.html" aria-current="page">Вопросы и ответы</a></li>
       <li><a href="../videos/index.html">Видео</a></li>
+      <li><a href="../bez-kupyur/index.html">Комменты на YouTube</a></li>
       <li><a href="../about/index.html">Об авторе</a></li>
     </ul>
   </nav>
@@ -73,10 +71,21 @@
 
 <div class="catalog catalog-questions">
   <header class="catalog-header">
-    <h1 class="page-title">А как же…?</h1>
-    <div class="catalog-intro"><p>Вопросы к библейскому унитарному пониманию веры и ответы по Писанию. Каждый ответ можно прочитать полностью здесь, на сайте.</p>
+    <h1 class="page-title">Вопросы и ответы</h1>
+    <div class="catalog-intro"><p>«А как же…?» — так обычно начинается возражение. Когда я говорю, что единый Бог — Отец, а Иисус — Его Сын, Человек и Мессия, мне отвечают: «А как же Ин. 1:1?», «А как же „Я и Отец — одно“?» Здесь такие вопросы собраны по темам. Нажмите на вопрос, и откроется мой ответ.</p>
 </div>
   </header>
+  <form class="catalog-filter page-filter" action="../search/index.html" method="get" role="search" data-page-filter data-items=".catalog-group li" data-groups=".catalog-group" data-busy-hide=".jump">
+    <label class="search-label" for="page-q">Найти вопрос</label>
+    <div class="search-row">
+      <input class="search-input" id="page-q" name="q" type="search" placeholder="Например: Ин. 1:1 или Троица" autocomplete="off" enterkeyhint="search">
+      <button class="button" type="submit">Найти</button>
+    </div>
+    <button class="catalog-reset" type="button" data-page-filter-reset hidden>Очистить</button>
+  </form>
+  <p class="catalog-status" role="status" aria-live="polite" data-page-filter-status></p>
+  <p class="catalog-empty" data-page-filter-empty hidden>На этой странице ничего не нашлось. <a href="../search/index.html" data-base="../search/index.html">Искать по всему сайту</a></p>
+  <script type="module" src="../assets/js/page-filter.js"></script>
   <nav class="jump" aria-label="Темы на этой странице">
     <ul class="chips">
       <li><a class="chip" href="#bog-otets">Бог Отец</a></li>
@@ -329,15 +338,13 @@
   <div class="footer-inner">
     <p class="footer-text">Статьи, темы и ответы по Писанию.</p>
     <ul class="footer-nav">
-      <li><a href="../">Главная</a></li>
-      <li><a href="../bez-kupyur/index.html">Комменты на YouTube</a></li>
       <li><a href="../topics/index.html">Темы</a></li>
-      <li><a href="index.html">Вопросы и ответы</a></li>
-      <li><a href="../articles/index.html">Все статьи</a></li>
       <li><a href="../scripture/index.html">По местам Писания</a></li>
+      <li><a href="../questions/index.html">Вопросы и ответы</a></li>
       <li><a href="../videos/index.html">Видео</a></li>
-      <li><a href="../new/index.html">Что нового</a></li>
+      <li><a href="../bez-kupyur/index.html">Комменты на YouTube</a></li>
       <li><a href="../about/index.html">Об авторе</a></li>
+      <li><a href="../new/index.html">Что нового</a></li>
       <li><a href="../search/index.html">Поиск</a></li>
     </ul>
   </div>

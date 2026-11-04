@@ -46,31 +46,6 @@ function showToast(text) {
   toastTimer = setTimeout(() => { toast.hidden = true; }, 2600);
 }
 
-// --- Скопировать постоянную ссылку на статью ----------------------------------
-for (const button of document.querySelectorAll('[data-copy-link]')) {
-  button.addEventListener('click', async () => {
-    const canonical = document.querySelector('link[rel="canonical"]');
-    const url = canonical ? canonical.href : `${location.origin}${location.pathname}`;
-    try {
-      await navigator.clipboard.writeText(url);
-      showToast('Ссылка скопирована');
-    } catch {
-      // Буфер обмена недоступен: показать адрес для ручного копирования
-      let field = button.parentElement.querySelector('.copy-field');
-      if (!field) {
-        field = document.createElement('input');
-        field.className = 'copy-field';
-        field.readOnly = true;
-        field.setAttribute('aria-label', 'Постоянная ссылка');
-        button.after(field);
-      }
-      field.value = url;
-      field.focus();
-      field.select();
-    }
-  });
-}
-
 // --- Видео: проигрыватель загружается только по нажатию ----------------------
 if (!isPreview) {
   for (const box of document.querySelectorAll('.video-player[data-youtube-id]')) {
@@ -92,16 +67,38 @@ if (!isPreview) {
   }
 }
 
-// --- Поделиться: системное меню устройства, если браузер его поддерживает -------------------
-if (navigator.share) {
-  for (const b of document.querySelectorAll('[data-share]')) {
-    b.hidden = false;
-    b.addEventListener('click', async () => {
-      const canonical = document.querySelector('link[rel="canonical"]');
-      const title = document.querySelector('h1')?.textContent.trim() || document.title;
-      try { await navigator.share({ title, url: canonical ? canonical.href : location.href }); } catch { /* отменено */ }
-    });
+// --- Поделиться: системное меню устройства; где его нет — скопировать постоянную ссылку ------------
+async function copyLink(button, url) {
+  try {
+    await navigator.clipboard.writeText(url);
+    showToast('Ссылка скопирована');
+  } catch {
+    // Буфер обмена недоступен: показать адрес для ручного копирования
+    let field = button.parentElement.querySelector('.copy-field');
+    if (!field) {
+      field = document.createElement('input');
+      field.className = 'copy-field';
+      field.readOnly = true;
+      field.setAttribute('aria-label', 'Постоянная ссылка');
+      button.after(field);
+    }
+    field.value = url;
+    field.focus();
+    field.select();
   }
+}
+for (const b of document.querySelectorAll('[data-share]')) {
+  b.hidden = false;
+  b.addEventListener('click', async () => {
+    const canonical = document.querySelector('link[rel="canonical"]');
+    const url = canonical ? canonical.href : `${location.origin}${location.pathname}`;
+    const title = document.querySelector('h1')?.textContent.trim() || document.title;
+    if (navigator.share) {
+      try { await navigator.share({ title, url }); } catch { /* отменено */ }
+    } else {
+      copyLink(b, url);
+    }
+  });
 }
 
 // --- Статья: полоска прочитанного, кнопка «Наверх», чтение вслух, всплывающие стихи ----------

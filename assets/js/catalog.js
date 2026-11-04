@@ -1,4 +1,5 @@
-// Каталог остаётся полным списком без JavaScript. Форма ведёт в обычный поиск.
+// Поиск по статьям на странице «Темы». Без JavaScript список всех статей раскрывается вручную,
+// а форма ведёт в обычный поиск. С JavaScript список раскрывается сам, когда человек ищет или выбирает тему.
 import { prepareIndex, search, normalize } from './search-core.js';
 
 const form = document.querySelector('[data-catalog-form]');
@@ -9,7 +10,9 @@ if (form) {
   const list = document.querySelector('[data-catalog-list]');
   const status = document.querySelector('[data-catalog-status]');
   const empty = document.querySelector('[data-catalog-empty]');
-  const catalog = document.querySelector('.catalog-articles');
+  const catalog = form.closest('.catalog');
+  const results = document.querySelector('[data-catalog-results]');
+  const summary = document.querySelector('[data-catalog-summary]');
   const rows = [...list.children].map((el, order) => ({
     el, order, slug: el.dataset.slug, topics: el.dataset.topics.split(' '),
     date: el.dataset.date, text: normalize(el.querySelector('.card-link').textContent + ' ' + el.querySelector('.card-summary').textContent),
@@ -68,8 +71,15 @@ if (form) {
     list.removeAttribute('aria-busy');
     catalog.classList.toggle('is-date-order', order === 'updated');
     empty.hidden = count > 0;
-    status.textContent = count ? `Показано статей: ${count} из ${rows.length}.` : 'Статьи не найдены.';
+    const filtered = Boolean(q || selected);
+    // список раскрыт, пока что-то ищут, выбрана тема или порядок; после сброса сворачивается
+    if (filtered || order === 'updated') results.open = true;
+    else if (mode) results.open = false;
+    summary.textContent = filtered ? `Найденные статьи (${count})`
+      : order === 'updated' ? `Все статьи, сначала обновлённые (${rows.length})` : summary.dataset.all;
+    status.textContent = !filtered ? '' : count ? `Найдено статей: ${count} из ${rows.length}.` : 'Статьи не найдены.';
     if (fallback) status.textContent += ' Поиск по полному тексту временно недоступен; показаны совпадения в названиях и описаниях.';
+    controls();
   }
   input.addEventListener('input', () => { clearTimeout(timer); request++; timer = setTimeout(() => render('replace'), 160); });
   form.addEventListener('submit', e => { e.preventDefault(); clearTimeout(timer); render('push'); });
@@ -84,9 +94,28 @@ if (form) {
     render('push');
     input.focus();
   });
+  for (const link of document.querySelectorAll('[data-topic-link]')) {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      clearTimeout(timer);
+      input.value = '';
+      topic.value = link.dataset.topicLink;
+      render('push');
+      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
   window.addEventListener('popstate', () => { clearTimeout(timer); restore(); render(); });
   window.addEventListener('hashchange', () => { clearTimeout(timer); restore(); render(); });
-  form.querySelectorAll('[data-catalog-enhanced]').forEach(el => { el.hidden = false; });
+  // «Порядок» нужен, только когда список открыт; «Сбросить» — когда есть что сбрасывать
+  const sortLabel = sort.closest('label');
+  const resetButton = form.querySelector('.catalog-reset');
+  function controls() {
+    sortLabel.hidden = !results.open;
+    resetButton.hidden = !(input.value.trim() || topic.value || sort.value !== 'default');
+  }
+  results.addEventListener('toggle', controls);
+  form.addEventListener('input', controls);
+  form.addEventListener('change', controls);
   restore();
   render();
 }

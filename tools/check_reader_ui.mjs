@@ -17,7 +17,7 @@ const p=await browser.newPage({viewport:{width:390,height:844}});p.on('pageerror
 const go=async route=>{await p.goto(base+route,{waitUntil:'networkidle'});};
 const visible=()=>p.locator('[data-catalog-list] > li:visible');
 await go('topics/');
-ok(await p.locator('#site-nav a').allTextContents().then(a=>a.join('|'))==='Темы|По местам Писания|Вопросы и ответы|Видео|Комменты на YouTube|Об авторе','menu order');
+ok(await p.locator('#site-nav a').allTextContents().then(a=>a.join('|'))==='Главная|Темы|По местам Писания|Вопросы и ответы|Видео|Комменты на YouTube|Об авторе','menu order');
 ok(await visible().count()===0,'topics: article list folded');
 await p.locator('[data-catalog-summary]').click();
 ok(await visible().count()===total,'unique article count');

@@ -97,9 +97,9 @@ def article_end():
 
 
 # --- Меню и подвал: одинаковые на всех страницах, собираются здесь ---------------------------------------
-# Порядок разделов — этот список (просьба автора: Темы, По местам Писания, Вопросы и ответы, затем остальное,
-# «Комменты на YouTube» — предпоследним). На главную ведёт эмблема в шапке.
-NAV = [('topics/', 'Темы'), ('scripture/', 'По местам Писания'), ('questions/', 'Вопросы и ответы'),
+# Порядок разделов — этот список (просьба автора: Главная, Темы, По местам Писания, Вопросы и ответы, затем остальное,
+# «Комменты на YouTube» — предпоследним).
+NAV = [('', 'Главная'), ('topics/', 'Темы'), ('scripture/', 'По местам Писания'), ('questions/', 'Вопросы и ответы'),
        ('videos/', 'Видео'), ('bez-kupyur/', 'Комменты на YouTube'), ('about/', 'Об авторе')]
 FOOTER_NAV = NAV + [('new/', 'Что нового'), ('search/', 'Поиск')]
 
@@ -112,9 +112,10 @@ def set_nav(s, path):
         out = []
         for sec, label in entries:
             cur = ''
-            if mark and path.startswith(sec):
+            if mark and (path.startswith(sec) if sec else path == 'index.html'):
                 cur = ' aria-current="page"' if path == sec + 'index.html' else ' aria-current="true"'
-            out.append(f'      <li><a href="{up}{sec}index.html"{cur}>{label}</a></li>')
+            href = f'{up}{sec}index.html' if sec else (up or './')
+            out.append(f'      <li><a href="{href}"{cur}>{label}</a></li>')
         return '\n'.join(out)
 
     s, n = re.subn(r'(<nav id="site-nav" class="site-nav" aria-label="Разделы сайта">\n    <ul>\n).*?(\n    </ul>\n  </nav>)',

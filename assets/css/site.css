@@ -934,3 +934,70 @@ mark { background: var(--mark); color: var(--ink); padding: 0 0.1em; border-radi
   border-radius: 50%; background: var(--bg); border: 2px solid var(--rubric);
 }
 .timeline-when { display: block; margin-bottom: 0.15em; font: 700 0.875rem/1.4 var(--font-ui); letter-spacing: 0.03em; color: var(--rubric); }
+
+/* Главная: тема сайта на первом плане, автор рядом с исповеданием. */
+.home-title {
+  margin: 0; color: var(--ink); font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(3.25rem, 2.5rem + 3vw, 4.75rem); line-height: 1.12;
+}
+.home-subtitle {
+  margin: 0.65rem 0 1.5rem; color: var(--rubric);
+  font: 600 1rem/1.5 var(--font-ui);
+}
+.home-author { margin: 1.75rem 0 1rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+.home-author .hero-photo { width: 64px; height: 64px; }
+.home-author .hero-name { font-size: 1.375rem; }
+.home-author .hero-name a { text-decoration: none; }
+.home-author .hero-name a:hover { text-decoration: underline; }
+.home-author-label { margin: 0 0 0.2rem; color: var(--muted); font: 0.75rem/1.4 var(--font-ui); }
+
+/* Главная: три понятных пути для читателя, прежде длинного текста. */
+.home-page .hero, .home-page .home-block, .home-page .home-search { max-width: 48rem; }
+.home-page .hero { margin-bottom: 1.5rem; }
+.home-page .hero-lead { margin-inline: 0; }
+.home-page .home-subtitle a { color: inherit; text-decoration: none; }
+.home-page .home-subtitle a:hover { text-decoration: underline; }
+.home-page .home-author { margin: 1.25rem 0 1.5rem; padding: 0; border: 0; gap: 0.85rem; }
+.home-page .home-author .hero-photo { width: 56px; height: 56px; }
+.home-page .home-author-label { font-size: 0.875rem; }
+.home-page .home-author .hero-role { font-size: 0.875rem; line-height: 1.8; }
+.home-page .home-author .hero-role a { color: var(--muted); }
+.home-paths ul {
+  list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-block: 1px solid var(--rule); background: var(--surface);
+}
+.home-paths li + li { border-left: 1px solid var(--rule); }
+.home-paths a { display: flex; flex-direction: column; gap: 0.4rem; height: 100%; padding: 1rem; text-decoration: none; }
+.home-path-title { font: 650 1rem/1.4 var(--font-ui); }
+.home-path-title > span { color: var(--rubric); }
+.home-path-description { color: var(--muted); font: 0.875rem/1.5 var(--font-ui); }
+.home-paths a:hover .home-path-title { text-decoration: underline; text-underline-offset: 0.2em; }
+.home-page .home-search { padding: 1.25rem; }
+.home-page .home-search .search-label { font-size: 1.125rem; }
+.home-search-help { margin: 0.6rem 0 0; font: 0.875rem/1.5 var(--font-ui); color: var(--muted); }
+.home-search-links { display: flex; flex-wrap: wrap; gap: 0 1.25rem; margin-top: 0.35rem; font: 0.9375rem/1.4 var(--font-ui); }
+.home-search-links a { display: inline-flex; align-items: center; min-height: 44px; }
+.home-page .home-block > h2.section-label {
+  font: 700 clamp(1.5rem, 1.25rem + 1vw, 1.875rem)/1.25 var(--font-display);
+  letter-spacing: 0; text-transform: none; color: var(--ink); margin-bottom: 0.8rem;
+}
+.home-page .start-intro, .home-section-intro { margin: 0 0 1rem; font-size: 1rem; line-height: 1.65; color: var(--muted); }
+.home-reading-time { margin: 0 0 0.65rem; font: 0.875rem/1.5 var(--font-ui); color: var(--rubric); }
+.home-reading-guide { margin: 0 0 1.5rem; font-size: 0.9375rem; }
+.home-more { margin: 1rem 0 0; font: 0.9375rem/1.65 var(--font-ui); }
+.home-method { margin-top: 1.75rem; padding: 0.25rem 0 0.25rem 1.1rem; border-left: 2px solid var(--rubric); }
+.home-method h3 { margin: 0 0 0.75rem; font: 700 1.25rem/1.3 var(--font-display); }
+.home-method p { margin: 0 0 0.75rem; font-size: 0.9375rem; line-height: 1.65; }
+.home-method p:last-child { margin-bottom: 0; }
+.home-page #home-community .prose { margin-inline: 0; }
+.home-page #home-confession { max-width: var(--measure); }
+.home-page section[id] { scroll-margin-top: 1.5rem; }
+@media (max-width: 39.99rem) {
+  .home-paths ul { grid-template-columns: 1fr; }
+  .home-paths li + li { border-left: 0; border-top: 1px solid var(--rule); }
+  .home-paths a { padding: 0.8rem 1rem; gap: 0.15rem; }
+  .home-page .home-search { padding: 1rem; }
+}
+@media print {
+  .home-paths, .home-search-links { display: none; }
+}

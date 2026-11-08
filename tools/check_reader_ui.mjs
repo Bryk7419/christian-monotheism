@@ -39,7 +39,7 @@ await p.click('.catalog-reset');ok(await p.locator('[data-catalog-list] > li:not
 ok(!(await p.locator('[data-catalog-results]').evaluate(d=>d.open)),'reset folds the list');
 await go('articles/?topic=svyatoy-duh&sort=updated');ok(p.url().includes('topics/'),'old catalog address leads to topics');ok(await visible().count()===inTopic('svyatoy-duh'),'shareable URL filters');
 await go('articles/#spasenie');ok(await p.inputValue('#catalog-topic')==='spasenie','legacy topic hash');ok(await visible().count()===inTopic('spasenie'),'legacy topic results');
-await go('');await p.click('.hero-actions a[href="#start"]');ok(await p.locator('#start').evaluate(e=>Math.abs(e.getBoundingClientRect().top)<60),'start CTA anchor');
+await go('');await p.click('.home-paths a[href="#start"]');ok(await p.locator('#start').evaluate(e=>Math.abs(e.getBoundingClientRect().top)<60),'start CTA anchor');
 await p.locator('.start-cards .card-link').first().click();ok((await p.locator('.intro-route').innerText()).includes('Статья 1 из 5'),'first step marker');
 for(const slug of ['edinyy-istinnyy-bog','slovo-bylo-bog']){
  await go('answers/'+slug+'/');

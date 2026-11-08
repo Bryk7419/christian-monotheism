@@ -155,6 +155,7 @@ def head_block(path, info):
     root = '../' * depth
     img, w, h = info.get('image') or DEFAULT_IMAGE
     lines = [HEAD_START,
+             f'<meta property="og:site_name" content="{esc(CONFIG["site_name"])}">',
              f'<link rel="canonical" href="{esc(info["url"])}">',
              f'<meta property="og:url" content="{esc(info["url"])}">',
              f'<meta property="og:image" content="{esc(BASE + img)}">',
@@ -178,6 +179,7 @@ def head_block(path, info):
 def apply_head(s, path, info):
     s = re.sub(re.escape(HEAD_START) + r'.*?' + re.escape(HEAD_END) + r'\n', '', s, flags=re.S)
     s = re.sub(r'<meta property="og:image" content="[^"]*">\n', '', s)
+    s = re.sub(r'<meta property="og:site_name" content="[^"]*">\n', '', s)
     return s.replace('</head>', head_block(path, info) + '</head>', 1)
 
 
@@ -265,7 +267,7 @@ def feed(m):
 
 
 def llms(m):
-    lines = [f'# {CONFIG["site_name"]}: христианский монотеизм', '',
+    lines = [f'# {CONFIG["site_name"]}: библейский унитаризм', '',
              f'> {CONFIG["site_description"]}', '',
              'Сайт Сергея Брыка: статьи и разборы Писания с позиции библейского унитаризма. '
              'Цитаты по Синодальному переводу. Библейские разборы называют главные возражения и отвечают на них.', '']

@@ -934,3 +934,19 @@ mark { background: var(--mark); color: var(--ink); padding: 0 0.1em; border-radi
   border-radius: 50%; background: var(--bg); border: 2px solid var(--rubric);
 }
 .timeline-when { display: block; margin-bottom: 0.15em; font: 700 0.875rem/1.4 var(--font-ui); letter-spacing: 0.03em; color: var(--rubric); }
+
+/* Главная: тема сайта на первом плане, автор рядом с исповеданием. */
+.home-title {
+  margin: 0; color: var(--ink); font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(3.25rem, 2.5rem + 3vw, 4.75rem); line-height: 1.12;
+}
+.home-subtitle {
+  margin: 0.65rem 0 1.5rem; color: var(--rubric);
+  font: 600 1rem/1.5 var(--font-ui);
+}
+.home-author { margin: 1.75rem 0 1rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); }
+.home-author .hero-photo { width: 64px; height: 64px; }
+.home-author .hero-name { font-size: 1.375rem; }
+.home-author .hero-name a { text-decoration: none; }
+.home-author .hero-name a:hover { text-decoration: underline; }
+.home-author-label { margin: 0 0 0.2rem; color: var(--muted); font: 0.75rem/1.4 var(--font-ui); }

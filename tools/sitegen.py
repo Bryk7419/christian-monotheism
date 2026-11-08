@@ -248,7 +248,7 @@ def render_home_start(m):
     out = ('<section class="home-block home-start" id="start" aria-labelledby="start-h">\n'
            '  <h2 class="section-label" id="start-h">С чего начать</h2>\n'
            '  <p class="start-intro">Если вы только знакомитесь с христианством или хотите понять мою веру, начните с этих коротких статей. Их можно читать по порядку или выбрать свой вопрос.</p>\n'
-           f'  <p class="home-reading-time">Вся подборка: около {total} минут чтения.</p>\n'
+           f'  <p class="home-reading-time">Вся подборка — примерно {total} {plural(total, "минута", "минуты", "минут")} чтения.</p>\n'
            '  <p class="home-reading-guide">Впервые открываете Библию? <a href="answers/chitat-po-kontekstu/index.html">Как читать и понимать отрывок целиком</a>.</p>\n'
            '  <ol class="cards start-cards">\n')
     for i, slug in enumerate(m['start'], 1):

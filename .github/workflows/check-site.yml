@@ -1,0 +1,40 @@
+name: Проверка сайта
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Получить файлы
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Настроить Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Настроить Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Проверить сохранность библиографии
+        run: python3 -m unittest discover -s tools -p 'test_*.py'
+      - name: Проверить производные файлы
+        run: python3 tools/rebuild.py --check
+      - name: Проверить внутренние ссылки и якоря
+        if: ${{ !cancelled() }}
+        run: python3 tools/check_links.py

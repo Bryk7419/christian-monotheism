@@ -18,6 +18,7 @@
   python3 tools/make_audio.py                 # озвучить то, что изменилось
   python3 tools/make_audio.py --dry-run       # показать, что будет озвучено, и сколько это знаков
   python3 tools/make_audio.py --only slug     # одну статью
+  python3 tools/make_audio.py --batch-file tools/audio-batch.json  # текущий редакционный пакет
   python3 tools/make_audio.py --fake          # проверка без службы: вместо голоса тихий тон (не публиковать!)
 
 Нужны Python 3.10+, Node.js 18+ и ffmpeg.
@@ -334,14 +335,30 @@ def save(index):
                      encoding='utf-8')
 
 
+def read_batch(path):
+    slugs = json.loads(Path(path).read_text(encoding='utf-8'))
+    if not isinstance(slugs, list) or not slugs:
+        raise ValueError('Пакет озвучки должен быть непустым списком адресов статей.')
+    if any(not isinstance(s, str) or not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', s) for s in slugs):
+        raise ValueError('В пакете озвучки допустимы только адреса статей: латиница, цифры и дефисы.')
+    return list(dict.fromkeys(slugs))
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
-    ap.add_argument('--only', action='append', help='адрес статьи (можно несколько раз)')
+    selection = ap.add_mutually_exclusive_group()
+    selection.add_argument('--only', action='append', help='адрес статьи (можно несколько раз)')
+    selection.add_argument('--batch-file', help='JSON-файл с непустым списком статей текущего пакета')
     ap.add_argument('--dry-run', action='store_true')
     ap.add_argument('--fake', action='store_true')
     ap.add_argument('--force', action='store_true', help='переозвучить, даже если текст не менялся')
     ap.add_argument('--max-minutes', type=float, default=0, help='остановиться после стольких минут работы')
     args = ap.parse_args()
+    if args.batch_file:
+        try:
+            args.only = read_batch(args.batch_file)
+        except (OSError, ValueError) as e:
+            ap.error(str(e))
     started = time.time()
 
     voice = None if args.dry_run else provider(args)
@@ -361,7 +378,7 @@ def main():
     vid = voice.id if voice else 'dry-run'
 
     # записи удалённых и объединённых статей
-    gone = [s for s in index if s not in articles]
+    gone = [s for s in index if s not in articles and (not args.only or s in args.only)]
     if gone and not args.dry_run:
         for slug in gone:
             index.pop(slug)

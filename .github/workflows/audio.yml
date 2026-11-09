@@ -2,8 +2,8 @@
 # Нужен ключ службы озвучки в секретах репозитория (Settings → Secrets and variables → Actions):
 #   AZURE_SPEECH_KEY и AZURE_SPEECH_REGION — Microsoft Azure, или YANDEX_API_KEY — Яндекс SpeechKit.
 # Без ключа — голос Microsoft из чтения вслух Edge, если в tools/site-config.json "audio": {"service": "edge"}.
-# Если служба не выбрана, ничего не делает. Озвучиваются только новые и изменённые статьи; первая озвучка всех
-# статей идёт несколько часов, недоделанное продолжится при следующем запуске (раз в сутки).
+# Если служба не выбрана, ничего не делает. Обрабатываются только статьи из tools/audio-batch.json;
+# неизменённые записи пропускаются. По расписанию продолжается только этот пакет, а не весь сайт.
 # Пробная запись одной статьи: Actions → «Озвучка статей» → Run workflow → адрес статьи (голос Edge).
 name: Озвучка статей
 on:
@@ -15,6 +15,7 @@ on:
       - 'assets/js/refscan.js'
       - 'assets/js/bible.js'
       - 'tools/make_audio.py'
+      - 'tools/audio-batch.json'
       - 'tools/audio-text.mjs'
       - 'tools/site-config.json'
   schedule:
@@ -22,7 +23,7 @@ on:
   workflow_dispatch:
     inputs:
       article:
-        description: 'Озвучить только эту статью голосом Edge (адрес, например slovo-bylo-bog); пусто — как обычно'
+        description: 'Одна статья голосом Edge (адрес); пусто — только текущий пакет из tools/audio-batch.json'
         required: false
         default: ''
 permissions:
@@ -59,7 +60,7 @@ jobs:
           if [ -n "$ARTICLE" ]; then
             AUDIO_SERVICE=edge "$RUNNER_TEMP/audio-venv/bin/python" tools/make_audio.py --only "$ARTICLE"
           else
-            "$RUNNER_TEMP/audio-venv/bin/python" tools/make_audio.py --max-minutes 320
+            "$RUNNER_TEMP/audio-venv/bin/python" tools/make_audio.py --batch-file tools/audio-batch.json --max-minutes 320
           fi
       - name: Сохранить записи на сайте
         if: ${{ !cancelled() }}   # и после сбоя: готовые записи не должны пропасть

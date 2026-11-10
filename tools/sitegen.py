@@ -397,6 +397,7 @@ def scripture_entries(m):
 
 
 def render_scripture_main(m, entries):
+    import readingguides as G
     titles = {a['slug']: a['title'] for a in m['articles']}
     present = []
     for e in entries:
@@ -406,6 +407,7 @@ def render_scripture_main(m, entries):
            + catalog_header('По местам Писания', m.get('scripture_intro', 'Указатель стихов и отрывков, которые разбираются в статьях.'))
            + page_filter('../', 'Найти место Писания или статью', 'Например: Ин 8:58 или Римлянам', 'li.passage',
                          groups='.book, .scripture-section', busy='.jump-books')
+           + G.catalog_intro(m['reading_guides'])
            + '  <nav class="jump jump-books" aria-label="Книги">\n')
     for sid, sname in SECTIONS:
         bs = [BOOK[b] for b in present if BOOK[b]['section'] == sid]
@@ -432,6 +434,11 @@ def render_scripture_main(m, entries):
                 out += (f'        <li class="passage" id="{e["anchor"]}">\n'
                         f'          <span class="ref passage-ref">{e["label"]}</span>\n'
                         '          <ul class="passage-articles">\n')
+                guide = next((g for g in m['reading_guides']
+                              if g['primary'] in e['articles'] or g['ref'] == e['label']), None)
+                if guide:
+                    out += (f'            <li class="passage-guide-link"><a href="{guide["id"]}/index.html">'
+                            'С чего начать: моё понимание и все разборы →</a></li>\n')
                 for s in e['articles']:
                     out += f'            <li><a href="../answers/{s}/index.html">{titles[s]}</a></li>\n'
                 out += '          </ul>\n        </li>\n'
@@ -529,6 +536,7 @@ def render_article_main(m, a, p, anchors):
     По каким записям автора подготовлена статья, на странице не показывается: это записывается в editorial/source-ledger.md.
     """
     import siteextras as X
+    import readingguides as G
     arts = {x['slug']: x for x in m['articles']}
     vids = videos_by_id(m)
     prose = video_cues(X.add_heading_ids(p['prose']), m['vfields'])
@@ -554,12 +562,15 @@ def render_article_main(m, a, p, anchors):
         out += '    <p class="article-passages">\n      <span class="passages-label">Разбираемые места:</span>\n'
         links = [f'      <a class="ref" href="../../scripture/index.html#{anchors[lab]}">{lab}</a>' for lab in a['passages']]
         out += '<span class="sep" aria-hidden="true"> · </span>\n'.join(links) + '\n    </p>\n'
-    out += (X.article_tools() + '  </header>\n\n  <div class="article-reading">\n' + X.toc(prose)
+    guide = G.for_article(m['reading_guides'], a['slug'])
+    reading_route = G.article_route(guide, a['slug']) if guide else ''
+    out += (X.article_tools() + '  </header>\n\n' + reading_route + '  <div class="article-reading">\n' + X.toc(prose)
             + f'  <div class="prose" data-home="{home}" data-verses="../../assets/verses/{a["slug"]}.json" data-slug="{a["slug"]}" data-audio="../../assets/audio/">\n' + prose + '\n\n  </div>\n  </div>\n\n')
     sources_open = ' open' if p.get('sources_open') else ''
     sources_caption = 'Источники' if sources_open else 'Открыть источники'
     out += ('  <footer class="article-footer">\n'
-            '    <section aria-labelledby="next-h">\n      <h2 class="section-label" id="next-h">Читать дальше</h2>\n'
+            + (G.sources(guide) if guide and guide['primary'] == a['slug'] else '')
+            + '    <section aria-labelledby="next-h">\n      <h2 class="section-label" id="next-h">Читать дальше</h2>\n'
             + cards([(s, arts[s]['title'], arts[s]['summary']) for s in next_slugs], '../')
             + '\n    </section>\n'
             '    <section class="apparatus" aria-labelledby="sources-h">\n'

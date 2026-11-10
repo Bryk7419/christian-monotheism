@@ -158,6 +158,10 @@ export function search(index, query, { topic = null, limit = 50 } = {}) {
       else if (doc.normBody.includes(q.phrase)) score += 12;
     }
     if (doc.type === 'article') score += 1;
+    // По одному стиху сначала показываем авторский маршрут. Уточняющие слова
+    // сохраняют обычный порядок, чтобы конкретный довод находился сразу в статье.
+    if (doc.type === 'guide' && q.refs.length === 1 && !q.terms.length && refHit === 'passage'
+        && q.refs[0].segs.length === 1 && q.refs[0].segs[0][0] === q.refs[0].segs[0][1]) score += 10;
     results.push({ doc, score, matchedStems, refHit });
   }
   results.sort((a, b) => b.score - a.score || a.doc.title.localeCompare(b.doc.title, 'ru'));

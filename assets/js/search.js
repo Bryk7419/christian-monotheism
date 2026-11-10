@@ -15,7 +15,7 @@ const topicSelect = document.getElementById('search-topic');
 // поэтому поиск работает и в подпапке GitHub Pages.
 const siteRoot = new URL('../../', import.meta.url);
 const linkSuffix = document.querySelector('meta[name="link-suffix"]')?.content || '';
-const TYPE_LABELS = { article: 'Статья', topic: 'Тема', page: 'Страница', video: 'Видео' };
+const TYPE_LABELS = { article: 'Статья', guide: 'Разборы стиха', topic: 'Тема', page: 'Страница', video: 'Видео' };
 
 function hrefFor(route) {
   const [path, hash] = route.split('#');

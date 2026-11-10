@@ -7,7 +7,7 @@ const out = input.map((d) => {
   const refs = [...passageRefs.filter(Boolean)];
   for (const a of d.aliases || []) for (const r of findRefs(a)) refs.push([r.book, r.segs]);
   // Статьи: только ссылки с «:» (strict); видео: любые; темы и страницы: без упоминаний.
-  const mentions = d.type === 'topic' || d.type === 'page' ? []
+  const mentions = ['topic', 'page', 'guide'].includes(d.type) ? []
     : findRefs(d.body || '', { strict: d.type === 'article' }).map((r) => [r.book, r.segs]);
   const sortKeys = (d.passages || []).map((p) => { const r = parsePassage(p); return r ? sortKey(r) : null; });
   return { refs, mentions, passageRefs, sortKeys };

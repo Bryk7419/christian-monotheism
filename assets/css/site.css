@@ -1001,3 +1001,40 @@ mark { background: var(--mark); color: var(--ink); padding: 0 0.1em; border-radi
 @media print {
   .home-paths, .home-search-links { display: none; }
 }
+
+/* Авторский вход в разбор стиха: все тексты доступны и без JavaScript. */
+.reading-guide { max-width: 48rem; margin-inline: auto; }
+.reading-guide-header { margin-block: 1.5rem 1.25rem; }
+.reading-guide-header .page-title { margin-bottom: 0; }
+.reading-choices { margin-block: 1.25rem 1.75rem; font-family: var(--font-ui); }
+.reading-choices ul { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0; margin: 0; list-style: none; }
+.reading-choices a { display: flex; align-items: center; min-height: 2.75rem; padding: 0.4rem 0.7rem; border: 1px solid var(--rule); border-radius: var(--radius); font-size: 0.875rem; text-decoration: none; }
+.reading-choices a:hover { border-color: var(--rubric); }
+.reading-choices a[aria-current="page"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.reading-verse { margin: 1.5rem 0; }
+.reading-verse blockquote { margin: 0; padding: 0 0 0 1rem; border-left: 2px solid var(--rubric); }
+.reading-verse p { margin: 0; }
+.reading-verse figcaption { margin: 0.6rem 0 0 1rem; font: 0.8125rem/1.5 var(--font-ui); color: var(--muted); }
+.reading-primary { padding: clamp(1rem, 3vw, 1.75rem); background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); }
+.reading-primary .section-label { margin-top: 0; }
+.reading-answer { margin: 0.8rem 0 1.25rem; font-size: 1.125rem; }
+.reading-primary-title { margin: 0 0 1rem; font: 0.875rem/1.6 var(--font-ui); color: var(--muted); }
+.reading-section, .reading-sources { margin-block: 2rem; }
+.reading-article-list, .reading-source-list { padding: 0; margin: 0.75rem 0 0; list-style: none; }
+.reading-article-list li, .reading-source-list li { padding-block: 1rem; border-top: 1px solid var(--rule); }
+.reading-article-list h3, .reading-source-list h3 { margin: 0; font: 600 1.0625rem/1.5 var(--font-text); overflow-wrap: anywhere; }
+.reading-article-list p, .reading-source-list p { margin: 0.5rem 0 0; font-size: 0.9375rem; line-height: 1.65; }
+.reading-source-list .reading-source-meta { margin: 0 0 0.4rem; font: 0.8125rem/1.6 var(--font-ui); color: var(--muted); }
+.reading-source-list .reading-source-relation { font: 600 0.8125rem/1.5 var(--font-ui); color: var(--rubric); }
+.reading-back { margin-block: 2rem 0; font: 0.9375rem/1.6 var(--font-ui); }
+.article-reading-route { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.35rem 1.2rem; max-width: var(--measure); margin: 0 auto 1.75rem; padding-block: 0.85rem; border-block: 1px solid var(--rule); font: 0.8125rem/1.6 var(--font-ui); }
+.article-reading-route span { color: var(--muted); }
+.article-reading-route a { padding-block: 0.2rem; }
+.reading-start { margin-block: 1.5rem 2rem; }
+.reading-start p { margin: 0.5rem 0; font-size: 0.9375rem; }
+.reading-start .reading-choices { margin-block: 0.75rem 0; }
+.passage-guide-link { font-weight: 600; margin-bottom: 0.5rem; }
+@media print {
+  .reading-choices, .article-reading-route, .reading-back { display: none; }
+  .reading-primary { padding: 0; border: 0; }
+}

@@ -28,6 +28,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import sitegen as S  # noqa: E402
 import siteextras as X  # noqa: E402
+import readingguides as G  # noqa: E402
 import subprocess  # noqa: E402
 
 KINDS_TEXT = 'библейский разбор, обзор темы, краткий ответ, размышление или практическая заметка'
@@ -153,13 +154,14 @@ def load():
     m['scripture_intro'] = ('Здесь собраны статьи, посвящённые разбору конкретного места Писания. '
                             'Одна статья может относиться к двум текстам, если она разбирает их вместе. '
                             'Упоминания стихов и ссылки для сравнения в указатель не включены.')
+    m['reading_guides'] = G.load()
     m['videos_intro'] = intro_of('videos/index.html')
     return m
 
 
 # --- Проверки -----------------------------------------------------------------------------------------
 def validate(m):
-    errors = []
+    errors = G.validate(m)
     arts = {a['slug']: a for a in m['articles']}
     topic_ids = {t['id'] for t in m['topics']}
     for a in m['articles']:
@@ -348,6 +350,7 @@ def render_all(m):
             s = S.set_head(s, title, intro, title)
         s = X.apply_head(s, path, X.simple_info(path, title or X.plain(re.search(r'<title>(.*?) — ', s).group(1))))
         out[path] = S.replace_main(s, main)
+    out.update(G.pages(m))
     # «Что нового»: страница по образцу списка тем
     new = S.set_head(S.read('topics/index.html'), 'Что нового', 'Новые и обновлённые статьи сайта, от последних к более ранним.', 'Что нового')
     new = X.apply_head(new, 'new/index.html', X.simple_info('new/index.html', 'Что нового'))
@@ -408,6 +411,7 @@ def search_index(m):
         docs.append({'type': 'topic', 'url': f'/topics/{t["id"]}/', 'title': t['title'], 'summary': t['confession'],
                      'topics': [t['id']], 'passages': [label for _, label, _ in t['key_verses']], 'aliases': [],
                      'body': t['confession'] + '\n' + '\n'.join(f'{label} — {desc}' for _, label, desc in t['key_verses'])})
+    docs.extend(G.search_docs(m))
     docs.append(page_doc('bez-kupyur/index.html', '/bez-kupyur/'))
     for slug in COMMENT_FOLDERS:
         docs.append(page_doc(f'bez-kupyur/{slug}/index.html', f'/bez-kupyur/{slug}/'))

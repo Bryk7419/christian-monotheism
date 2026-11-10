@@ -213,7 +213,6 @@ def catalog_list(m):
                 f'        <p class="card-meta">{meta}</p>\n'
                 f'        <a class="card-link" href="../answers/{a["slug"]}/index.html">{a["title"]}</a>\n'
                 f'        <p class="card-summary">{a["summary"]}</p>\n'
-                f'        <p class="card-updated">Обновлено <time datetime="{p["date"]}">{human_date(p["date"])}</time></p>\n'
                 '      </li>\n')
     out += ('    </ul>\n    <p class="catalog-empty" data-catalog-empty hidden>Попробуйте другое слово или выберите «Все темы».</p>\n'
             '  </details>\n  <script type="module" src="../assets/js/catalog.js"></script>\n')
@@ -335,7 +334,8 @@ def render_topic_main(m, t):
         out += ('      <div class="key-verse">\n'
                 f'        <dt><a class="ext ref" href="{href}" target="_blank" rel="noopener">{label}{EXT}</a></dt>\n'
                 f'        <dd>{desc}</dd>\n      </div>\n')
-    out += ('    </dl>\n  </section>\n  <section class="topic-block" aria-labelledby="more-h">\n'
+    out += '    </dl>\n  </section>\n' + t.get('route', '')
+    out += ('  <section class="topic-block" aria-labelledby="more-h">\n'
             '    <h2 class="section-label" id="more-h">Подробнее</h2>\n    \n')
     out += cards([(s, arts[s]['title'], arts[s]['summary']) for s in t['more']], '../../answers/')
     out += ('\n  </section>\n  <section class="topic-block" aria-labelledby="questions-h">\n'
@@ -475,7 +475,7 @@ def parse_article_page(s):
     p = {}
     p['crumb'] = re.search(r'<a href="\.\./\.\./topics/([^/]+)/index.html">[^<]+</a>\n    </nav>', s).group(1)
     p['minutes'] = int(re.search(r'<span>(\d+) минут', s).group(1))
-    p['date'] = re.search(r'<time datetime="([^"]+)">', s).group(1)
+    p['date'] = re.search(r'<time datetime="(\d{4}-\d{2}-\d{2})"(?:\s[^>]*)?>', s).group(1)
     lead = re.search(r'<p class="article-lead">(?:<span class="lead-label">[^<]*</span>\s*)?(.*?)</p>', s, re.S)
     p['lead'] = lead.group(1).strip() if lead else ''
     p['prose'] = re.search(r'<div class="prose"[^>]*>\n(.*?)\n\n  </div>', s, re.S).group(1)
@@ -549,8 +549,7 @@ def render_article_main(m, a, p, anchors):
            + '    <p class="article-meta">\n'
            + (f'      <span>{a["kind"]}</span>\n      <span class="sep" aria-hidden="true">·</span>\n' if a.get('kind') else '')
            + f'      <span>{p["minutes"]} {plural(p["minutes"], "минута", "минуты", "минут")} чтения</span>\n'
-           '      <span class="sep" aria-hidden="true">·</span>\n'
-           f'      <span>обновлено <time datetime="{p["date"]}">{human_date(p["date"])}</time></span>\n    </p>\n')
+           f'      <time datetime="{p["date"]}" hidden></time>\n    </p>\n')
     if a['passages']:
         out += '    <p class="article-passages">\n      <span class="passages-label">Разбираемые места:</span>\n'
         links = [f'      <a class="ref" href="../../scripture/index.html#{anchors[lab]}">{lab}</a>' for lab in a['passages']]

@@ -290,18 +290,12 @@ def render_new_main(m):
     out += ('  <p class="subscribe">\n'
             f'    <a class="button" href="{esc(CONFIG["telegram_url"])}" target="_blank" rel="noopener">Telegram-канал{S.EXT}</a>\n'
             '    <a class="button button-quiet" href="../feed.xml">RSS-лента</a>\n  </p>\n')
-    current = None
+    # Массовая редактура не показывается как десятки публикаций за один день.
+    # Даты остаются в исходниках, RSS и метаданных; датированные анонсы — после завершения этапа.
+    out += '<ul class="cards">\n'
     for a in arts:
-        date = m['pages'][a['slug']]['date']
-        if date != current:
-            if current is not None:
-                out += '</ul>\n  </section>\n'
-            current = date
-            out += (f'  <section class="catalog-group" aria-label="{S.human_date(date)}">\n'
-                    f'    <h2 class="group-title"><time datetime="{date}">{S.human_date(date)}</time></h2>\n<ul class="cards">\n')
         out += ('  <li class="card">\n'
                 + (f'    <p class="eyebrow">{a["kind"]}</p>\n' if a.get('kind') else '')
                 + f'    <a class="card-link" href="../answers/{a["slug"]}/index.html">{a["title"]}</a><p class="card-summary">{a["summary"]}</p>\n  </li>\n')
-    if current is not None:
-        out += '</ul>\n  </section>\n'
+    out += '</ul>\n'
     return out + '</div>\n\n</main>'

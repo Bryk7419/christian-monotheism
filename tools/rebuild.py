@@ -106,6 +106,8 @@ def load():
         topic['confession'] = re.search(r'<p class="confession-text">(.*?)</p>', main).group(1)
         note = re.search(r'<p class="confession-note">(.*?)</p>', main)
         topic['note'] = note.group(1) if note else None
+        route = re.search(r'  <section class="topic-block" data-topic-route\b.*?</section>\n', main, re.S)
+        topic['route'] = route.group(0) if route else ''
         topic['key_verses'] = re.findall(
             r'<dt><a class="ext ref" href="([^"]+)" target="_blank" rel="noopener">(.*?)' + re.escape(S.EXT) + r'</a></dt>\s*<dd>(.*?)</dd>', main)
         topic['more'] = re.findall(r'class="card-link" href="\.\./\.\./answers/([^/]+)/index.html"',

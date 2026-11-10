@@ -140,13 +140,14 @@ export function normalizeRefText(input) {
 
 // Ключ места: глава * 1000 + стих. Глава без стиха — весь диапазон главы.
 const key = (c, v) => c * 1000 + v;
+const singleChapterBooks = new Set(['oba', 'phm', '2jn', '3jn', 'jud']);
 
 /**
  * Разбор числовой части после названия книги.
  * Поддерживает: «17», «17:3», «17:1-5», «17:5, 22, 24», «1:10-12, 20-21»,
  * «14-16» (главы), «13:1-14:3». В режиме query также «1 1» = «1:1».
  */
-function parseNumbers(str, start, { query = false } = {}) {
+function parseNumbers(str, start, { query = false } = {}, singleChapter = false) {
   const segs = [];
   let i = start;
   const peek = () => str[i];
@@ -201,6 +202,11 @@ function parseNumbers(str, start, { query = false } = {}) {
   } else if (query && /^\d/.test(str.slice(i)) && i > afterChapter) {
     // «Ин 1 1» — стих через пробел (только в поисковом запросе)
     if (!readVerseRange(current)) { i = afterChapter; segs.push([key(current, 0), key(current, 999)]); save(); }
+  } else if (singleChapter && (chapter > 1 || peek() === '-' || peek() === ',')) {
+    // В одночастном послании «Иуд. 5» означает 1:5, а «Иуд. 1» сохраняет значение всей главы.
+    current = 1;
+    i = start;
+    readVerseRange(current);
   } else if (peek() === '-') {
     // диапазон глав «14-16»
     i += 1;
@@ -257,7 +263,7 @@ export function findRefs(text, options = {}) {
     const bookId = aliasToBook.get(m[1]) ?? [...aliasToBook.entries()].find(([a]) => a.replace(/ /g, '') === alias)?.[1];
     if (!bookId) continue;
     const startNums = m.index + m[0].length;
-    const { segs, end } = parseNumbers(norm, startNums, options);
+    const { segs, end } = parseNumbers(norm, startNums, options, singleChapterBooks.has(bookId));
     if (!segs.length) continue;
     if (options.strict) {
       const numText = norm.slice(startNums, end);

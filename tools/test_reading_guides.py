@@ -27,6 +27,8 @@ for (const [query, slug] of [
   ['Ин 3:13 Даниил', 'in-3-13-prorochestvo-daniila'],
   ['Ин 6:62 воскресение', 'ioanna-6-62-unitarnye-tolkovaniya'],
   ['Мф 28:19 рукописи', 'vo-imya-ottsa-syna-duha'],
+  ['Иуд. 5', 'iuda-5-kto-vyvel-iz-egipta'],
+  ['Иуды 1:5', 'iuda-5-kto-vyvel-iz-egipta'],
 ]) assert.equal(search(index, query)[0].doc.url, `/answers/${slug}/`, query);
 assert(search(index, 'Дастин Смит').some(h => h.doc.url === '/scripture/john-1-1/'));
 // The verse shortcut must not change ranking for a whole chapter or range.

@@ -27,6 +27,13 @@ for (const [query, slug] of [
   ['Ин 3:13 Даниил', 'in-3-13-prorochestvo-daniila'],
   ['Ин 6:62 воскресение', 'ioanna-6-62-unitarnye-tolkovaniya'],
   ['Мф 28:19 рукописи', 'vo-imya-ottsa-syna-duha'],
+  ['Иоанна 2:11', 'svadba-v-kane'],
+  ['Рим. 1:4', 'syn-bozhiy-v-sile'],
+  ['Втор. 18:15', 'prorok-kak-moisey'],
+  ['Деян. 3:22', 'prorok-kak-moisey'],
+  ['Еф. 3:17', 'hristos-v-serdtsah'],
+  ['Быт. 15:6', 'chemu-poveril-avram'],
+  ['Рим. 4:3', 'chemu-poveril-avram'],
   ['Иуд. 5', 'iuda-5-kto-vyvel-iz-egipta'],
   ['Иуды 1:5', 'iuda-5-kto-vyvel-iz-egipta'],
 ]) assert.equal(search(index, query)[0].doc.url, `/answers/${slug}/`, query);

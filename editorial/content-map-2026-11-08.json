@@ -714,10 +714,11 @@
       "articles": [
         "kto-voskresil-iisusa",
         "voskresshiy-chelovek-ne-kopiya",
-        "voskresshiy-iisus-chelovek"
+        "voskresshiy-iisus-chelovek",
+        "chto-takoe-duhovnoe-telo"
       ],
       "status": "есть",
-      "action": "Сохранить материал и включить в последовательный маршрут."
+      "action": "Добавлен разбор душевного и духовного тела в 1 Кор. 15:42–49."
     },
     {
       "topic": "smert-voskresenie",
@@ -771,10 +772,11 @@
       "readers": "Исследователь; несогласный",
       "articles": [
         "v-ruki-tvoi-predayu-duh",
-        "dushi-pod-zhertvennikom"
+        "dushi-pod-zhertvennikom",
+        "ne-boytes-ubivayushchih-telo"
       ],
-      "status": "дополнить",
-      "action": "Подготовлены два самостоятельных разбора: Лк. 23:46 и Откр. 6:9–11. Мф. 10:28 читатель найдёт в ответе на комментарий и в статье о второй смерти."
+      "status": "есть",
+      "action": "Все три места получили отдельные разборы по ответам автора."
     },
     {
       "topic": "smert-voskresenie",
@@ -3775,12 +3777,45 @@
       ],
       "new": true,
       "action": "Подготовлен отдельный разбор Откр. 6:9–11."
+    },
+    {
+      "slug": "ne-boytes-ubivayushchih-telo",
+      "title": "Почему Иисус говорит, что убивающие тело не могут убить душу?",
+      "primary_topic": "smert-voskresenie",
+      "topics": [
+        "smert-voskresenie",
+        "zhizn-very"
+      ],
+      "minutes": 3,
+      "role": "Библейский разбор",
+      "questions": [
+        "D08"
+      ],
+      "new": true,
+      "action": "Подготовлен отдельный разбор Мф. 10:28."
+    },
+    {
+      "slug": "chto-takoe-duhovnoe-telo",
+      "title": "Что Павел называет духовным телом?",
+      "primary_topic": "smert-voskresenie",
+      "topics": [
+        "smert-voskresenie",
+        "iisus-hristos"
+      ],
+      "minutes": 3,
+      "role": "Библейский разбор",
+      "questions": [
+        "D03"
+      ],
+      "new": true,
+      "action": "Подготовлен отдельный разбор 1 Кор. 15:42–49."
     }
   ],
   "status_counts": {
-    "есть": 78,
-    "дополнить": 5,
+    "есть": 79,
+    "подготовлено": 1,
     "позиция": 1,
-    "маршрут": 3
+    "маршрут": 3,
+    "дополнить": 3
   }
 }

@@ -3692,6 +3692,20 @@
       ],
       "new": true,
       "action": "Подготовлено к авторскому просмотру."
+    },
+    {
+      "slug": "pochemu-chitayu-siraha",
+      "title": "Почему я читаю книгу Сираха?",
+      "primary_topic": "pisanie",
+      "topics": [
+        "pisanie",
+        "zhizn-very"
+      ],
+      "minutes": 2,
+      "role": "Размышление",
+      "questions": [],
+      "new": true,
+      "action": "Авторское размышление о чтении вне канона. Подготовлено к авторскому просмотру."
     }
   ],
   "status_counts": {

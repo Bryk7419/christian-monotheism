@@ -67,8 +67,8 @@ def catalog_intro(guides):
 
 
 def article_route(g, slug):
-    label = g['label'] if g['primary'] == slug else 'Дополнительный разбор'
-    return ('<nav class="article-reading-route" aria-label="Разборы этого места">'
+    label = g['label'] if g['primary'] == slug else 'По теме статьи'
+    return (f'<nav class="article-reading-route" aria-label="Подборка по {html.escape(g["ref"])}">'
             f'<span>{html.escape(label)}</span>'
             f'<a href="../../scripture/{g["id"]}/index.html">{html.escape(g["ref"])}: все разборы и варианты →</a>'
             '</nav>\n')

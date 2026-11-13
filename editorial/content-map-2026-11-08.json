@@ -629,7 +629,8 @@
       "readers": "Исследователь; несогласный",
       "articles": [
         "bog-spasaet-cherez-cheloveka",
-        "brat-ne-iskupit-brata"
+        "brat-ne-iskupit-brata",
+        "odin-posrednik-molitva-za-vseh"
       ],
       "status": "есть",
       "action": "Опубликовано в PR №98. Укреплены вступление, жертва, прощение и сравнение с классической христологией. Подробный ответ по псалму сохранён."
@@ -803,7 +804,8 @@
       "articles": [
         "evangelie-tsarstva",
         "hristos-umer-pochemu-my-umiraem",
-        "uteshenie-voskreseniem"
+        "uteshenie-voskreseniem",
+        "komu-hristos-peredast-tsarstvo"
       ],
       "status": "есть",
       "action": "Опубликовано в PR №98. Возвращение, воскресение и искупление тела связаны без выдуманной хронологии."
@@ -3706,6 +3708,38 @@
       "questions": [],
       "new": true,
       "action": "Авторское размышление о чтении вне канона. Подготовлено к авторскому просмотру."
+    },
+    {
+      "slug": "odin-posrednik-molitva-za-vseh",
+      "title": "Один Посредник: почему Павел просит молиться за всех?",
+      "primary_topic": "spasenie",
+      "topics": [
+        "spasenie",
+        "zhizn-very"
+      ],
+      "minutes": 3,
+      "role": "Библейский разбор",
+      "questions": [
+        "S02"
+      ],
+      "new": true,
+      "action": "Подготовлен отдельный разбор 1 Тим. 2:1–6."
+    },
+    {
+      "slug": "komu-hristos-peredast-tsarstvo",
+      "title": "Кому Христос передаст Царство?",
+      "primary_topic": "tsarstvo-bozhie",
+      "topics": [
+        "tsarstvo-bozhie",
+        "iisus-hristos"
+      ],
+      "minutes": 4,
+      "role": "Библейский разбор",
+      "questions": [
+        "K02"
+      ],
+      "new": true,
+      "action": "Подготовлен отдельный разбор 1 Кор. 15:24–28."
     }
   ],
   "status_counts": {

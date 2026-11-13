@@ -769,9 +769,12 @@
       "id": "D08",
       "question": "Что означают «не бойтесь убивающих тело», предание духа и души под жертвенником?",
       "readers": "Исследователь; несогласный",
-      "articles": [],
+      "articles": [
+        "v-ruki-tvoi-predayu-duh",
+        "dushi-pod-zhertvennikom"
+      ],
       "status": "дополнить",
-      "action": "Развёрнутые ответы автора уже опубликованы в папке комментариев «Душа и смерть». Сделать их доступными из раздела; затем решить, нужны ли самостоятельные статьи."
+      "action": "Подготовлены два самостоятельных разбора: Лк. 23:46 и Откр. 6:9–11. Мф. 10:28 читатель найдёт в ответе на комментарий и в статье о второй смерти."
     },
     {
       "topic": "smert-voskresenie",
@@ -3740,6 +3743,38 @@
       ],
       "new": true,
       "action": "Подготовлен отдельный разбор 1 Кор. 15:24–28."
+    },
+    {
+      "slug": "v-ruki-tvoi-predayu-duh",
+      "title": "«В руки Твои предаю дух Мой»: что Иисус доверил Отцу?",
+      "primary_topic": "smert-voskresenie",
+      "topics": [
+        "smert-voskresenie",
+        "iisus-hristos"
+      ],
+      "minutes": 3,
+      "role": "Библейский разбор",
+      "questions": [
+        "D08"
+      ],
+      "new": true,
+      "action": "Подготовлен отдельный разбор Лк. 23:46."
+    },
+    {
+      "slug": "dushi-pod-zhertvennikom",
+      "title": "Души под жертвенником: почему мученики взывают к Богу?",
+      "primary_topic": "smert-voskresenie",
+      "topics": [
+        "smert-voskresenie",
+        "tsarstvo-bozhie"
+      ],
+      "minutes": 3,
+      "role": "Библейский разбор",
+      "questions": [
+        "D08"
+      ],
+      "new": true,
+      "action": "Подготовлен отдельный разбор Откр. 6:9–11."
     }
   ],
   "status_counts": {

@@ -24,6 +24,8 @@ for (const g of guides) {
   assert.deepEqual(doc.mentions, [], 'related verses must not masquerade as guide subjects');
 }
 for (const [query, slug] of [
+  ['теотес', 'polnota-bozhestva-telesno'],
+  ['зачем креститься', 'vera-i-kreshchenie'],
   ['Ин 3:13 Даниил', 'in-3-13-prorochestvo-daniila'],
   ['Ин 6:62 воскресение', 'ioanna-6-62-unitarnye-tolkovaniya'],
   ['Мф 28:19 рукописи', 'vo-imya-ottsa-syna-duha'],

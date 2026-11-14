@@ -301,7 +301,7 @@ def catalog_modes(current):
 
 def render_articles_index(m):
     out = '<main id="main" class="main" tabindex="-1">\n<div class="catalog">\n'
-    out += catalog_header('Статьи и разборы', f'{n_articles(len(m["articles"]))} о Боге, Иисусе Христе и жизни веры.')
+    out += catalog_header('Разборы Писания и ответы на вопросы', f'{n_articles(len(m["articles"]))} о Боге, Иисусе Христе и жизни веры.')
     out += '  <p class="catalog-guides">Впервые здесь? <a href="../start/index.html">С чего начать</a></p>\n'
     return out + catalog_form(m) + catalog_list(m) + '</div>\n</main>'
 

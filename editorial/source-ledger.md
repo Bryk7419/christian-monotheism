@@ -4320,3 +4320,18 @@ SHA256 предпочтительного источника: `442fe653466954f64
 ### Общение и искренность, 13 ноября 2026
 
 В статье «Чему нам стоит поучиться у тринитариев» уточнён практический вывод. Основание — авторский [ответ о принимающей общине](../answers/ne-ostavatsya-v-odinochku/index.html) и [ответ о близких](../answers/blizkie-ne-razdelyayut-veru/index.html): общая молитва и хлебопреломление там, где семью принимают с её верой. В статье «Жить без масок» сопоставлены все три стиха [Сир. 1:28–30 в Синодальном переводе](https://days.pravoslavie.ru/bible/b_sir_1.html) и [Мф. 12:34–35](https://bible.by/syn/40/12/). Оба говорят о сердце; Иисус объясняет связь между сокровищем сердца и речью. Отношение автора к канону изложено в [его статье о книге Сираха](../answers/pochemu-chitayu-siraha/index.html).
+
+### Предсуществование Иисуса в академических исследованиях, 13 ноября 2026
+
+Обзор дополнен аннотированной подборкой. Основа — авторские разборы Ин. 8:56–58, 17:5, Флп. 2:5–11 и Кол. 1:13–20. В этих четырёх статьях пояснения стоят при самом доводе. Толкование Сергеем γενέσθαι в Ин. 8:58 по ранней работе Эндрю Перри не приписывается Каду. Данн и Тэлберт уже были в библиографии к Флп. 2, теперь в тексте названы их разные основания.
+
+- [George Holley Gilbert, The Revelation of Jesus: A Study of the Primary Sources of Christianity. Macmillan, 1899, с. 211–222, особенно 221–222 (англ., скан).](https://upload.wikimedia.org/wikipedia/commons/1/11/The_revelation_of_Jesus._a_study_of_the_primary_sources_of_Christianity_%28IA_cu31924029307133%29.pdf#page=237)
+- [A. T. Cadoux, The Gospel That Jesus Preached and the Gospel for To-day. George Allen & Unwin, 1925, с. 198–200 (англ., скан).](https://biblicalstudies.org.uk/pdf/e-books/cadoux_a-t/gospel-that-jesus-preached_cadoux-a-t.pdf#page=197)
+- [Dustin R. Smith, Wisdom Christology in the Gospel of John. Wipf and Stock, 2024 (англ.).](https://wipfandstock.com/9798385211395/wisdom-christology-in-the-gospel-of-john/)
+- [Reginald H. Fuller, «The Conception/Birth of Jesus as a Christological Moment». Journal for the Study of the New Testament 1 (1978), с. 37–52, особ. прим. 7 и 20 (англ.).](https://doi.org/10.1177/0142064X7800100105)
+- [James D. G. Dunn, Christology in the Making, 2-е изд., Eerdmans, 1996, § 5.2 и 15.1 (англ.).](https://www.eerdmans.com/9780802842572/christology-in-the-making/)
+- [Charles H. Talbert, «The Problem of Pre-Existence in Philippians 2:6–11». Journal of Biblical Literature 86/2 (1967), с. 141–153 (англ.).](https://www.jstor.org/stable/3263269)
+- [Andrew Perriman, In the Form of a God: The Pre-existence of the Exalted Christ in Paul. Cascade Books, 2022, гл. 9 о Кол. 1 (англ.).](https://wipfandstock.com/9781666722475/in-the-form-of-a-god/)
+- [Jerome Murphy-O’Connor, «Corinthians 8:6: Cosmology or Soteriology?» В книге Keys to First Corinthians: Revisiting the Major Issues. Oxford University Press, 2009, с. 58–75, с авторским послесловием (англ.).](https://doi.org/10.1093/acprof:oso/9780199564156.003.0006)
+
+Сверены печатные с. 221–222 Гилберта и 199–200 Каду по сканам, заключение статьи Тэлберта (с. 153), аргумент Данна о посланничестве (§ 5.2) и прочтение Флп. 2 (§ 15.1). У Фуллера сверены авторская аннотация и прим. 7, 20. По Перриману глава 9 сопоставлена с [его изложением аргумента о Кол. 1](https://www.academia.edu/92046661/Andrew_Perriman_In_the_Form_of_a_God_The_Preexistence_of_the_Exalted_Christ_in_Paul). У Мёрфи-О’Коннора сохранены обе стадии аргумента по аннотации к переизданию с послесловием Oxford University Press. У Смита использовано описание монографии издателем. Все аннотации на русском — пересказ.

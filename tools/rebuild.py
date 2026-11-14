@@ -12,7 +12,7 @@
 
 Скрипт пересобирает: страницы статей (ссылки на указатель, время чтения, дата прописью),
 страницы тем, страницу вопросов, список тем с поиском по статьям, страницу видео, указатель Писания,
-плитки тем и «С чего начать» на главной, а также assets/search-index.json.
+подборку «С чего начать», три последних материала на главной, а также assets/search-index.json.
 Страницы «Комменты на YouTube» и «Об авторе» правятся вручную; в индекс попадает их текст.
 
 Кроме того (tools/siteextras.py): служебный блок <head> всех страниц, оглавление и кнопки статей,
@@ -148,8 +148,10 @@ def load():
     n = len(m['articles'])
     m['articles_intro'] = (f'{S.n_articles(n)} о Боге, Иисусе Христе, Писании и жизни веры. '
                            'Найдите интересующий вопрос или выберите тему.')
-    start = block(S.read('index.html'), r'<section class="home-block home-start".*?>(.*?)</section>')
-    m['start'] = re.findall(r'class="card-link" href="answers/([^/]+)/index.html"', start)
+    start = block(S.read('start/index.html'), r'<section class="home-block home-start".*?>(.*?)</section>')
+    m['start'] = re.findall(r'class="card-link" href="\.\./answers/([^/]+)/index.html"', start)
+    if not m['start'] or len(set(m['start'])) != len(m['start']):
+        raise ValueError('start/index.html: вводная подборка пуста или содержит повторы')
     m['scripture_intro'] = ('Здесь собраны статьи, посвящённые разбору конкретного места Писания. '
                             'Одна статья может относиться к двум текстам, если она разбирает их вместе. '
                             'Упоминания стихов и ссылки для сравнения в указатель не включены.')
@@ -315,7 +317,8 @@ def page_verses():
     return json.loads(res)
 
 
-STATIC_PAGES = [('about/index.html', 'Об авторе'), ('search/index.html', 'Поиск')]
+STATIC_PAGES = [('about/index.html', 'Об авторе'), ('search/index.html', 'Поиск'),
+                ('start/index.html', 'С чего начать'), ('confession/index.html', 'Моё исповедание')]
 COMMENTS_TITLE = 'Самые интересные комментарии на YouTube и мои ответы на них'
 
 
@@ -342,7 +345,7 @@ def render_all(m):
     for path, title, intro, main in [
             ('questions/index.html', None, None, S.render_questions_index(m)),
             ('topics/index.html', 'Темы', 'Тематические подборки: краткие изложения веры, разборы Писания и ответы на вопросы.', S.render_topics_index(m)),
-            ('articles/index.html', 'Все статьи', 'Все статьи Сергея Брыка. Поиск по вопросу, теме или месту Писания.', S.render_articles_index(m)),
+            ('articles/index.html', 'Материалы', 'Все статьи Сергея Брыка. Поиск по вопросу, теме или месту Писания.', S.render_articles_index(m)),
             ('videos/index.html', 'Видео', m['videos_intro'], S.render_videos_main(m)),
             ('scripture/index.html', 'По местам Писания', m['scripture_intro'], S.render_scripture_main(m, entries))]:
         s = S.read('topics/index.html' if path == 'articles/index.html' else path)
@@ -357,6 +360,8 @@ def render_all(m):
     out['new/index.html'] = S.replace_main(new, X.render_new_main(m))
     for path, title in STATIC_PAGES:
         out[path] = X.apply_head(S.read(path), path, X.simple_info(path, title))
+    out['start/index.html'] = re.sub(r'<section class="home-block home-start".*?</section>',
+                                    lambda _: S.render_start(m), out['start/index.html'], count=1, flags=re.S)
     folders = comment_folders()
     path = 'bez-kupyur/index.html'
     out[path] = X.apply_head(fill_filter(fill_folders(S.read(path), folders), '../', False), path, X.simple_info(path, COMMENTS_TITLE))
@@ -365,10 +370,11 @@ def render_all(m):
         page = fill_filter(fill_folders(S.read(path), folders, f['slug']), '../../', True)
         out[path] = X.apply_head(page, path, X.simple_info(path, f['title']))
     home = S.read('index.html')
-    home = re.sub(r'<section class="home-block" aria-labelledby="home-topics-h">.*?</section>',
-                  lambda _: S.render_home_topics(m), home, count=1, flags=re.S)
-    home = re.sub(r'<section class="home-block home-start".*?</section>',
-                  lambda _: S.render_home_start(m), home, count=1, flags=re.S)
+    home, count = re.subn(r'<!-- home:news -->.*?<!-- /home:news -->',
+                         lambda _: '<!-- home:news -->\n' + X.render_home_news(m) + '\n<!-- /home:news -->',
+                         home, count=1, flags=re.S)
+    if count != 1:
+        raise ValueError('index.html: не найдено место для последних материалов')
     out['index.html'] = X.apply_head(home, 'index.html', X.simple_info('index.html'))
     for p in out:
         if p.endswith('.html'):
@@ -416,6 +422,12 @@ def search_index(m):
     for slug in COMMENT_FOLDERS:
         docs.append(page_doc(f'bez-kupyur/{slug}/index.html', f'/bez-kupyur/{slug}/'))
     docs.append(page_doc('about/index.html', '/about/'))
+    docs.append(page_doc('confession/index.html', '/confession/'))
+    start = S.read('start/index.html')
+    docs.append({'type': 'page', 'url': '/start/', 'title': 'С чего начать',
+                 'summary': 'Вводные статьи о вере, молитва и первые шаги в христианской жизни.',
+                 'topics': [], 'passages': [], 'aliases': [],
+                 'body': S.html_to_text(block(start, r'<main[^>]*>(.*?)</main>'))})
     for vid, f in m['vfields'].items():
         description = X.plain(f['desc'])
         docs.append({'type': 'video', 'url': f'/videos/#{vid}', 'title': f['title'], 'summary': description,

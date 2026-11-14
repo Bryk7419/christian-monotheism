@@ -97,11 +97,10 @@ def article_end():
 
 
 # --- Меню и подвал: одинаковые на всех страницах, собираются здесь ---------------------------------------
-# Порядок разделов — этот список (просьба автора: Главная, Темы, По местам Писания, Вопросы и ответы, затем остальное,
-# «Комменты на YouTube» — предпоследним).
-NAV = [('', 'Главная'), ('topics/', 'Темы'), ('scripture/', 'По местам Писания'), ('questions/', 'Вопросы и ответы'),
-       ('videos/', 'Видео'), ('bez-kupyur/', 'Комменты на YouTube'), ('about/', 'Об авторе')]
-FOOTER_NAV = NAV + [('new/', 'Что нового'), ('search/', 'Поиск')]
+# Три постоянных раздела; способы искать материал находятся внутри библиотеки.
+NAV = [('articles/', 'Материалы'), ('new/', 'Что нового'), ('about/', 'Об авторе')]
+FOOTER_NAV = NAV + [('search/', 'Поиск')]
+MATERIAL_SECTIONS = ('articles/', 'topics/', 'scripture/', 'questions/', 'videos/', 'bez-kupyur/', 'answers/', 'start/')
 
 
 def set_nav(s, path):
@@ -113,7 +112,11 @@ def set_nav(s, path):
         for sec, label in entries:
             cur = ''
             in_section = path.startswith(sec) if sec else path == 'index.html'
-            if mark and (in_section or (sec == 'topics/' and path == 'articles/index.html')):
+            if sec == 'articles/':
+                in_section = path.startswith(MATERIAL_SECTIONS)
+            elif sec == 'about/':
+                in_section = path.startswith(('about/', 'confession/'))
+            if mark and in_section:
                 cur = ' aria-current="page"' if path == sec + 'index.html' else ' aria-current="true"'
             href = f'{up}{sec}index.html' if sec else (up or './')
             out.append(f'      <li><a href="{href}"{cur}>{label}</a></li>')
@@ -125,6 +128,17 @@ def set_nav(s, path):
                    s, count=1, flags=re.S)
     if n != 1 or k != 1:
         raise ValueError(f'{path}: не найдено меню в шапке или в подвале')
+    # Локальная навигация доступна на всех шести страницах библиотеки.
+    section = path.split('/')[0]
+    if path == section + '/index.html' and section in S.CATALOG_SECTIONS:
+        s = re.sub(r'  <nav class="catalog-modes".*?</nav>\n', '', s, flags=re.S)
+        if section == 'bez-kupyur':
+            s = s.replace('<!-- page:filter -->', S.catalog_modes(section) + '<!-- page:filter -->', 1)
+        else:
+            s, count = re.subn(r'(<header class="catalog-header">.*?</header>\n)',
+                              lambda m: m.group(1) + S.catalog_modes(section), s, count=1, flags=re.S)
+            if count != 1:
+                raise ValueError(f'{path}: не найден заголовок каталога')
     return s
 
 
@@ -229,6 +243,18 @@ def simple_info(path, title=None):
 # --- Новое на сайте: sitemap, RSS, llms.txt, «Что нового» ---------------------------------------------------
 def by_date(m):
     return sorted(m['articles'], key=lambda a: (m['pages'][a['slug']]['date'], a['slug']), reverse=True)
+
+
+def render_home_news(m):
+    out = ('<section class="home-block home-news" id="home-news" aria-labelledby="home-news-h">\n'
+           '  <h2 class="section-label" id="home-news-h">Что нового</h2>\n'
+           '  <p class="home-section-intro">Последние новые и обновлённые статьи.</p>\n'
+           '  <ul class="cards">\n')
+    for a in by_date(m)[:3]:
+        out += (f'    <li class="card"><a class="card-link" href="answers/{a["slug"]}/index.html">{a["title"]}</a>\n'
+                f'      <p class="card-summary">{esc(a["summary"])}</p></li>\n')
+    return out + ('  </ul>\n  <p class="home-more"><a href="new/index.html">Все обновления <span aria-hidden="true">→</span></a></p>\n'
+                  '</section>')
 
 
 def sitemap(m, paths):

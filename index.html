@@ -21,6 +21,7 @@
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <script>document.documentElement.classList.add('js')</script>
 <script type="module" src="assets/js/site.js"></script>
+<script type="module" src="assets/js/home.js"></script>
 <!-- site:head -->
 <meta property="og:site_name" content="Бог один">
 <link rel="canonical" href="https://godisone.faith/">
@@ -58,12 +59,8 @@
   </div>
   <nav id="site-nav" class="site-nav" aria-label="Разделы сайта">
     <ul>
-      <li><a href="./" aria-current="page">Главная</a></li>
-      <li><a href="topics/index.html">Темы</a></li>
-      <li><a href="scripture/index.html">По местам Писания</a></li>
-      <li><a href="questions/index.html">Вопросы и ответы</a></li>
-      <li><a href="videos/index.html">Видео</a></li>
-      <li><a href="bez-kupyur/index.html">Комменты на YouTube</a></li>
+      <li><a href="articles/index.html">Материалы</a></li>
+      <li><a href="new/index.html">Что нового</a></li>
       <li><a href="about/index.html">Об авторе</a></li>
     </ul>
   </nav>
@@ -71,271 +68,76 @@
 
 <main id="main" class="main home-page" tabindex="-1">
 
-
 <section class="hero" aria-labelledby="home-heading">
   <h1 class="home-title" id="home-heading">Бог один</h1>
   <p class="home-subtitle"><a href="answers/bibleyskiy-unitarizm/index.html">Библейский унитаризм</a></p>
   <div class="prose hero-lead">
     <p>Один Бог Отец. Один Господь Иисус Христос.</p>
-    <p>Статьи о христианской вере, разборы Библии и ответы на вопросы. Здесь я объясняю, во что верю и почему.</p>
+    <p>Разборы Библии, ответы на вопросы и беседы о вере.</p>
   </div>
   <div class="hero-author home-author">
     <img class="hero-photo" src="assets/img/sergey-bryk.jpg" alt="" width="56" height="56">
     <div class="hero-author-text">
       <p class="hero-name"><span class="home-author-label">Автор: </span><a href="about/index.html">Сергей Брык</a></p>
-      <p class="hero-role"><a href="#home-confession">Моё исповедание</a><span aria-hidden="true"> · </span><a href="#home-community">Беседы и общение</a></p>
+      <p class="hero-role"><a href="confession/index.html">Моё исповедание</a></p>
     </div>
   </div>
-  <nav class="home-paths" aria-label="С чего вы хотите начать">
-    <ul>
-      <li><a href="#start"><span class="home-path-title">Познакомиться с верой <span aria-hidden="true">↓</span></span><span class="home-path-description">Бог, Иисус, молитва и надежда</span></a></li>
-      <li><a href="#home-search"><span class="home-path-title">Найти ответ <span aria-hidden="true">↓</span></span><span class="home-path-description">По вопросу, теме или стиху</span></a></li>
-      <li><a href="#home-questions"><span class="home-path-title">Проверить доводы <span aria-hidden="true">↓</span></span><span class="home-path-description">Трудные тексты и возражения</span></a></li>
-    </ul>
-  </nav>
+  <p class="home-begin"><a class="button" href="answers/dobraya-vest/index.html">Начать с Благой вести <span aria-hidden="true">→</span></a></p>
 </section>
-
-<nav class="home-practice home-block" aria-labelledby="practice-h">
-  <h2 class="section-label" id="practice-h">Первые шаги в жизни веры</h2>
-  <div class="home-search-links">
-    <a href="answers/prostaya-molitva/index.html">Как начать молиться</a>
-    <a href="answers/ne-ostavatsya-v-odinochku/index.html">Как найти общение</a>
-    <a href="answers/blizkie-ne-razdelyayut-veru/index.html">Если близкие не разделяют веру</a>
-  </div>
-</nav>
 
 <section class="home-search" id="home-search" aria-label="Поиск по сайту" tabindex="-1">
   <form class="search-form" action="search/index.html" method="get" role="search">
-    <label class="search-label" for="home-q">Какой вопрос вас интересует?</label>
+    <label class="search-label" for="home-q">Найти по вопросу или месту Писания</label>
     <div class="search-row">
-      <input class="search-input" id="home-q" name="q" type="search" autocomplete="off" placeholder="Например: молитва или Ин 1:1" enterkeyhint="search" aria-describedby="home-search-help">
+      <input class="search-input" id="home-q" name="q" type="search" autocomplete="off" placeholder="Например: молитва или Ин 1:1" enterkeyhint="search">
       <button class="button" type="submit">Найти</button>
     </div>
-    <p class="home-search-help" id="home-search-help">Ищите своими словами или укажите место из Библии.</p>
   </form>
-  <nav class="home-search-links" aria-label="Другие способы найти материал">
-    <a href="scripture/index.html#reading-start-h">Частые вопросы об Иисусе</a>
-    <a href="topics/index.html">Все темы</a>
-    <a href="scripture/index.html">По местам Писания</a>
-    <a href="questions/index.html">Вопросы и ответы</a>
-  </nav>
 </section>
 
-<section class="home-block home-start" id="start" aria-labelledby="start-h">
-  <h2 class="section-label" id="start-h">С чего начать</h2>
-  <p class="start-intro">Если вы только знакомитесь с христианством или хотите понять мою веру, начните с этих коротких статей. Их можно читать по порядку или выбрать свой вопрос.</p>
-  <p class="home-reading-time">Вся подборка — примерно 25 минут чтения.</p>
-  <p class="home-reading-guide">Впервые открываете Библию? <a href="answers/chitat-po-kontekstu/index.html">Как читать и понимать отрывок целиком</a>.</p>
-  <ol class="cards start-cards">
-    <li class="card"><span class="start-number" aria-hidden="true">01</span><div>
-      <a class="card-link" href="answers/dobraya-vest/index.html">В чём добрая весть, в которую я верю?</a>
-      <p class="card-summary">Бог Отец, Его Сын Иисус, прощение и воскресение: с чего начинается моя вера и как можно сделать первый шаг.</p>
-      <p class="card-meta">3 минуты чтения</p>
-    </div></li>
-    <li class="card"><span class="start-number" aria-hidden="true">02</span><div>
-      <a class="card-link" href="answers/edinyy-istinnyy-bog/index.html">Кого Иисус называет единственным истинным Богом?</a>
-      <p class="card-summary">Единственный истинный Бог — Отец. Почему слова Иисуса в Ин. 17:3 определяют, кто есть Бог, и какова роль посланного Им Сына.</p>
-      <p class="card-meta">3 минуты чтения</p>
-    </div></li>
-    <li class="card"><span class="start-number" aria-hidden="true">03</span><div>
-      <a class="card-link" href="answers/kto-takoy-iisus/index.html">Кто такой Иисус Христос и почему я следую за Ним?</a>
-      <p class="card-summary">Жизнь и учение Иисуса, Его верность Отцу, смерть и воскресение. Кто Он для меня и что значит идти за Ним.</p>
-      <p class="card-meta">4 минуты чтения</p>
-    </div></li>
-    <li class="card"><span class="start-number" aria-hidden="true">04</span><div>
-      <a class="card-link" href="answers/svyatoy-duh-v-nas/index.html">Святой Дух: Божья сила и присутствие</a>
-      <p class="card-summary">Что я понимаю под Святым Духом, как Отец действует через Иисуса и что меняется в нашей молитве, поступках и отношении к людям.</p>
-      <p class="card-meta">4 минуты чтения</p>
-    </div></li>
-    <li class="card"><span class="start-number" aria-hidden="true">05</span><div>
-      <a class="card-link" href="answers/spasenie-vo-hriste/index.html">Что значит спасение во Христе?</a>
-      <p class="card-summary">От чего Бог спасает, что совершил Иисус и как ответить на Божью милость: о вере, покаянии и новой жизни.</p>
-      <p class="card-meta">4 минуты чтения</p>
-    </div></li>
-    <li class="card"><span class="start-number" aria-hidden="true">06</span><div>
-      <a class="card-link" href="answers/znat-ottsa/index.html">Что значит знать Бога как Отца?</a>
-      <p class="card-summary">Как молитва «Отче наш» учит доверять Богу, говорить с Ним честно и принимать Его волю в повседневной жизни.</p>
-      <p class="card-meta">3 минуты чтения</p>
-    </div></li>
-    <li class="card"><span class="start-number" aria-hidden="true">07</span><div>
-      <a class="card-link" href="answers/evangelie-tsarstva/index.html">Евангелие Царства Божьего: что возвещал Иисус?</a>
-      <p class="card-summary">Что такое Царство Божье, почему я жду возвращения Иисуса и воскресения и как эта надежда меняет сегодняшнюю жизнь.</p>
-      <p class="card-meta">4 минуты чтения</p>
-    </div></li>
-  </ol>
-  <p class="home-more">Для дальнейшего изучения: <a href="answers/voskresshiy-iisus-chelovek/index.html">остаётся ли воскресший Иисус Человеком?</a></p>
-</section>
-
-
-
-<section class="home-block home-questions" id="home-questions" aria-labelledby="home-questions-h">
-  <h2 class="section-label" id="home-questions-h">Трудные тексты и возражения</h2>
-  <p class="home-section-intro">Понимаете эти места иначе? Начните с вопроса, который для вас важнее всего. В разборах я объясняю своё прочтение и отвечаю на возражения.</p>
-  <ul class="questions">
-    <li><a href="answers/slovo-bylo-bog/index.html"><span class="question-label">«Слово было Бог»: как я понимаю Иоанна 1:1?</span><span class="question-arrow" aria-hidden="true">→</span></a></li>
-    <li><a href="answers/ya-i-otets-odno/index.html"><span class="question-label">«Я и Отец — одно»: о каком единстве говорит Иисус?</span><span class="question-arrow" aria-hidden="true">→</span></a></li>
-    <li><a href="answers/filippiytsam-2-5-11/index.html"><span class="question-label">Филиппийцам 2: что значит «образ Божий»?</span><span class="question-arrow" aria-hidden="true">→</span></a></li>
-    <li><a href="answers/kolossyanam-pervenets/index.html"><span class="question-label">Колоссянам 1: что значит «первенец» и «всё создано»?</span><span class="question-arrow" aria-hidden="true">→</span></a></li>
+<!-- home:news -->
+<section class="home-block home-news" id="home-news" aria-labelledby="home-news-h">
+  <h2 class="section-label" id="home-news-h">Что нового</h2>
+  <p class="home-section-intro">Последние новые и обновлённые статьи.</p>
+  <ul class="cards">
+    <li class="card"><a class="card-link" href="answers/zhit-bez-masok/index.html">Жить без масок: что делать с лицемерием?</a>
+      <p class="card-summary">Иисус осуждал игру перед Богом и людьми. Выход — не в том, чтобы лучше следить за словами, а в том, чтобы исцелить сердце.</p></li>
+    <li class="card"><a class="card-link" href="answers/v-ruki-tvoi-predayu-duh/index.html">«В руки Твои предаю дух Мой»: что Иисус доверил Отцу?</a>
+      <p class="card-summary">Слова Давида на устах умирающего Иисуса. Что значит предать дух Богу и как Отец ответил на доверие Сына?</p></li>
+    <li class="card"><a class="card-link" href="answers/slovo-bylo-bog/index.html">«Слово было Бог»: что такое Логос в начале Евангелия от Иоанна?</a>
+      <p class="card-summary">Логос как собственное слово Бога, явленное в Иисусе: связное прочтение Ин. 1:1–18, ответ на тринитарное объяснение и подробности греческого текста.</p></li>
   </ul>
-  <p class="home-more"><a href="questions/index.html">Все вопросы и ответы <span aria-hidden="true">→</span></a></p>
-  <div class="home-method">
-    <h3>Как я подхожу к разбору Библии</h3>
-    <p>Сначала читаю отрывок целиком: кто говорит, кому и о чём. Затем сопоставляю тексты и проверяю доводы, в том числе свои. <a href="answers/chitat-po-kontekstu/index.html">Подробнее о таком чтении</a>.</p>
-    <p>Несогласие не мешает уважению к человеку. <a href="answers/otnoshenie-k-trinitariyam/index.html">Как я отношусь к христианам, которые верят в Троицу</a>.</p>
-  </div>
+  <p class="home-more"><a href="new/index.html">Все обновления <span aria-hidden="true">→</span></a></p>
 </section>
-
-<section class="home-block" aria-labelledby="home-topics-h">
-  <h2 class="section-label" id="home-topics-h">Темы</h2>
-  <ul class="topic-grid">
-    <li>
-      <a class="topic-tile" href="topics/bog-otets/index.html">
-        <span class="topic-tile-title">Бог Отец</span>
-        <span class="topic-tile-meta">56 статей · 17 вопросов</span>
-      </a>
-    </li>
-    <li>
-      <a class="topic-tile" href="topics/iisus-hristos/index.html">
-        <span class="topic-tile-title">Иисус Христос</span>
-        <span class="topic-tile-meta">103 статьи · 35 вопросов</span>
-      </a>
-    </li>
-    <li>
-      <a class="topic-tile" href="topics/svyatoy-duh/index.html">
-        <span class="topic-tile-title">Святой Дух</span>
-        <span class="topic-tile-meta">19 статей · 21 вопрос</span>
-      </a>
-    </li>
-    <li>
-      <a class="topic-tile" href="topics/troitsa/index.html">
-        <span class="topic-tile-title">Троица</span>
-        <span class="topic-tile-meta">56 статей · 35 вопросов</span>
-      </a>
-    </li>
-    <li>
-      <a class="topic-tile" href="topics/spasenie/index.html">
-        <span class="topic-tile-title">Спасение и искупление</span>
-        <span class="topic-tile-meta">26 статей · 13 вопросов</span>
-      </a>
-    </li>
-    <li>
-      <a class="topic-tile" href="topics/smert-voskresenie/index.html">
-        <span class="topic-tile-title">Смерть и воскресение</span>
-        <span class="topic-tile-meta">25 статей · 20 вопросов</span>
-      </a>
-    </li>
-    <li>
-      <a class="topic-tile" href="topics/zhizn-very/index.html">
-        <span class="topic-tile-title">Жизнь веры</span>
-        <span class="topic-tile-meta">48 статей · 16 вопросов</span>
-      </a>
-    </li>
-    <li>
-      <a class="topic-tile" href="topics/pisanie/index.html">
-        <span class="topic-tile-title">Священное Писание</span>
-        <span class="topic-tile-meta">33 статьи · 13 вопросов</span>
-      </a>
-    </li>
-    <li>
-      <a class="topic-tile" href="topics/tserkov/index.html">
-        <span class="topic-tile-title">Церковь и общение</span>
-        <span class="topic-tile-meta">19 статей · 12 вопросов</span>
-      </a>
-    </li>
-    <li>
-      <a class="topic-tile" href="topics/predsushchestvovanie/index.html">
-        <span class="topic-tile-title">Предсуществование Иисуса</span>
-        <span class="topic-tile-meta">45 статей · 29 вопросов</span>
-      </a>
-    </li>
-    <li>
-      <a class="topic-tile" href="topics/tsarstvo-bozhie/index.html">
-        <span class="topic-tile-title">Царство Божье</span>
-        <span class="topic-tile-meta">17 статей · 11 вопросов</span>
-      </a>
-    </li>
-  </ul>
-</section>
+<!-- /home:news -->
 
 <section class="home-block" id="home-community" aria-labelledby="community-h">
-  <h2 class="section-label" id="community-h">Беседы библейских унитариев</h2>
+  <h2 class="section-label" id="community-h">Беседы и общение</h2>
   <div class="prose">
-    <p>По субботам в 19:00 по Киеву мы встречаемся в Telegram: читаем Писание, обсуждаем прочитанное и молимся.</p>
-    <p>Наши беседы проходят с позиций библейского унитаризма. Приглашаю вас присоединиться. Анонсы встреч публикую в канале «Бог-один LIVE».</p>
+    <p>По субботам в 19:00 по Киеву мы встречаемся в Telegram: читаем Писание, обсуждаем прочитанное и молимся. Приглашаю вас присоединиться.</p>
   </div>
-  <div class="hero-actions">
-    <a class="button" href="https://t.me/SergBryk" target="_blank" rel="noopener">Анонсы бесед в Telegram<span class="visually-hidden"> (внешний сайт, откроется в новой вкладке)</span></a>
-    <a class="hero-question" href="videos/index.html">Смотреть видеоразборы <span aria-hidden="true">→</span></a>
-  </div>
+  <p class="home-more"><a href="https://t.me/SergBryk" target="_blank" rel="noopener">Анонсы бесед в Telegram<span class="visually-hidden"> (внешний сайт, откроется в новой вкладке)</span></a></p>
 </section>
 
-<section class="home-block" id="home-confession" aria-labelledby="confession-heading">
-    <p class="section-label">Моё исповедание</p>
-    <h2 class="page-title" id="confession-heading">Исповедую Иисуса Господом.</h2>
-  <p class="video-invite"><a class="ext video-invite-link" href="https://youtu.be/B6tzDRwavHU" target="_blank" rel="noopener"><span class="video-invite-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" focusable="false"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></span><span class="video-invite-text"><span class="video-invite-title">Смотреть моё исповедание на YouTube</span><span class="video-invite-sub">Видео на канале «Христианский монотеизм»</span></span><span class="visually-hidden"> (внешний сайт, откроется в новой вкладке)</span></a></p>
-    <div class="prose">
-      <p>Я верю в Него. Ему доверяю свою жизнь. За Ним хочу идти.</p>
-
-      <p>Верую в одного Бога, Отца, единственного истинного Бога и Творца неба и земли.</p>
-      <p>Он дал мне жизнь. Он знает меня. К Нему я обращаюсь в молитве во имя Его Сына.</p>
-
-      <p>Верую в Сына Божия, Человека Иисуса Христа, зачатого от Святого Духа и рождённого Девой Марией.</p>
-      <p>Бог обещал Его задолго до Его рождения. И исполнил обещание.</p>
-      <p>Иисус жил среди нас. Он знал усталость, боль и одиночество. Был искушаем, но не согрешил. В Нём я вижу верность Отцу и любовь, которая не отступила даже перед крестом.</p>
-      <p>Верую, что Он умер за наши грехи.<br>
-      Был погребён.<br>
-      И Бог воскресил Его из мёртвых.</p>
-      <p><strong>Иисус жив.</strong></p>
-      <p>Сын Божий, Человек Иисус Христос, сегодня на небе, по правую руку Отца. Его я исповедую своим Господом и Посредником перед Богом. В Нём обретаю надежду на вечную жизнь!</p>
-
-      <p>Верую в Святого Духа, в Божью силу и присутствие. Своим Духом Сам Бог Отец действует в нас.</p>
-
-      <p>Верую, что Бог спасает по благодати. На кресте Человек Иисус Христос, Сын Божий, отдал Свою жизнь за наши грехи. Через Него Отец открыл нам путь к Себе.</p>
-      <p>Спасение невозможно заработать. Его можно принять верой и ответить на Божью любовь новой жизнью.</p>
-
-      <p>Принимаю всё Писание Ветхого и Нового Завета как Слово Божье. Хочу, чтобы оно меняло мои убеждения и мои поступки.</p>
-
-      <p>Верую, что Христос собирает Свою Церковь, соединяя людей верой в Него и любовью друг к другу.</p>
-      <p>Мы принадлежим Христу и нужны друг другу, как члены тела нужны друг другу. У каждого из нас свой дар. У каждого из нас Дух усыновления. Мы призваны служить и поддерживать друг друга и вместе возрастать в вере.</p>
-
-      <p>Жду возвращения Иисуса Христа.</p>
-      <p>Жду воскресения умерших.</p>
-      <p>Смерть не будет последним словом. Последнее слово скажет Бог.</p>
-      <p>Даже если я уйду из этой жизни, Бог, воскресивший Иисуса, воскресит и меня.</p>
-      <p>Я снова буду жить в новом воскресшем теле. Буду жить вечно с моим Господом Иисусом и Богом Отцом.</p>
-      <p>Жду дня, когда увижу моего Господа Иисуса и лицо Самого Бога Отца.</p>
-
-      <p>Жду Царства Бога и Его Христа на земле.</p>
-      <p>Верую, что мы будем жить в Новом Иерусалиме, небесном городе Бога. Этот святой город сойдёт с неба на новую землю. Бог будет жить с нами и Сам отрёт каждую нашу слезу.</p>
-      <p>В этот город не войдёт ничто нечистое. Там не будет мерзости и лжи, не останется ничего проклятого.</p>
-      <p>Не будет смерти. Ни плача, ни вопля, ни болезни.<br>
-      Не будет голода и жажды. Не будет палящего зноя.</p>
-      <p>Не будет ночи. Не понадобятся светильники, свет солнца и луны: Сам Бог будет освещать нас.</p>
-      <p>Больше не придётся хоронить любимых. Больше не будет разлуки, которую приносит смерть. Мы будем жить, и впереди будет вечность.</p>
-      <p>Это будущее обещал Бог.<br>
-      И я Ему верю.</p>
-
-      <p>Вот моё будущее. Вот почему я верю.<br>
-      Марана та. Господь наш, приди!</p>
-      <p><strong>Исповедую Иисуса Христа Господом.</strong><br>
-      Во славу Бога Отца.</p>
-    </div>
-</section>
-
+<div class="home-block home-legacy-links">
+  <p id="start">Раздел перенесён: <a href="start/index.html">С чего начать</a>.</p>
+  <p id="start-h">Раздел перенесён: <a href="start/index.html">С чего начать</a>.</p>
+  <p id="practice-h">Раздел перенесён: <a href="start/index.html#practice-h">Первые шаги в жизни веры</a>.</p>
+  <p id="home-confession">Раздел перенесён: <a href="confession/index.html">Моё исповедание</a>.</p>
+  <p id="confession-heading">Раздел перенесён: <a href="confession/index.html">Моё исповедание</a>.</p>
+  <p id="home-questions">Раздел перенесён: <a href="questions/index.html">Вопросы и ответы</a>.</p>
+  <p id="home-questions-h">Раздел перенесён: <a href="questions/index.html">Вопросы и ответы</a>.</p>
+  <p id="home-topics-h">Раздел перенесён: <a href="topics/index.html">Темы</a>.</p>
+</div>
 </main>
 
 <footer class="site-footer">
   <div class="footer-inner">
     <p class="footer-text">Статьи, темы и ответы по Писанию.</p>
     <ul class="footer-nav">
-      <li><a href="./">Главная</a></li>
-      <li><a href="topics/index.html">Темы</a></li>
-      <li><a href="scripture/index.html">По местам Писания</a></li>
-      <li><a href="questions/index.html">Вопросы и ответы</a></li>
-      <li><a href="videos/index.html">Видео</a></li>
-      <li><a href="bez-kupyur/index.html">Комменты на YouTube</a></li>
-      <li><a href="about/index.html">Об авторе</a></li>
+      <li><a href="articles/index.html">Материалы</a></li>
       <li><a href="new/index.html">Что нового</a></li>
+      <li><a href="about/index.html">Об авторе</a></li>
       <li><a href="search/index.html">Поиск</a></li>
     </ul>
   </div>

@@ -242,24 +242,24 @@ def page_filter(up, label, placeholder, items, groups='', parts='', idle='', bus
             f'  <script type="module" src="{up}assets/js/page-filter.js"></script>\n')
 
 
-def render_home_start(m):
+def render_start(m):
     arts = {a['slug']: a for a in m['articles']}
     total = sum(m['pages'][s]['minutes'] for s in m['start'])
     out = ('<section class="home-block home-start" id="start" aria-labelledby="start-h">\n'
-           '  <h2 class="section-label" id="start-h">С чего начать</h2>\n'
+           '  <h1 class="page-title" id="start-h">С чего начать</h1>\n'
            '  <p class="start-intro">Если вы только знакомитесь с христианством или хотите понять мою веру, начните с этих коротких статей. Их можно читать по порядку или выбрать свой вопрос.</p>\n'
            f'  <p class="home-reading-time">Вся подборка — примерно {total} {plural(total, "минута", "минуты", "минут")} чтения.</p>\n'
-           '  <p class="home-reading-guide">Впервые открываете Библию? <a href="answers/chitat-po-kontekstu/index.html">Как читать и понимать отрывок целиком</a>.</p>\n'
+           '  <p class="home-reading-guide">Впервые открываете Библию? <a href="../answers/chitat-po-kontekstu/index.html">Как читать и понимать отрывок целиком</a>.</p>\n'
            '  <ol class="cards start-cards">\n')
     for i, slug in enumerate(m['start'], 1):
         a, p = arts[slug], m['pages'][slug]
         out += (f'    <li class="card"><span class="start-number" aria-hidden="true">{i:02}</span><div>\n'
-                f'      <a class="card-link" href="answers/{slug}/index.html">{a["title"]}</a>\n'
+                f'      <a class="card-link" href="../answers/{slug}/index.html">{a["title"]}</a>\n'
                 f'      <p class="card-summary">{a["summary"]}</p>\n'
                 f'      <p class="card-meta">{p["minutes"]} {plural(p["minutes"], "минута", "минуты", "минут")} чтения</p>\n'
                 '    </div></li>\n')
     return out + ('  </ol>\n'
-                  '  <p class="home-more">Для дальнейшего изучения: <a href="answers/voskresshiy-iisus-chelovek/index.html">остаётся ли воскресший Иисус Человеком?</a></p>\n'
+                  '  <p class="home-more">Для дальнейшего изучения: <a href="../answers/voskresshiy-iisus-chelovek/index.html">остаётся ли воскресший Иисус Человеком?</a></p>\n'
                   '</section>')
 
 
@@ -287,9 +287,13 @@ def topic_meta(m, t):
     return n_articles(len(articles_in(m, t['id']))), n_questions(len(m['questions'][t['id']])), f'{len(t["videos"])} видео'
 
 
+CATALOG_SECTIONS = {'articles': 'Все статьи', 'topics': 'По темам', 'scripture': 'По местам Писания',
+                    'questions': 'Вопросы', 'videos': 'Видео', 'bez-kupyur': 'Обсуждения'}
+
+
 def catalog_modes(current):
     links = []
-    for section, title in [('topics', 'По темам'), ('articles', 'Все статьи')]:
+    for section, title in CATALOG_SECTIONS.items():
         active = ' aria-current="page"' if section == current else ''
         links.append(f'<a href="../{section}/index.html"{active}>{title}</a>')
     return '  <nav class="catalog-modes" aria-label="Каталог материалов">' + ''.join(links) + '</nav>\n'
@@ -297,14 +301,14 @@ def catalog_modes(current):
 
 def render_articles_index(m):
     out = '<main id="main" class="main" tabindex="-1">\n<div class="catalog">\n'
-    out += catalog_header('Все статьи', f'{n_articles(len(m["articles"]))} о Боге, Иисусе Христе и жизни веры.')
-    return out + catalog_modes('articles') + catalog_form(m) + catalog_list(m) + '</div>\n</main>'
+    out += catalog_header('Материалы', f'{n_articles(len(m["articles"]))} о Боге, Иисусе Христе и жизни веры.')
+    out += '  <p class="catalog-guides">Впервые здесь? <a href="../start/index.html">С чего начать</a></p>\n'
+    return out + catalog_form(m) + catalog_list(m) + '</div>\n</main>'
 
 
 def render_topics_index(m):
     out = '<main id="main" class="main" tabindex="-1">\n<div class="catalog catalog-topics">\n'
     out += catalog_header('Темы', 'Выберите тему, чтобы прочитать краткое изложение веры и найти разборы Писания и ответы на вопросы.')
-    out += catalog_modes('topics')
     out += '  <ul class="topic-list">\n'
     for t in m['topics']:
         a, q, v = topic_meta(m, t)
@@ -559,7 +563,7 @@ def render_article_main(m, a, p, anchors):
     route = ''
     if a['slug'] in m['start']:
         step = m['start'].index(a['slug']) + 1
-        route = f'<p class="intro-route"><a href="../../index.html#start">С чего начать</a><span>Статья {step} из {len(m["start"])}</span></p>\n'
+        route = f'<p class="intro-route"><a href="../../start/index.html">С чего начать</a><span>Статья {step} из {len(m["start"])}</span></p>\n'
     out = ('<main id="main" class="main" tabindex="-1">\n\n<article class="article">\n  <header class="article-header">\n'
            '    <nav class="crumbs" aria-label="Вы здесь">\n'
            f'      <a href="../../topics/index.html">Темы</a><span aria-hidden="true">/</span>'
@@ -582,6 +586,8 @@ def render_article_main(m, a, p, anchors):
     sources_open = ' open' if p.get('sources_open') else ''
     sources_caption = 'Источники' if sources_open else 'Открыть источники'
     out += ('  <footer class="article-footer">\n'
+            + ('    <p class="home-more"><a href="../../start/index.html">Вся вводная подборка «С чего начать»</a></p>\n'
+               if m['start'] and a['slug'] == m['start'][0] else '')
             + (G.sources(guide) if guide and guide['primary'] == a['slug'] else '')
             + '    <section aria-labelledby="next-h">\n      <h2 class="section-label" id="next-h">Читать дальше</h2>\n'
             + cards([(s, arts[s]['title'], arts[s]['summary']) for s in next_slugs], '../')

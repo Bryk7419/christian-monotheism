@@ -17,7 +17,7 @@ const p=await browser.newPage({viewport:{width:390,height:844}});p.on('pageerror
 const go=async route=>{await p.goto(base+route,{waitUntil:'networkidle'});};
 const visible=()=>p.locator('[data-catalog-list] > li:visible');
 await go('topics/');
-ok(await p.locator('#site-nav a').allTextContents().then(a=>a.join('|'))==='Главная|Темы|По местам Писания|Вопросы и ответы|Видео|Комменты на YouTube|Об авторе','menu order');
+ok(await p.locator('#site-nav a:visible').allTextContents().then(a=>a.join('|'))==='Материалы|Что нового|Об авторе','short menu stays visible on mobile');
 ok(await p.locator('.topic-entry').count()>0 && await p.locator('[data-catalog-list]').count()===0,'topics show guides without article cards');
 await p.getByRole('link',{name:'Все статьи',exact:true}).click();
 ok(await p.locator('.catalog-modes [aria-current="page"]').innerText()==='Все статьи','current catalog mode');
@@ -41,10 +41,16 @@ ok(await visible().count()===total,'reset keeps catalog visible');
 await go('topics/?topic=svyatoy-duh&sort=updated');await p.waitForURL('**/articles/**');ok(await p.inputValue('#catalog-sort')==='updated','legacy filter keeps sort');ok(await visible().count()===inTopic('svyatoy-duh'),'shareable URL filters');
 await go('articles/#spasenie');ok(await p.inputValue('#catalog-topic')==='spasenie','legacy topic hash');ok(await visible().count()===inTopic('spasenie'),'legacy topic results');
 await go('');
-ok(await p.locator('.home-practice a:visible').count()===3 && await p.locator('.home-practice').evaluate(e=>Boolean(e.compareDocumentPosition(document.querySelector('#start')) & Node.DOCUMENT_POSITION_FOLLOWING)),'practical links before introductory sequence');
-const steps=await p.locator('.start-cards .card-link').count();
-await p.click('.home-paths a[href="#start"]');ok(await p.locator('#start').evaluate(e=>Math.abs(e.getBoundingClientRect().top)<60),'start CTA anchor');
-await p.locator('.start-cards .card-link').first().click();ok((await p.locator('.intro-route').innerText()).includes('Статья 1 из '+steps),'first step marker');
+ok(await p.locator('.home-news .card-link').count()===3,'three latest materials on home');
+ok(await p.locator('.home-paths, .home-practice, .start-cards, .topic-grid').count()===0,'home has no duplicate catalogs');
+await p.getByRole('link',{name:'Начать с Благой вести'}).click();
+ok((await p.locator('.intro-route').innerText()).includes('Статья 1 из 7'),'start CTA opens first article');
+await p.getByRole('link',{name:'Вся вводная подборка «С чего начать»'}).click();
+ok(await p.locator('.start-cards .card-link').count()===7,'all introductory articles remain available');
+ok(await p.locator('.home-practice a:visible').count()===3,'practical articles remain available');
+await go('#start');await p.waitForURL('**/start/index.html');
+await go('#home-confession');await p.waitForURL('**/confession/index.html');
+ok((await p.locator('h1').innerText()).includes('Исповедую Иисуса'),'old confession bookmark');
 for(const slug of ['edinyy-istinnyy-bog','slovo-bylo-bog']){
  await go('answers/'+slug+'/');
  await p.evaluate(()=>{const r=document.querySelector('.prose').getBoundingClientRect();scrollTo(0,scrollY+r.bottom-innerHeight+3);});
@@ -63,7 +69,7 @@ await p.setViewportSize({width:390,height:844});await p.waitForTimeout(80);await
 await p.evaluate(()=>scrollTo(0,0));await p.locator('.prose .vref').first().click();ok((await p.locator('.vpop').innerText()).includes('В начале было Слово'),'verse popup');await p.keyboard.press('Escape');
 for(const width of [320,390,768,1280,1440]){
  await p.setViewportSize({width,height:900});
- for(const route of ['', 'about/', 'bez-kupyur/', 'topics/', 'articles/', 'questions/', 'scripture/', 'videos/', 'answers/edinyy-istinnyy-bog/', 'answers/slovo-bylo-bog/', 'answers/bog-krepkiy/']){
+ for(const route of ['', 'start/', 'confession/', 'new/', 'about/', 'bez-kupyur/', 'topics/', 'articles/', 'questions/', 'scripture/', 'videos/', 'answers/edinyy-istinnyy-bog/', 'answers/slovo-bylo-bog/', 'answers/bog-krepkiy/']){
   await go(route);
   ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'no overflow '+width+' '+route);
  }
@@ -71,6 +77,7 @@ for(const width of [320,390,768,1280,1440]){
 await p.emulateMedia({colorScheme:'dark'});await p.setViewportSize({width:390,height:844});await go('topics/');
 ok(await p.locator('body').evaluate(e=>getComputedStyle(e).backgroundColor)==='rgb(21, 24, 28)','dark theme');
 const nojs=await browser.newPage({javaScriptEnabled:false,viewport:{width:390,height:844}});
+await nojs.goto(base+'#home-confession');await nojs.locator('#home-confession a').click();ok((await nojs.locator('h1').innerText()).includes('Исповедую Иисуса'),'old bookmark works without JS');
 await nojs.goto(base+'topics/');await nojs.getByRole('link',{name:'Все статьи',exact:true}).click();ok(await nojs.locator('.catalog-list .card:visible').count()===total,'no JS has all articles');ok(await nojs.locator('.catalog-filter').getAttribute('action')==='../search/index.html','no JS form has search destination');
 await nojs.goto(base+'videos/#v05');await nojs.locator('#v05 [data-video-times] summary').click();ok(await nojs.locator('#v05 .timestamp').first().isVisible(),'timestamps work without JS');
 await nojs.goto(base+'answers/slovo-bylo-bog/');await nojs.locator('.source-details summary').click();ok(await nojs.locator('.source-list').isVisible(),'no JS sources');await nojs.locator('.toc summary').click();ok(await nojs.locator('.toc ol').isVisible(),'no JS TOC');

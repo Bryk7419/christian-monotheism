@@ -21,7 +21,11 @@ DNS and activation steps for Porkbun: [editorial/domain-godisone-faith.md](edito
 
 - `index.html` — home page; every section lives in its own folder with an `index.html`
   (`topics/`, `scripture/`, `questions/`, `videos/`, `bez-kupyur/`, `about/`, `answers/`, `search/`).
-  `topics/` opens thematic guides; `articles/` lists all articles with search, topic filters and sorting.
+  `articles/` is the Materials library: all articles with search, topic filters and sorting,
+  plus links to topics, scripture, questions, videos and discussions.
+  `start/` contains the introductory reading sequence and practical first steps;
+  `confession/` preserves the author's full confession and its video.
+  The homepage shows a short introduction, search, three latest materials and an invitation to conversations.
 - `assets/css/site.css` — styles; `assets/fonts/` — self-hosted fonts (SIL Open Font License).
 - `assets/js/` — menu, sharing, site search and per-page search (`page-filter.js`); `assets/search-index.json` — search data.
 
@@ -45,7 +49,8 @@ python3 tools/check_links.py
 Каталог выводит каждую статью один раз. `assets/js/catalog.js` добавляет поиск по
 существующему индексу, фильтр темы, сортировку по дате и сохранение выбора в адресе.
 Без JavaScript остаются полный список и ссылки на тематические подборки.
-Нумерация вводных статей и время чтения собираются из подборки на главной.
+Нумерация вводных статей и время чтения собираются из подборки `start/index.html`.
+Старые закладки на разделы главной ведут к перенесённым страницам; без JavaScript показывают обычную ссылку.
 Длинные заголовки могут иметь два визуальных уровня; полный текст названия сохраняется.
 
 Для проверки каталога, оглавления, прогресса чтения, источников и мобильной вёрстки

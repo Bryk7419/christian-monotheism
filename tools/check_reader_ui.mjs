@@ -17,7 +17,7 @@ const p=await browser.newPage({viewport:{width:390,height:844}});p.on('pageerror
 const go=async route=>{await p.goto(base+route,{waitUntil:'networkidle'});};
 const visible=()=>p.locator('[data-catalog-list] > li:visible');
 await go('topics/');
-ok(await p.locator('#site-nav a:visible').allTextContents().then(a=>a.join('|'))==='Материалы|Что нового|Об авторе','short menu stays visible on mobile');
+ok(await p.locator('#site-nav a:visible').allTextContents().then(a=>a.join('|'))==='Статьи|Что нового|Об авторе','short menu stays visible on mobile');
 ok(await p.locator('.topic-entry').count()>0 && await p.locator('[data-catalog-list]').count()===0,'topics show guides without article cards');
 await p.getByRole('link',{name:'Все статьи',exact:true}).click();
 ok(await p.locator('.catalog-modes [aria-current="page"]').innerText()==='Все статьи','current catalog mode');
@@ -44,7 +44,7 @@ await go('');
 ok(await p.locator('.home-news .card-link').count()===3,'three latest materials on home');
 ok(await p.locator('.home-paths, .home-practice, .start-cards, .topic-grid').count()===0,'home has no duplicate catalogs');
 await p.getByRole('link',{name:'Начать с Благой вести'}).click();
-ok((await p.locator('.intro-route').innerText()).includes('Статья 1 из 7'),'start CTA opens first article');
+ok((await p.locator('.intro-route').innerText()).includes('Статья 1 из 7'),'intro link opens first article');
 await p.getByRole('link',{name:'Вся вводная подборка «С чего начать»'}).click();
 ok(await p.locator('.start-cards .card-link').count()===7,'all introductory articles remain available');
 ok(await p.locator('.home-practice a:visible').count()===3,'practical articles remain available');

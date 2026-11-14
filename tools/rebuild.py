@@ -345,7 +345,7 @@ def render_all(m):
     for path, title, intro, main in [
             ('questions/index.html', None, None, S.render_questions_index(m)),
             ('topics/index.html', 'Темы', 'Тематические подборки: краткие изложения веры, разборы Писания и ответы на вопросы.', S.render_topics_index(m)),
-            ('articles/index.html', 'Материалы', 'Все статьи Сергея Брыка. Поиск по вопросу, теме или месту Писания.', S.render_articles_index(m)),
+            ('articles/index.html', 'Статьи и разборы', 'Все статьи Сергея Брыка. Поиск по вопросу, теме или месту Писания.', S.render_articles_index(m)),
             ('videos/index.html', 'Видео', m['videos_intro'], S.render_videos_main(m)),
             ('scripture/index.html', 'По местам Писания', m['scripture_intro'], S.render_scripture_main(m, entries))]:
         s = S.read('topics/index.html' if path == 'articles/index.html' else path)

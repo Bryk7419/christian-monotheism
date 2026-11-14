@@ -128,7 +128,7 @@ def load():
     for vm in re.finditer(r'<article class="video" id="(v\d+)">\n(.*?)\n</article>', S.read('videos/index.html'), re.S):
         inner = re.sub(r'\n  <div class="video-related">.*', '', vm.group(2), flags=re.S)
         m['vfields'][vm.group(1)] = parse_video(vm.group(1), inner)
-    m['videos'] = [{'id': vid, 'inner': video_inner(f), 'title': f['title'], 'summary': f['desc']} for vid, f in m['vfields'].items()]
+    m['videos'] = [{'id': vid, 'inner': video_inner(f), 'title': f['title'], 'summary': X.plain(f['desc'])} for vid, f in m['vfields'].items()]
 
     known = [d['url'].split('/')[2] for d in index['docs'] if d['type'] == 'article']
     on_disk = sorted(p.parent.name for p in (S.ROOT / 'answers').glob('*/index.html'))
@@ -417,9 +417,10 @@ def search_index(m):
         docs.append(page_doc(f'bez-kupyur/{slug}/index.html', f'/bez-kupyur/{slug}/'))
     docs.append(page_doc('about/index.html', '/about/'))
     for vid, f in m['vfields'].items():
-        docs.append({'type': 'video', 'url': f'/videos/#{vid}', 'title': f['title'], 'summary': f['desc'],
+        description = X.plain(f['desc'])
+        docs.append({'type': 'video', 'url': f'/videos/#{vid}', 'title': f['title'], 'summary': description,
                      'topics': video_topics(vid), 'passages': [], 'aliases': [],
-                     'body': f['desc'] + ''.join(f'\n{t} — {d}' for _, t, d in f['timestamps'])})
+                     'body': description + ''.join(f'\n{t} — {d}' for _, t, d in f['timestamps'])})
     res = S.run_refs([{'type': d['type'], 'passages': d['passages'], 'aliases': d['aliases'], 'body': d['body']} for d in docs])
     keys = ['type', 'url', 'title', 'summary', 'topics', 'passages', 'aliases', 'refs', 'mentions', 'body']
     index = {'topics': [{'id': t['id'], 'title': t['title']} for t in m['topics']],

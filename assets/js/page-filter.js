@@ -9,7 +9,16 @@
 //   data-idle-hidden  — части, скрытые без поиска (остальные комментарии папки) и видные при совпадении;
 //   data-busy-hide    — что убрать на время поиска (переход по книгам, по темам).
 import { tokenize, stem } from './search-core.js';
-import { books, findRefs, segsOverlap } from './bible.js';
+import { books, findRefs, stripRefs, segsOverlap } from './bible.js';
+
+// Глагол и существительное должны приводить к одним вопросам. Проверяем
+// «крестили» до стемминга: иначе оно получит ту же основу, что и «крест».
+function filterStem(word) {
+  const base = stem(word);
+  if (base === 'мол' && word.startsWith('мол') && word.length > 3) return 'молитв';
+  if ((base === 'крест' && /^крест[ия]/.test(word)) || /^крещу(?:сь)?$/.test(word)) return 'крещен';
+  return base;
+}
 
 const form = document.querySelector('[data-page-filter]');
 if (form) {
@@ -26,7 +35,7 @@ if (form) {
 
   const describe = (el) => {
     const text = el.textContent;
-    return { stems: tokenize(text).map(stem), refs: findRefs(text) };
+    return { stems: tokenize(text).map(filterStem), refs: findRefs(text) };
   };
   const items = all(form.dataset.items).map((el) => {
     const parts = form.dataset.parts ? [...el.querySelectorAll(form.dataset.parts)] : [];
@@ -39,11 +48,10 @@ if (form) {
 
   function parse(query) {
     const refs = findRefs(query, { query: true });
-    let rest = query;
-    for (const r of [...refs].reverse()) rest = rest.slice(0, r.start) + ' ' + rest.slice(r.end);
+    const rest = stripRefs(query, refs);
     const whole = query.trim().toLowerCase().replace(/ё/g, 'е').replace(/\./g, '');
     const book = !refs.length && bookAlias.get(whole);
-    return { refs, book, terms: book ? [] : tokenize(rest).map(stem) };
+    return { refs, book, terms: book ? [] : tokenize(rest).map(filterStem) };
   }
   // слово совпадает, если оно начало словоформы: «воскрес» найдёт «воскресение» и «воскресил»
   const hasTerms = (d, terms) => terms.every((t) => d.stems.some((s) => s.startsWith(t)));

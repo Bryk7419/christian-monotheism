@@ -126,8 +126,7 @@ def load():
 
     m['vfields'] = {}
     for vm in re.finditer(r'<article class="video" id="(v\d+)">\n(.*?)\n</article>', S.read('videos/index.html'), re.S):
-        inner = re.sub(r'\n  <div class="video-related">.*', '', vm.group(2), flags=re.S)
-        m['vfields'][vm.group(1)] = parse_video(vm.group(1), inner)
+        m['vfields'][vm.group(1)] = parse_video(vm.group(1), vm.group(2))
     m['videos'] = [{'id': vid, 'inner': video_inner(f), 'title': f['title'], 'summary': X.plain(f['desc'])} for vid, f in m['vfields'].items()]
 
     known = [d['url'].split('/')[2] for d in index['docs'] if d['type'] == 'article']
@@ -342,10 +341,11 @@ def render_all(m):
         out[path] = S.replace_main(s, S.render_topic_main(m, t))
     for path, title, intro, main in [
             ('questions/index.html', None, None, S.render_questions_index(m)),
-            ('topics/index.html', None, None, S.render_topics_index(m)),
+            ('topics/index.html', 'Темы', 'Тематические подборки: краткие изложения веры, разборы Писания и ответы на вопросы.', S.render_topics_index(m)),
+            ('articles/index.html', 'Все статьи', 'Все статьи Сергея Брыка. Поиск по вопросу, теме или месту Писания.', S.render_articles_index(m)),
             ('videos/index.html', 'Видео', m['videos_intro'], S.render_videos_main(m)),
             ('scripture/index.html', 'По местам Писания', m['scripture_intro'], S.render_scripture_main(m, entries))]:
-        s = S.read(path)
+        s = S.read('topics/index.html' if path == 'articles/index.html' else path)
         if title:
             s = S.set_head(s, title, intro, title)
         s = X.apply_head(s, path, X.simple_info(path, title or X.plain(re.search(r'<title>(.*?) — ', s).group(1))))

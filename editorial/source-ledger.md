@@ -4320,3 +4320,34 @@ SHA256 предпочтительного источника: `442fe653466954f64
 ### Общение и искренность, 13 ноября 2026
 
 В статье «Чему нам стоит поучиться у тринитариев» уточнён практический вывод. Основание — авторский [ответ о принимающей общине](../answers/ne-ostavatsya-v-odinochku/index.html) и [ответ о близких](../answers/blizkie-ne-razdelyayut-veru/index.html): общая молитва и хлебопреломление там, где семью принимают с её верой. В статье «Жить без масок» сопоставлены все три стиха [Сир. 1:28–30 в Синодальном переводе](https://days.pravoslavie.ru/bible/b_sir_1.html) и [Мф. 12:34–35](https://bible.by/syn/40/12/). Оба говорят о сердце; Иисус объясняет связь между сокровищем сердца и речью. Отношение автора к канону изложено в [его статье о книге Сираха](../answers/pochemu-chitayu-siraha/index.html).
+
+### Предсуществование Иисуса в академических исследованиях, 13 ноября 2026
+
+Обзор дополнен аннотированной подборкой. Основа — авторские разборы Ин. 8:56–58, 17:5, Флп. 2:5–11 и Кол. 1:13–20. В этих четырёх статьях пояснения стоят при самом доводе. Толкование Сергеем γενέσθαι в Ин. 8:58 по ранней работе Эндрю Перри не приписывается Каду. Данн и Тэлберт уже были в библиографии к Флп. 2, теперь в тексте названы их разные основания.
+
+- [George Holley Gilbert, The Revelation of Jesus: A Study of the Primary Sources of Christianity. Macmillan, 1899, с. 211–222, особенно 221–222 (англ., скан).](https://upload.wikimedia.org/wikipedia/commons/1/11/The_revelation_of_Jesus._a_study_of_the_primary_sources_of_Christianity_%28IA_cu31924029307133%29.pdf#page=237)
+- [A. T. Cadoux, The Gospel That Jesus Preached and the Gospel for To-day. George Allen & Unwin, 1925, с. 198–200 (англ., скан).](https://biblicalstudies.org.uk/pdf/e-books/cadoux_a-t/gospel-that-jesus-preached_cadoux-a-t.pdf#page=197)
+- [Dustin R. Smith, Wisdom Christology in the Gospel of John. Wipf and Stock, 2024 (англ.).](https://wipfandstock.com/9798385211395/wisdom-christology-in-the-gospel-of-john/)
+- [Reginald H. Fuller, «The Conception/Birth of Jesus as a Christological Moment». Journal for the Study of the New Testament 1 (1978), с. 37–52, особ. прим. 7 и 20 (англ.).](https://doi.org/10.1177/0142064X7800100105)
+- [James D. G. Dunn, Christology in the Making, 2-е изд., Eerdmans, 1996, § 5.2 и 15.1 (англ.).](https://www.eerdmans.com/9780802842572/christology-in-the-making/)
+- [Charles H. Talbert, «The Problem of Pre-Existence in Philippians 2:6–11». Journal of Biblical Literature 86/2 (1967), с. 141–153 (англ.).](https://www.jstor.org/stable/3263269)
+- [Andrew Perriman, In the Form of a God: The Pre-existence of the Exalted Christ in Paul. Cascade Books, 2022, гл. 9 о Кол. 1 (англ.).](https://wipfandstock.com/9781666722475/in-the-form-of-a-god/)
+- [Jerome Murphy-O’Connor, «Corinthians 8:6: Cosmology or Soteriology?» В книге Keys to First Corinthians: Revisiting the Major Issues. Oxford University Press, 2009, с. 58–75, с авторским послесловием (англ.).](https://doi.org/10.1093/acprof:oso/9780199564156.003.0006)
+
+Сверены печатные с. 221–222 Гилберта и 199–200 Каду по сканам, заключение статьи Тэлберта (с. 153), аргумент Данна о посланничестве (§ 5.2) и прочтение Флп. 2 (§ 15.1). У Фуллера сверены авторская аннотация и прим. 7, 20. По Перриману глава 9 сопоставлена с [его изложением аргумента о Кол. 1](https://www.academia.edu/92046661/Andrew_Perriman_In_the_Form_of_a_God_The_Preexistence_of_the_Exalted_Christ_in_Paul). У Мёрфи-О’Коннора сохранены обе стадии аргумента по аннотации к переизданию с послесловием Oxford University Press. У Смита использовано описание монографии издателем. Все аннотации на русском — пересказ.
+
+### 13 ноября 2026 — современные академические работы об Ин. 1:1–18 и Флп. 2
+
+Авторская позиция сохранена по действующему разбору Ин. 1:1–18 и ответу об Адаме в Флп. 2. Аннотации — редакционный пересказ, а не свидетельство об авторе.
+
+- [Reinhold Bernhardt, Christ the Representative. Brill, англ. издание 2025, § 4.3.2.1–2, с. 113–117 (PDF).](https://brill.com/display/book/9789004734203/BP000011.pdf)
+- [Thomas E. Gaston, «Why does Hebrews 1:10–12 cite Psalm 102:25–27?» Neotestamentica 58/2 (2024), с. 291–312. Отступление об Ин. 1:14 (англ.).](https://doi.org/10.1353/neo.2024.a962302)
+- [Thomas E. Gaston, «The Christology of the Odes of Solomon: Wisdom, word, and the human Messiah». Journal for the Study of the Pseudepigrapha, 2026 (англ.).](https://doi.org/10.1177/09518207261441762)
+- [Troels Engberg-Pedersen, «The Unity of Logos and Pneuma in John 1». John and Philosophy. Oxford University Press, 2017, с. 36–73 (англ.).](https://doi.org/10.1093/acprof:oso/9780198792505.003.0002)
+- [Mary L. Coloe, John 1–10. Wisdom Commentary 44A. Liturgical Press, 2021, с. 14–15 (англ.).](https://litpress.org/Products/8168/Wisdom-Commentary-John-110)
+- [Dustin R. Smith, Wisdom Christology in the Gospel of John. Wipf and Stock, 2024 (англ.).](https://wipfandstock.com/9798385211395/wisdom-christology-in-the-gospel-of-john/)
+- [Pedro Rosário, «Did Paul think Christ was a pre-existent being?» Diacrítica 39/3 (2025), с. 370–385; опубликовано в 2026 году (англ.).](https://doi.org/10.21814/diacritica.6012)
+
+Сверены § 4.3.2 Бернхардта (с. 113–117); [выходные данные английской адаптации](https://www.degruyterbrill.com/document/isbn/9789004734203/html): вышла в 2025, на титуле © 2026, немецкая книга 2021 года. Энгберг-Педерсен: глава Oxford 2017 сопоставлена с [его собственной формулировкой в копенгагенском сборнике](https://teol.ku.dk/Forskning/afd/afdeling-for-bibelsk-eksegese/forum_for_bibelsk_eksegese/fbe18-praeeksistens/FBE18.pdf) 2013 года, с. 195. Не приписывать Сергею привязку воплощения к Иордану или стоическую модель. У Колоу проверены печатные с. 14–15 [по университетской копии](https://repository.divinity.edu.au/divinityserver/api/core/bitstreams/a9868d45-c59b-4f56-a4f1-0438c4512e94/content); нумерация Сираха указана по греческому тексту. У Смита использовано описание монографии издателем.
+
+Гастон: [авторский текст к статье о Евр. 1:10–12](https://www.academia.edu/94111064/Why_does_Hebrews_1_10_12_cite_Psalm_102_25_27) прямо отсылает к Ин. 1:14; тот же вывод о самом прологе в [его работе M.Phil. 2008 года](https://etheses.bham.ac.uk/id/eprint/151/1/Gaston08MPhil.pdf), с. 33–34. Исследование 2026 года проверено по авторской аннотации журнала, опубликованной 27 апреля: вывод о предведении и замысле относится к «Одам», не подменяет толкование Иоанна. П. Розариу: [полный текст автора](https://www.researchgate.net/publication/400734759_Did_Paul_think_Christ_was_a_pre-existent_being), с. 373–374 об Адаме, раздел о Рим. 1:1–4; номер журнала за 2025 год, опубликован в 2026 году.

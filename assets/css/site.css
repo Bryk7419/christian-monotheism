@@ -137,24 +137,29 @@ a:hover { color: var(--rubric); }
   list-style: none; margin: 0 auto; max-width: var(--wide);
   padding-inline: var(--gutter); padding-block: 0 0.6rem;
   display: flex; flex-wrap: wrap; gap: 0.15rem 1.25rem;
-  font: 0.9375rem/1.4 var(--font-ui);
+  font: 600 1.125rem/1.4 var(--font-ui);
 }
 .site-nav a {
-  display: inline-block; padding-block: 0.35rem; color: var(--muted); text-decoration: none;
+  display: inline-flex; align-items: center; min-height: 48px;
+  padding-block: 0.5rem; color: var(--ink); text-decoration: none;
   border-bottom: 2px solid transparent;
 }
-.site-nav a:hover { color: var(--ink); }
+.site-nav a:hover { color: var(--rubric); border-bottom-color: var(--rubric); }
 .site-nav a[aria-current] { color: var(--ink); border-bottom-color: var(--rubric); }
+.site-nav .nav-library { font-size: 1.25rem; }
 
 @media (max-width: 47.99rem) {
   .header-bar { flex-wrap: wrap; row-gap: 0.4rem; }
   .header-verse { order: 3; flex-basis: 100%; max-width: none; padding-left: 0; border-left: 0; font-size: 0.875rem; }
-  .site-nav ul { font-size: 0.875rem; gap: 0.25rem 0.9rem; }
-  .site-nav a { min-height: 44px; display: inline-flex; align-items: center; }
+  .site-nav ul { font-size: 1rem; gap: 0.25rem 0.9rem; }
+  .site-nav .nav-library { font-size: 1.125rem; }
 }
 @media (max-width: 30rem) {
   .icon-button-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .icon-button { padding: 0; }
+}
+@media (max-width: 22rem) {
+  .site-nav ul { column-gap: 0.5rem; }
 }
 
 /* --- Кнопки и формы -------------------------------------------------------------- */
@@ -1025,6 +1030,9 @@ mark { background: var(--mark); color: var(--ink); padding: 0 0.1em; border-radi
 .home-page .home-subtitle { margin-bottom: 1rem; }
 .home-page .home-author { margin-block: 1rem; }
 .home-begin { margin: 1rem 0 0; }
+.home-begin .button { min-height: 48px; padding-block: 0.6rem; font-size: 1.125rem; }
+.home-start { margin: 0.75rem 0 0; font: 1rem/1.6 var(--font-ui); }
+.home-start a { display: inline-block; }
 .home-page .home-search { margin-bottom: 2rem; }
 .home-news .card { padding-block: 1rem; }
 .home-news .card-link { font-size: 1.125rem; }

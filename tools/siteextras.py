@@ -98,7 +98,7 @@ def article_end():
 
 # --- Меню и подвал: одинаковые на всех страницах, собираются здесь ---------------------------------------
 # Три постоянных раздела; способы искать материал находятся внутри библиотеки.
-NAV = [('articles/', 'Материалы'), ('new/', 'Что нового'), ('about/', 'Об авторе')]
+NAV = [('articles/', 'Библиотека'), ('new/', 'Что нового'), ('about/', 'Об авторе')]
 FOOTER_NAV = NAV + [('search/', 'Поиск')]
 MATERIAL_SECTIONS = ('articles/', 'topics/', 'scripture/', 'questions/', 'videos/', 'bez-kupyur/', 'answers/', 'start/')
 
@@ -119,7 +119,8 @@ def set_nav(s, path):
             if mark and in_section:
                 cur = ' aria-current="page"' if path == sec + 'index.html' else ' aria-current="true"'
             href = f'{up}{sec}index.html' if sec else (up or './')
-            out.append(f'      <li><a href="{href}"{cur}>{label}</a></li>')
+            primary = ' class="nav-library"' if mark and sec == 'articles/' else ''
+            out.append(f'      <li><a href="{href}"{primary}{cur}>{label}</a></li>')
         return '\n'.join(out)
 
     s, n = re.subn(r'(<nav id="site-nav" class="site-nav" aria-label="Разделы сайта">\n    <ul>\n).*?(\n    </ul>\n  </nav>)',

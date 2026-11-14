@@ -358,7 +358,9 @@ a.ref:hover { text-decoration: underline; }
 .timestamp:hover { text-decoration: underline; }
 .timestamp-desc { min-width: 0; }
 .video-related { margin-top: 0.9rem; padding-top: 0.75rem; border-top: 1px solid var(--rule); font: 0.9375rem/1.5 var(--font-ui); }
-.video-related-label { margin: 0 0 0.35rem; color: var(--muted); font-size: 0.8125rem; }
+.video-list-full .video-link > a { display: inline-flex; align-items: center; min-height: 44px; }
+.video-list-full .video-related { margin: 0; padding: 0; border-top: 0; }
+.video-list-full .timestamps { margin-top: 0; border: 0; padding-top: 0; }
 .video-related ul { margin: 0; padding-left: 1.1em; display: grid; gap: 0.3rem; }
 
 /* --- Тема ---------------------------------------------------------------------- */
@@ -812,12 +814,11 @@ mark { background: var(--mark); color: var(--ink); padding: 0 0.1em; border-radi
 .is-date-order .card-updated { display: block; }
 .catalog-empty { margin-top: 1.5rem; }
 @media (max-width: 30rem) { .catalog-filter { padding: 1rem; } }
-/* «Темы»: свёрнутый список всех статей, его раскрывает поиск. Поиск по странице на других разделах. */
+/* Разделы каталога статей. Поиск по странице на других разделах. */
 .catalog-status:empty { display: none; }
-.catalog-results { margin: 0 0 1.5rem; font-family: var(--font-ui); }
-.catalog-results > summary { display: flex; align-items: center; min-height: 44px; padding-block: 0.5rem; cursor: pointer; color: var(--rubric); font: 500 0.9375rem/1.4 var(--font-ui); }
-.catalog-results > summary:hover { text-decoration: underline; text-underline-offset: 0.2em; }
-.catalog-results .catalog-list { font-family: var(--font-text); }
+.catalog-modes { display: flex; gap: 1.25rem; margin: 0 0 1.25rem; border-bottom: 1px solid var(--rule); font: 1rem/1.5 var(--font-ui); }
+.catalog-modes a { display: inline-flex; align-items: center; min-height: 44px; padding: 0.3rem 0; }
+.catalog-modes a[aria-current="page"] { color: var(--ink); font-weight: 650; text-decoration: none; border-bottom: 2px solid var(--rubric); }
 .topic-entry-meta a { color: inherit; text-underline-offset: 0.2em; }
 .topic-entry-meta a:hover { color: var(--rubric); }
 .page-filter { margin-bottom: 1.5rem; }

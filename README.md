@@ -21,7 +21,7 @@ DNS and activation steps for Porkbun: [editorial/domain-godisone-faith.md](edito
 
 - `index.html` — home page; every section lives in its own folder with an `index.html`
   (`topics/`, `scripture/`, `questions/`, `videos/`, `bez-kupyur/`, `about/`, `answers/`, `search/`).
-  `articles/` only redirects to `topics/`, where the list of all articles and article search now live.
+  `topics/` opens thematic guides; `articles/` lists all articles with search, topic filters and sorting.
 - `assets/css/site.css` — styles; `assets/fonts/` — self-hosted fonts (SIL Open Font License).
 - `assets/js/` — menu, sharing, site search and per-page search (`page-filter.js`); `assets/search-index.json` — search data.
 

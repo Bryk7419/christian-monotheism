@@ -112,7 +112,8 @@ def set_nav(s, path):
         out = []
         for sec, label in entries:
             cur = ''
-            if mark and (path.startswith(sec) if sec else path == 'index.html'):
+            in_section = path.startswith(sec) if sec else path == 'index.html'
+            if mark and (in_section or (sec == 'topics/' and path == 'articles/index.html')):
                 cur = ' aria-current="page"' if path == sec + 'index.html' else ' aria-current="true"'
             href = f'{up}{sec}index.html' if sec else (up or './')
             out.append(f'      <li><a href="{href}"{cur}>{label}</a></li>')

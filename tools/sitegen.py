@@ -120,12 +120,16 @@ def video_block(v, heading, related=None, only=None):
         inner += (f'\n  <p class="video-more"><a href="../../videos/index.html#{v["id"]}">Все отметки ({total})'
                   ' на странице «Видео»</a></p>')
         attr = f' data-t="{",".join(str(t) for t in only)}"'
+    if heading == 'h2' and '<ol class="timestamps' in inner:
+        start = inner.index('  <ol class="timestamps')
+        inner = (inner[:start] + '  <details class="video-details" data-video-times><summary>Отметки времени</summary>\n'
+                 + inner[start:] + '\n  </details>')
     out = f'<article class="video" id="{v["id"]}"{attr}>\n{inner}\n'
     if related:
-        out += '  <div class="video-related">\n    <p class="video-related-label">Статьи по теме записи</p>\n    <ul>\n'
+        out += '  <details class="video-details video-related"><summary>Статьи по теме записи</summary>\n    <ul>\n'
         for slug, title in related:
             out += f'      <li><a href="../answers/{slug}/index.html">{title}</a></li>\n'
-        out += '    </ul>\n  </div>\n'
+        out += '    </ul>\n  </details>\n'
     return out + '</article>\n'
 
 
@@ -178,7 +182,7 @@ def catalog_header(title, intro):
 
 
 def catalog_form(m):
-    """Поиск по статьям с выбором темы (страница «Темы»). Без JavaScript ведёт в общий поиск."""
+    """Поиск по статьям с выбором темы (страница «Все статьи»). Без JavaScript ведёт в общий поиск."""
     out = '''  <form class="catalog-filter" action="../search/index.html" method="get" data-catalog-form role="search">
     <label class="search-label" for="catalog-q">Слово, вопрос или место Писания</label>
     <div class="search-row">
@@ -186,7 +190,7 @@ def catalog_form(m):
       <button class="button" type="submit">Найти</button>
     </div>
     <div class="catalog-selects">
-      <label>Тема<select name="topic" id="catalog-topic"><option value="">Все темы</option>'''
+      <label hidden>Тема<select name="topic" id="catalog-topic"><option value="">Все темы</option>'''
     for t in m['topics']:
         out += f'<option value="{t["id"]}">{t["title"]}</option>'
     out += '''</select></label>
@@ -199,12 +203,9 @@ def catalog_form(m):
 
 
 def catalog_list(m):
-    """Все статьи карточками: свёрнутый список на странице «Темы»; поиск раскрывает его и оставляет найденное."""
-    n = n_articles(len(m['articles']))
-    out = (f'  <p class="catalog-status" role="status" aria-live="polite" data-catalog-status></p>\n'
-           f'  <details class="catalog-results" data-catalog-results>\n'
-           f'    <summary data-catalog-summary data-all="Все статьи списком ({len(m["articles"])})">Все статьи списком ({len(m["articles"])})</summary>\n'
-           '    <ul class="cards catalog-list" data-catalog-list>\n')
+    """Полный каталог, доступный и без JavaScript."""
+    out = ('  <p class="catalog-status" role="status" aria-live="polite" data-catalog-status></p>\n'
+           '  <ul class="cards catalog-list" data-catalog-list>\n')
     for a in m['articles']:
         p = m['pages'][a['slug']]
         meta = f'{a["kind"]} · ' if a.get('kind') else ''
@@ -215,7 +216,7 @@ def catalog_list(m):
                 f'        <p class="card-summary">{a["summary"]}</p>\n'
                 '      </li>\n')
     out += ('    </ul>\n    <p class="catalog-empty" data-catalog-empty hidden>Попробуйте другое слово или выберите «Все темы».</p>\n'
-            '  </details>\n  <script type="module" src="../assets/js/catalog.js"></script>\n')
+            '  <script type="module" src="../assets/js/catalog.js"></script>\n')
     return out
 
 
@@ -286,23 +287,35 @@ def topic_meta(m, t):
     return n_articles(len(articles_in(m, t['id']))), n_questions(len(m['questions'][t['id']])), f'{len(t["videos"])} видео'
 
 
+def catalog_modes(current):
+    links = []
+    for section, title in [('topics', 'По темам'), ('articles', 'Все статьи')]:
+        active = ' aria-current="page"' if section == current else ''
+        links.append(f'<a href="../{section}/index.html"{active}>{title}</a>')
+    return '  <nav class="catalog-modes" aria-label="Каталог материалов">' + ''.join(links) + '</nav>\n'
+
+
+def render_articles_index(m):
+    out = '<main id="main" class="main" tabindex="-1">\n<div class="catalog">\n'
+    out += catalog_header('Все статьи', f'{n_articles(len(m["articles"]))} о Боге, Иисусе Христе и жизни веры.')
+    return out + catalog_modes('articles') + catalog_form(m) + catalog_list(m) + '</div>\n</main>'
+
+
 def render_topics_index(m):
-    out = '<main id="main" class="main" tabindex="-1">\n\n\n<div class="catalog catalog-topics">\n'
-    out += catalog_header('Темы', f'{n_articles(len(m["articles"]))} о Боге, Иисусе Христе, Писании и жизни веры. '
-                          'Найдите статью по слову или месту Писания, или выберите тему: в каждой — краткое исповедание, '
-                          'основные места Писания, статьи и вопросы.')
-    out += catalog_form(m) + catalog_list(m)
+    out = '<main id="main" class="main" tabindex="-1">\n<div class="catalog catalog-topics">\n'
+    out += catalog_header('Темы', 'Выберите тему, чтобы прочитать краткое изложение веры и найти разборы Писания и ответы на вопросы.')
+    out += catalog_modes('topics')
     out += '  <ul class="topic-list">\n'
     for t in m['topics']:
         a, q, v = topic_meta(m, t)
-        a = f'<a href="?topic={t["id"]}" data-topic-link="{t["id"]}">{a}</a>'
+        a = f'<a href="../articles/index.html?topic={t["id"]}">{a}</a>'
         meta = f'{a} · {q}' + (f' · {v}' if t['videos'] else '')
         out += ('    <li class="topic-entry">\n'
                 f'      <h2 class="topic-entry-title"><a href="{t["id"]}/index.html">{t["title"]}</a></h2>\n'
                 f'      <p class="topic-entry-text">{t["confession"]}</p>\n'
                 f'      <p class="topic-entry-meta">{meta}</p>\n'
                 '    </li>\n')
-    return out + '  </ul>\n</div>\n\n</main>'
+    return out + '  </ul>\n  <script type="module" src="../assets/js/catalog.js"></script>\n</div>\n\n</main>'
 
 
 def render_home_topics(m):
@@ -352,7 +365,7 @@ def render_topic_main(m, t):
             '    <h2 class="section-label" id="related-h">Связанные темы</h2>\n    \n')
     out += chips([(f'../{r}/index.html', topic_title(m, r)) for r in t['related']])
     out += ('\n  </section>\n\n'
-            f'  <p class="topic-all"><a href="../index.html?topic={t["id"]}">Все статьи темы «{t["title"]}» '
+            f'  <p class="topic-all"><a href="../../articles/index.html?topic={t["id"]}">Все статьи темы «{t["title"]}» '
             f'({len(articles_in(m, t["id"]))})</a></p>\n</article>\n\n</main>')
     return out
 
@@ -361,7 +374,7 @@ def render_videos_main(m):
     out = '<main id="main" class="main" tabindex="-1">\n\n\n<div class="catalog catalog-videos">\n'
     out += catalog_header('Видео', m.get('videos_intro', 'Беседы и разборы по темам сайта. Рядом со статьями можно найти подходящую запись, '
                           'а здесь — всю подборку. Отметки времени перенесены из авторских анонсов.'))
-    out += page_filter('../', 'Найти в видео', 'Например: Троица или Евр. 1', '.video-list-full > .video', parts='.timestamps li')
+    out += page_filter('../', 'Найти в видео', 'Например: Троица или Евр. 1', '.video-list-full > .video', parts='.timestamps li, .video-related li')
     out += '  <div class="video-list video-list-full">\n'
     for v in m['videos']:
         out += video_block(v, 'h2', video_related(m, v['id'])) + '\n'

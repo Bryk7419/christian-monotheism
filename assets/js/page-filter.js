@@ -38,12 +38,13 @@ if (form) {
     return { stems: tokenize(text).map(filterStem), refs: findRefs(text) };
   };
   const items = all(form.dataset.items).map((el) => {
+    const panels = [...el.querySelectorAll('.video-details')].map(el => ({ el, previous: null }));
     const parts = form.dataset.parts ? [...el.querySelectorAll(form.dataset.parts)] : [];
     // текст записи без её частей: у видео это название и описание, а не отметки времени
     const own = el.cloneNode(true);
     if (form.dataset.parts) own.querySelectorAll(form.dataset.parts).forEach((p) => p.remove());
     const idle = form.dataset.idleHidden ? new Set(el.querySelectorAll(form.dataset.idleHidden)) : new Set();
-    return { el, ...describe(own), parts: parts.map((p) => ({ el: p, idle: idle.has(p), ...describe(p) })) };
+    return { el, panels, ...describe(own), parts: parts.map((p) => ({ el: p, panel: p.closest('.video-details'), idle: idle.has(p), ...describe(p) })) };
   });
 
   function parse(query) {
@@ -70,6 +71,14 @@ if (form) {
       const hit = on ? it.parts.filter((p) => matches(p, q)) : [];
       const show = own || hit.length > 0;
       it.el.hidden = !show;
+      for (const panel of it.panels) {
+        if (on && panel.previous === null) panel.previous = panel.el.open;
+        if (on) panel.el.open = panel.previous || hit.some(p => p.panel === panel.el);
+        else if (panel.previous !== null) {
+          panel.el.open = panel.previous;
+          panel.previous = null;
+        }
+      }
       // часть видна: без поиска — если не скрыта заранее; при поиске — если совпала,
       // а если совпала вся запись — ещё и все её обычные части
       for (const p of it.parts) p.el.hidden = !(hit.includes(p) || (own && !p.idle));
